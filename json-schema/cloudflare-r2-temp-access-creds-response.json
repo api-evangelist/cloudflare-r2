@@ -1,0 +1,27 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/cloudflare-r2/main/json-schema/cloudflare-r2-temp-access-creds-response.json",
+  "title": "R2 Temp_Access_Creds_Response",
+  "example": {
+    "accessKeyId": "example-access-key-id",
+    "secretAccessKey": "example-secret-key",
+    "sessionToken": "example-session-token"
+  },
+  "properties": {
+    "accessKeyId": {
+      "description": "ID for new access key.",
+      "type": "string"
+    },
+    "secretAccessKey": {
+      "description": "Secret access key.",
+      "type": "string",
+      "x-sensitive": true
+    },
+    "sessionToken": {
+      "description": "Security token.",
+      "type": "string",
+      "x-sensitive": true
+    }
+  },
+  "type": "object"
+}

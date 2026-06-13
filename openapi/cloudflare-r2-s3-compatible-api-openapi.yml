@@ -1,0 +1,1248 @@
+openapi: 3.0.3
+info:
+  title: Cloudflare R2 S3-Compatible API
+  description: >
+    An S3-compatible REST API for storing and retrieving objects in Cloudflare R2 buckets.
+    Supports core S3 operations including bucket management, object CRUD, multipart uploads,
+    CORS configuration, lifecycle policies, and server-side encryption. Compatible with
+    AWS S3 SDKs across Python, JavaScript, Go, Java, PHP, Ruby, and Rust.
+    Base URL format: https://<ACCOUNT_ID>.r2.cloudflarestorage.com
+  version: '1.0.0'
+  termsOfService: https://www.cloudflare.com/website-terms/
+  contact:
+    name: Cloudflare R2 Documentation
+    url: https://developers.cloudflare.com/r2/api/s3/api/
+externalDocs:
+  description: Cloudflare R2 S3 API Compatibility
+  url: https://developers.cloudflare.com/r2/api/s3/api/
+servers:
+  - url: https://{account_id}.r2.cloudflarestorage.com
+    description: Cloudflare R2 S3-compatible endpoint
+    variables:
+      account_id:
+        description: Your Cloudflare account ID
+        default: YOUR_ACCOUNT_ID
+security:
+  - hmacAuth: []
+components:
+  securitySchemes:
+    hmacAuth:
+      type: apiKey
+      in: header
+      name: Authorization
+      description: >
+        AWS Signature Version 4 authentication. Use your R2 API token (Access Key ID and Secret
+        Access Key) generated from the R2 dashboard. Compatible with all AWS S3 SDKs.
+  schemas:
+    Error:
+      type: object
+      properties:
+        Code:
+          type: string
+          description: Error code
+        Message:
+          type: string
+          description: Human-readable error message
+        Resource:
+          type: string
+          description: The resource that caused the error
+        RequestId:
+          type: string
+          description: The request ID for troubleshooting
+      xml:
+        name: Error
+    ListAllMyBucketsResult:
+      type: object
+      properties:
+        Owner:
+          type: object
+          properties:
+            ID:
+              type: string
+            DisplayName:
+              type: string
+        Buckets:
+          type: object
+          properties:
+            Bucket:
+              type: array
+              items:
+                type: object
+                properties:
+                  Name:
+                    type: string
+                    description: Bucket name
+                  CreationDate:
+                    type: string
+                    format: date-time
+                    description: Bucket creation date
+      xml:
+        name: ListAllMyBucketsResult
+    ListBucketResult:
+      type: object
+      properties:
+        Name:
+          type: string
+          description: Bucket name
+        Prefix:
+          type: string
+          description: Prefix filter used
+        Delimiter:
+          type: string
+          description: Delimiter used for grouping keys
+        MaxKeys:
+          type: integer
+          description: Maximum number of keys returned
+        IsTruncated:
+          type: boolean
+          description: Whether results are truncated
+        NextContinuationToken:
+          type: string
+          description: Token for next page (V2)
+        NextMarker:
+          type: string
+          description: Next marker for pagination (V1)
+        KeyCount:
+          type: integer
+          description: Number of keys returned
+        Contents:
+          type: array
+          items:
+            type: object
+            properties:
+              Key:
+                type: string
+              LastModified:
+                type: string
+                format: date-time
+              ETag:
+                type: string
+              Size:
+                type: integer
+                format: int64
+              StorageClass:
+                type: string
+        CommonPrefixes:
+          type: array
+          items:
+            type: object
+            properties:
+              Prefix:
+                type: string
+      xml:
+        name: ListBucketResult
+    CopyObjectResult:
+      type: object
+      properties:
+        LastModified:
+          type: string
+          format: date-time
+        ETag:
+          type: string
+      xml:
+        name: CopyObjectResult
+    InitiateMultipartUploadResult:
+      type: object
+      properties:
+        Bucket:
+          type: string
+        Key:
+          type: string
+        UploadId:
+          type: string
+      xml:
+        name: InitiateMultipartUploadResult
+    ListMultipartUploadsResult:
+      type: object
+      properties:
+        Bucket:
+          type: string
+        KeyMarker:
+          type: string
+        UploadIdMarker:
+          type: string
+        NextKeyMarker:
+          type: string
+        NextUploadIdMarker:
+          type: string
+        MaxUploads:
+          type: integer
+        IsTruncated:
+          type: boolean
+        Upload:
+          type: array
+          items:
+            type: object
+            properties:
+              Key:
+                type: string
+              UploadId:
+                type: string
+              Initiated:
+                type: string
+                format: date-time
+      xml:
+        name: ListMultipartUploadsResult
+    ListPartsResult:
+      type: object
+      properties:
+        Bucket:
+          type: string
+        Key:
+          type: string
+        UploadId:
+          type: string
+        PartNumberMarker:
+          type: integer
+        NextPartNumberMarker:
+          type: integer
+        MaxParts:
+          type: integer
+        IsTruncated:
+          type: boolean
+        Part:
+          type: array
+          items:
+            type: object
+            properties:
+              PartNumber:
+                type: integer
+              LastModified:
+                type: string
+                format: date-time
+              ETag:
+                type: string
+              Size:
+                type: integer
+                format: int64
+      xml:
+        name: ListPartsResult
+    CompleteMultipartUpload:
+      type: object
+      properties:
+        Part:
+          type: array
+          items:
+            type: object
+            required:
+              - PartNumber
+              - ETag
+            properties:
+              PartNumber:
+                type: integer
+              ETag:
+                type: string
+      xml:
+        name: CompleteMultipartUpload
+    CompleteMultipartUploadResult:
+      type: object
+      properties:
+        Location:
+          type: string
+        Bucket:
+          type: string
+        Key:
+          type: string
+        ETag:
+          type: string
+      xml:
+        name: CompleteMultipartUploadResult
+    DeleteObjects:
+      type: object
+      properties:
+        Object:
+          type: array
+          items:
+            type: object
+            required:
+              - Key
+            properties:
+              Key:
+                type: string
+              VersionId:
+                type: string
+        Quiet:
+          type: boolean
+      xml:
+        name: Delete
+    DeleteResult:
+      type: object
+      properties:
+        Deleted:
+          type: array
+          items:
+            type: object
+            properties:
+              Key:
+                type: string
+        Error:
+          type: array
+          items:
+            type: object
+            properties:
+              Key:
+                type: string
+              Code:
+                type: string
+              Message:
+                type: string
+      xml:
+        name: DeleteResult
+    CORSConfiguration:
+      type: object
+      properties:
+        CORSRule:
+          type: array
+          items:
+            type: object
+            properties:
+              AllowedHeader:
+                type: array
+                items:
+                  type: string
+              AllowedMethod:
+                type: array
+                items:
+                  type: string
+              AllowedOrigin:
+                type: array
+                items:
+                  type: string
+              ExposeHeader:
+                type: array
+                items:
+                  type: string
+              MaxAgeSeconds:
+                type: integer
+      xml:
+        name: CORSConfiguration
+    LifecycleConfiguration:
+      type: object
+      properties:
+        Rule:
+          type: array
+          items:
+            type: object
+            properties:
+              ID:
+                type: string
+              Status:
+                type: string
+                enum: [Enabled, Disabled]
+              Filter:
+                type: object
+                properties:
+                  Prefix:
+                    type: string
+              Expiration:
+                type: object
+                properties:
+                  Days:
+                    type: integer
+                  Date:
+                    type: string
+                    format: date-time
+              NoncurrentVersionExpiration:
+                type: object
+                properties:
+                  NoncurrentDays:
+                    type: integer
+              AbortIncompleteMultipartUpload:
+                type: object
+                properties:
+                  DaysAfterInitiation:
+                    type: integer
+      xml:
+        name: LifecycleConfiguration
+paths:
+  /:
+    get:
+      operationId: list-buckets
+      summary: List Buckets
+      description: Returns a list of all buckets owned by the authenticated user.
+      tags:
+        - Buckets
+      responses:
+        '200':
+          description: Success
+          content:
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/ListAllMyBucketsResult'
+        '4XX':
+          description: Error
+          content:
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /{bucket}:
+    head:
+      operationId: head-bucket
+      summary: Head Bucket
+      description: Checks if a bucket exists and if you have access to it.
+      tags:
+        - Buckets
+      parameters:
+        - name: bucket
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Name of the bucket
+      responses:
+        '200':
+          description: Bucket exists and is accessible
+        '403':
+          description: Access denied
+        '404':
+          description: Bucket not found
+    put:
+      operationId: create-bucket
+      summary: Create Bucket
+      description: Creates a new R2 bucket. The region is always 'auto' for R2.
+      tags:
+        - Buckets
+      parameters:
+        - name: bucket
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Name of the bucket to create
+        - name: cf-r2-jurisdiction
+          in: header
+          required: false
+          schema:
+            type: string
+            enum: [default, eu, fedramp]
+          description: Jurisdiction for the bucket
+      responses:
+        '200':
+          description: Bucket created successfully
+        '4XX':
+          description: Error
+          content:
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Error'
+    delete:
+      operationId: delete-bucket
+      summary: Delete Bucket
+      description: Deletes an empty R2 bucket.
+      tags:
+        - Buckets
+      parameters:
+        - name: bucket
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Name of the bucket to delete
+      responses:
+        '204':
+          description: Bucket deleted successfully
+        '4XX':
+          description: Error
+          content:
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Error'
+    get:
+      operationId: list-objects-v2
+      summary: List Objects V2
+      description: Returns some or all (up to 1,000) of the objects in a bucket. ListObjectsV2 is preferred over ListObjects.
+      tags:
+        - Objects
+      parameters:
+        - name: bucket
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Name of the bucket
+        - name: list-type
+          in: query
+          required: false
+          schema:
+            type: integer
+            enum: [2]
+          description: Set to 2 to use ListObjectsV2
+        - name: prefix
+          in: query
+          required: false
+          schema:
+            type: string
+          description: Limits the response to keys that begin with the specified prefix
+        - name: delimiter
+          in: query
+          required: false
+          schema:
+            type: string
+          description: A delimiter is a character you use to group keys
+        - name: max-keys
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 1000
+            maximum: 1000
+          description: Maximum number of keys to return
+        - name: continuation-token
+          in: query
+          required: false
+          schema:
+            type: string
+          description: Token from previous response to get next page
+        - name: start-after
+          in: query
+          required: false
+          schema:
+            type: string
+          description: Start listing after this key
+        - name: marker
+          in: query
+          required: false
+          schema:
+            type: string
+          description: (V1) Where to begin listing. The response starts listing after this marker
+        - name: uploads
+          in: query
+          required: false
+          schema:
+            type: boolean
+          description: List in-progress multipart uploads when present
+        - name: location
+          in: query
+          required: false
+          schema:
+            type: boolean
+          description: Return bucket location when present
+        - name: cors
+          in: query
+          required: false
+          schema:
+            type: boolean
+          description: Return CORS configuration when present
+        - name: lifecycle
+          in: query
+          required: false
+          schema:
+            type: boolean
+          description: Return lifecycle configuration when present
+        - name: encryption
+          in: query
+          required: false
+          schema:
+            type: boolean
+          description: Return encryption configuration when present
+      responses:
+        '200':
+          description: Success
+          content:
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/ListBucketResult'
+        '4XX':
+          description: Error
+          content:
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /{bucket}?cors:
+    get:
+      operationId: get-bucket-cors
+      summary: Get Bucket CORS
+      description: Returns the CORS configuration for the bucket.
+      tags:
+        - CORS
+      parameters:
+        - name: bucket
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: CORS configuration
+          content:
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/CORSConfiguration'
+        '4XX':
+          description: Error
+          content:
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Error'
+    put:
+      operationId: put-bucket-cors
+      summary: Put Bucket CORS
+      description: Sets the CORS configuration for the bucket.
+      tags:
+        - CORS
+      parameters:
+        - name: bucket
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/CORSConfiguration'
+      responses:
+        '200':
+          description: CORS configuration set
+        '4XX':
+          description: Error
+          content:
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Error'
+    delete:
+      operationId: delete-bucket-cors
+      summary: Delete Bucket CORS
+      description: Removes the CORS configuration from the bucket.
+      tags:
+        - CORS
+      parameters:
+        - name: bucket
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: CORS configuration deleted
+        '4XX':
+          description: Error
+          content:
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /{bucket}?lifecycle:
+    get:
+      operationId: get-bucket-lifecycle
+      summary: Get Bucket Lifecycle Configuration
+      description: Returns the lifecycle configuration for the bucket.
+      tags:
+        - Lifecycle
+      parameters:
+        - name: bucket
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Lifecycle configuration
+          content:
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/LifecycleConfiguration'
+        '4XX':
+          description: Error
+          content:
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Error'
+    put:
+      operationId: put-bucket-lifecycle
+      summary: Put Bucket Lifecycle Configuration
+      description: Sets the lifecycle configuration for the bucket.
+      tags:
+        - Lifecycle
+      parameters:
+        - name: bucket
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/LifecycleConfiguration'
+      responses:
+        '200':
+          description: Lifecycle configuration set
+        '4XX':
+          description: Error
+          content:
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /{bucket}/{key}:
+    head:
+      operationId: head-object
+      summary: Head Object
+      description: Retrieves metadata from an object without returning the object itself.
+      tags:
+        - Objects
+      parameters:
+        - name: bucket
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: key
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Object key
+        - name: Range
+          in: header
+          required: false
+          schema:
+            type: string
+          description: HTTP Range header for partial content
+        - name: If-Match
+          in: header
+          required: false
+          schema:
+            type: string
+        - name: If-None-Match
+          in: header
+          required: false
+          schema:
+            type: string
+        - name: If-Modified-Since
+          in: header
+          required: false
+          schema:
+            type: string
+            format: date-time
+        - name: If-Unmodified-Since
+          in: header
+          required: false
+          schema:
+            type: string
+            format: date-time
+      responses:
+        '200':
+          description: Object metadata
+          headers:
+            Content-Type:
+              schema:
+                type: string
+            Content-Length:
+              schema:
+                type: integer
+            ETag:
+              schema:
+                type: string
+            Last-Modified:
+              schema:
+                type: string
+        '4XX':
+          description: Error
+          content:
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Error'
+    get:
+      operationId: get-object
+      summary: Get Object
+      description: Retrieves an object from a bucket.
+      tags:
+        - Objects
+      parameters:
+        - name: bucket
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: key
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Object key
+        - name: Range
+          in: header
+          required: false
+          schema:
+            type: string
+          description: HTTP Range header for partial content retrieval
+        - name: If-Match
+          in: header
+          required: false
+          schema:
+            type: string
+        - name: If-None-Match
+          in: header
+          required: false
+          schema:
+            type: string
+        - name: If-Modified-Since
+          in: header
+          required: false
+          schema:
+            type: string
+            format: date-time
+        - name: If-Unmodified-Since
+          in: header
+          required: false
+          schema:
+            type: string
+            format: date-time
+        - name: response-content-type
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: response-content-disposition
+          in: query
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Object data
+          content:
+            application/octet-stream:
+              schema:
+                type: string
+                format: binary
+        '206':
+          description: Partial content
+          content:
+            application/octet-stream:
+              schema:
+                type: string
+                format: binary
+        '4XX':
+          description: Error
+          content:
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Error'
+    put:
+      operationId: put-object
+      summary: Put Object
+      description: Adds an object to a bucket.
+      tags:
+        - Objects
+      parameters:
+        - name: bucket
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: key
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: Content-Type
+          in: header
+          required: false
+          schema:
+            type: string
+        - name: Content-MD5
+          in: header
+          required: false
+          schema:
+            type: string
+        - name: Content-Length
+          in: header
+          required: false
+          schema:
+            type: integer
+        - name: Cache-Control
+          in: header
+          required: false
+          schema:
+            type: string
+        - name: Content-Disposition
+          in: header
+          required: false
+          schema:
+            type: string
+        - name: Content-Encoding
+          in: header
+          required: false
+          schema:
+            type: string
+        - name: x-amz-meta-*
+          in: header
+          required: false
+          schema:
+            type: string
+          description: User-defined metadata headers
+        - name: x-amz-copy-source
+          in: header
+          required: false
+          schema:
+            type: string
+          description: Source for server-side copy
+      requestBody:
+        required: false
+        content:
+          application/octet-stream:
+            schema:
+              type: string
+              format: binary
+      responses:
+        '200':
+          description: Object stored
+          headers:
+            ETag:
+              schema:
+                type: string
+        '4XX':
+          description: Error
+          content:
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Error'
+    delete:
+      operationId: delete-object
+      summary: Delete Object
+      description: Removes an object from a bucket.
+      tags:
+        - Objects
+      parameters:
+        - name: bucket
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: key
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Object deleted
+        '4XX':
+          description: Error
+          content:
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /{bucket}?delete:
+    post:
+      operationId: delete-objects
+      summary: Delete Multiple Objects
+      description: Removes multiple objects from a bucket in a single request. Up to 1000 objects can be deleted per request.
+      tags:
+        - Objects
+      parameters:
+        - name: bucket
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/DeleteObjects'
+      responses:
+        '200':
+          description: Delete results
+          content:
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/DeleteResult'
+        '4XX':
+          description: Error
+          content:
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /{bucket}/{key}?uploads:
+    post:
+      operationId: create-multipart-upload
+      summary: Create Multipart Upload
+      description: Initiates a multipart upload and returns an upload ID.
+      tags:
+        - Multipart Upload
+      parameters:
+        - name: bucket
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: key
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: Content-Type
+          in: header
+          required: false
+          schema:
+            type: string
+        - name: x-amz-meta-*
+          in: header
+          required: false
+          schema:
+            type: string
+          description: User-defined metadata headers
+      responses:
+        '200':
+          description: Multipart upload initiated
+          content:
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/InitiateMultipartUploadResult'
+        '4XX':
+          description: Error
+          content:
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /{bucket}/{key}?partNumber={partNumber}&uploadId={uploadId}:
+    put:
+      operationId: upload-part
+      summary: Upload Part
+      description: Uploads a part in a multipart upload.
+      tags:
+        - Multipart Upload
+      parameters:
+        - name: bucket
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: key
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: partNumber
+          in: path
+          required: true
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 10000
+          description: Part number (1 to 10000)
+        - name: uploadId
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Upload ID from CreateMultipartUpload
+        - name: x-amz-copy-source
+          in: header
+          required: false
+          schema:
+            type: string
+          description: Source for UploadPartCopy
+        - name: x-amz-copy-source-range
+          in: header
+          required: false
+          schema:
+            type: string
+          description: Byte range for UploadPartCopy
+      requestBody:
+        required: false
+        content:
+          application/octet-stream:
+            schema:
+              type: string
+              format: binary
+      responses:
+        '200':
+          description: Part uploaded
+          headers:
+            ETag:
+              schema:
+                type: string
+        '4XX':
+          description: Error
+          content:
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /{bucket}/{key}?uploadId={uploadId}:
+    post:
+      operationId: complete-multipart-upload
+      summary: Complete Multipart Upload
+      description: Completes a multipart upload by assembling previously uploaded parts.
+      tags:
+        - Multipart Upload
+      parameters:
+        - name: bucket
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: key
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: uploadId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/CompleteMultipartUpload'
+      responses:
+        '200':
+          description: Multipart upload completed
+          content:
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/CompleteMultipartUploadResult'
+        '4XX':
+          description: Error
+          content:
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Error'
+    delete:
+      operationId: abort-multipart-upload
+      summary: Abort Multipart Upload
+      description: Aborts a multipart upload and frees any storage consumed by the upload.
+      tags:
+        - Multipart Upload
+      parameters:
+        - name: bucket
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: key
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: uploadId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Multipart upload aborted
+        '4XX':
+          description: Error
+          content:
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Error'
+    get:
+      operationId: list-parts
+      summary: List Parts
+      description: Lists the parts that have been uploaded for a specific multipart upload.
+      tags:
+        - Multipart Upload
+      parameters:
+        - name: bucket
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: key
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: uploadId
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: max-parts
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 1000
+          description: Maximum number of parts to return
+        - name: part-number-marker
+          in: query
+          required: false
+          schema:
+            type: integer
+          description: Part number after which listing begins
+      responses:
+        '200':
+          description: Parts list
+          content:
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/ListPartsResult'
+        '4XX':
+          description: Error
+          content:
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /{bucket}?uploads:
+    get:
+      operationId: list-multipart-uploads
+      summary: List Multipart Uploads
+      description: Lists in-progress multipart uploads in a bucket.
+      tags:
+        - Multipart Upload
+      parameters:
+        - name: bucket
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: prefix
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: delimiter
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: max-uploads
+          in: query
+          required: false
+          schema:
+            type: integer
+            default: 1000
+        - name: key-marker
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: upload-id-marker
+          in: query
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Multipart uploads list
+          content:
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/ListMultipartUploadsResult'
+        '4XX':
+          description: Error
+          content:
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Error'

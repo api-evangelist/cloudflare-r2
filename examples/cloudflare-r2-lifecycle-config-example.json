@@ -1,0 +1,27 @@
+{
+  "rules": [
+    {
+      "id": "expire-old-logs",
+      "enabled": true,
+      "conditions": {
+        "type": "age",
+        "maxAgeSeconds": 7776000
+      },
+      "prefix": "logs/",
+      "action": {
+        "type": "DeleteObject"
+      }
+    },
+    {
+      "id": "abort-incomplete-uploads",
+      "enabled": true,
+      "conditions": {
+        "type": "age",
+        "maxAgeSeconds": 86400
+      },
+      "action": {
+        "type": "AbortMultipartUpload"
+      }
+    }
+  ]
+}

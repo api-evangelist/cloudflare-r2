@@ -1,0 +1,179 @@
+{
+  "@context": {
+    "@version": 1.1,
+    "r2": "https://developers.cloudflare.com/r2/",
+    "schema": "https://schema.org/",
+    "xsd": "http://www.w3.org/2001/XMLSchema#",
+    "cf": "https://api.cloudflare.com/client/v4/",
+
+    "Bucket": {
+      "@id": "r2:buckets/",
+      "@type": "@id"
+    },
+    "Object": {
+      "@id": "r2:objects/",
+      "@type": "@id"
+    },
+    "MultipartUpload": {
+      "@id": "r2:objects/multipart-objects/",
+      "@type": "@id"
+    },
+    "LifecycleRule": {
+      "@id": "r2:buckets/object-lifecycles/",
+      "@type": "@id"
+    },
+    "EventNotification": {
+      "@id": "r2:buckets/event-notifications/",
+      "@type": "@id"
+    },
+    "TempAccessCredentials": {
+      "@id": "r2:api/tokens/",
+      "@type": "@id"
+    },
+    "DataCatalog": {
+      "@id": "r2:data-catalog/",
+      "@type": "@id"
+    },
+    "BucketLock": {
+      "@id": "r2:buckets/object-lock/",
+      "@type": "@id"
+    },
+
+    "name": {
+      "@id": "schema:name",
+      "@type": "xsd:string"
+    },
+    "description": {
+      "@id": "schema:description",
+      "@type": "xsd:string"
+    },
+    "creationDate": {
+      "@id": "schema:dateCreated",
+      "@type": "xsd:dateTime"
+    },
+    "lastModified": {
+      "@id": "schema:dateModified",
+      "@type": "xsd:dateTime"
+    },
+    "size": {
+      "@id": "schema:fileSize",
+      "@type": "xsd:long"
+    },
+    "etag": {
+      "@id": "r2:etag",
+      "@type": "xsd:string"
+    },
+    "key": {
+      "@id": "r2:object-key",
+      "@type": "xsd:string"
+    },
+    "bucket": {
+      "@id": "r2:bucket",
+      "@type": "@id"
+    },
+    "location": {
+      "@id": "r2:location",
+      "@type": "xsd:string"
+    },
+    "jurisdiction": {
+      "@id": "r2:jurisdiction",
+      "@type": "xsd:string"
+    },
+    "storageClass": {
+      "@id": "r2:storage-class",
+      "@type": "xsd:string"
+    },
+    "uploadId": {
+      "@id": "r2:upload-id",
+      "@type": "xsd:string"
+    },
+    "accountId": {
+      "@id": "cf:accounts",
+      "@type": "xsd:string"
+    },
+    "accessKeyId": {
+      "@id": "r2:access-key-id",
+      "@type": "xsd:string"
+    },
+    "secretAccessKey": {
+      "@id": "r2:secret-access-key",
+      "@type": "xsd:string"
+    },
+    "sessionToken": {
+      "@id": "r2:session-token",
+      "@type": "xsd:string"
+    },
+    "ttlSeconds": {
+      "@id": "r2:ttl-seconds",
+      "@type": "xsd:integer"
+    },
+    "permission": {
+      "@id": "r2:permission",
+      "@type": "xsd:string"
+    },
+    "prefix": {
+      "@id": "r2:prefix",
+      "@type": "xsd:string"
+    },
+    "truncated": {
+      "@id": "r2:is-truncated",
+      "@type": "xsd:boolean"
+    },
+    "cursor": {
+      "@id": "r2:cursor",
+      "@type": "xsd:string"
+    },
+    "success": {
+      "@id": "cf:success",
+      "@type": "xsd:boolean"
+    },
+    "errors": {
+      "@id": "cf:errors",
+      "@container": "@list"
+    },
+    "messages": {
+      "@id": "cf:messages",
+      "@container": "@list"
+    },
+    "result": {
+      "@id": "cf:result"
+    },
+    "objects": {
+      "@id": "r2:objects",
+      "@container": "@list"
+    },
+    "rules": {
+      "@id": "r2:lifecycle-rules",
+      "@container": "@list"
+    },
+    "enabled": {
+      "@id": "r2:rule-enabled",
+      "@type": "xsd:boolean"
+    },
+    "conditions": {
+      "@id": "r2:rule-conditions"
+    },
+    "action": {
+      "@id": "r2:rule-action"
+    },
+    "domain": {
+      "@id": "schema:domainName",
+      "@type": "xsd:string"
+    },
+    "enabled_r2_sippy": {
+      "@id": "r2:sippy"
+    },
+    "queueId": {
+      "@id": "cf:queues",
+      "@type": "@id"
+    },
+    "namespace": {
+      "@id": "r2:catalog-namespace",
+      "@type": "xsd:string"
+    },
+    "tableName": {
+      "@id": "r2:catalog-table",
+      "@type": "xsd:string"
+    }
+  }
+}

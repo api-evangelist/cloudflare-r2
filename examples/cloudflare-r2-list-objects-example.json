@@ -1,0 +1,38 @@
+{
+  "result": {
+    "objects": [
+      {
+        "key": "images/logo.png",
+        "size": 45678,
+        "etag": "a94f5374fce5edbc8e2a8697eb47be71",
+        "last_modified": "2024-06-01T09:15:00Z",
+        "http_metadata": {
+          "contentType": "image/png"
+        },
+        "custom_metadata": {
+          "uploaded-by": "admin"
+        },
+        "storage_class": "Standard",
+        "ssec": false
+      },
+      {
+        "key": "videos/intro.mp4",
+        "size": 15728640,
+        "etag": "d8e8fca2dc0f896fd7cb4cb0031ba249",
+        "last_modified": "2024-06-05T14:20:00Z",
+        "http_metadata": {
+          "contentType": "video/mp4"
+        },
+        "custom_metadata": {},
+        "storage_class": "Standard",
+        "ssec": false
+      }
+    ],
+    "truncated": false,
+    "cursor": "",
+    "delimitedPrefixes": []
+  },
+  "success": true,
+  "errors": [],
+  "messages": []
+}

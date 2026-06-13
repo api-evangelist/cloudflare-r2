@@ -1,0 +1,18 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/cloudflare-r2/main/json-schema/cloudflare-r2-lifecycle-config.json",
+  "title": "R2 Lifecycle Config",
+  "properties": {
+    "rules": {
+      "items": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/r2_lifecycle-rule"
+          }
+        ]
+      },
+      "type": "array"
+    }
+  },
+  "type": "object"
+}

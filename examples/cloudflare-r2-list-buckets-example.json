@@ -1,0 +1,23 @@
+{
+  "result": [
+    {
+      "name": "my-media-bucket",
+      "creation_date": "2024-01-10T08:00:00Z",
+      "location": "WNAM",
+      "storage_class": "Standard"
+    },
+    {
+      "name": "my-backup-bucket",
+      "creation_date": "2024-03-15T12:30:00Z",
+      "location": "EEUR",
+      "storage_class": "Standard"
+    }
+  ],
+  "result_info": {
+    "count": 2,
+    "cursor": ""
+  },
+  "success": true,
+  "errors": [],
+  "messages": []
+}

@@ -1,0 +1,75 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/cloudflare-r2/main/json-schema/cloudflare-r2-cors-rule.json",
+  "title": "R2 Cors Rule",
+  "properties": {
+    "allowed": {
+      "description": "Object specifying allowed origins, methods and headers for this CORS rule.",
+      "properties": {
+        "headers": {
+          "description": "Specifies the value for the Access-Control-Allow-Headers header R2 sets when requesting objects in this bucket from a browser. Cross-origin requests that include custom headers (e.g. x-user-id) should specify these headers as AllowedHeaders.",
+          "items": {
+            "example": "x-requested-by",
+            "type": "string",
+            "x-auditable": true
+          },
+          "type": "array"
+        },
+        "methods": {
+          "description": "Specifies the value for the Access-Control-Allow-Methods header R2 sets when requesting objects in a bucket from a browser.",
+          "items": {
+            "enum": [
+              "GET",
+              "PUT",
+              "POST",
+              "DELETE",
+              "HEAD"
+            ],
+            "type": "string",
+            "x-auditable": true
+          },
+          "type": "array"
+        },
+        "origins": {
+          "description": "Specifies the value for the Access-Control-Allow-Origin header R2 sets when requesting objects in a bucket from a browser.",
+          "items": {
+            "example": "http://localhost:3000",
+            "type": "string",
+            "x-auditable": true
+          },
+          "type": "array"
+        }
+      },
+      "required": [
+        "methods",
+        "origins"
+      ],
+      "type": "object"
+    },
+    "exposeHeaders": {
+      "description": "Specifies the headers that can be exposed back, and accessed by, the JavaScript making the cross-origin request. If you need to access headers beyond the safelisted response headers, such as Content-Encoding or cf-cache-status, you must specify it here.",
+      "items": {
+        "example": "Content-Encoding",
+        "type": "string",
+        "x-auditable": true
+      },
+      "type": "array"
+    },
+    "id": {
+      "description": "Identifier for this rule.",
+      "example": "Allow Local Development",
+      "type": "string",
+      "x-auditable": true
+    },
+    "maxAgeSeconds": {
+      "description": "Specifies the amount of time (in seconds) browsers are allowed to cache CORS preflight responses. Browsers may limit this to 2 hours or less, even if the maximum value (86400) is specified.",
+      "example": 3600,
+      "type": "number",
+      "x-auditable": true
+    }
+  },
+  "required": [
+    "allowed"
+  ],
+  "type": "object"
+}

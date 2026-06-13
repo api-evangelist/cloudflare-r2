@@ -1,0 +1,49 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/cloudflare-r2/main/json-schema/cloudflare-r2-object.json",
+  "title": "R2 R2 Object",
+  "description": "Metadata for an R2 object.",
+  "properties": {
+    "custom_metadata": {
+      "additionalProperties": {
+        "type": "string"
+      },
+      "description": "Custom metadata key-value pairs associated with the object.",
+      "example": {},
+      "type": "object"
+    },
+    "etag": {
+      "description": "The entity tag for the object. In JSON list/get responses this is the raw\nhex digest (without surrounding quotes). The HTTP `ETag` response header on\nGet Object follows RFC 7232 and IS wrapped in surrounding double-quotes.\n",
+      "example": "d41d8cd98f00b204e9800998ecf8427e",
+      "type": "string"
+    },
+    "http_metadata": {
+      "$ref": "#/components/schemas/r2_r2_object_http_metadata"
+    },
+    "key": {
+      "description": "The object key (name).",
+      "example": "path/to/my-object.txt",
+      "type": "string"
+    },
+    "last_modified": {
+      "description": "The date and time the object was last modified.",
+      "example": "2024-01-15T10:30:00Z",
+      "format": "date-time",
+      "type": "string"
+    },
+    "size": {
+      "description": "The size of the object in bytes.",
+      "example": 1048576.0,
+      "type": "integer"
+    },
+    "ssec": {
+      "description": "Whether the object is encrypted with a customer-supplied encryption key.",
+      "example": false,
+      "type": "boolean"
+    },
+    "storage_class": {
+      "$ref": "#/components/schemas/r2_storage_class"
+    }
+  },
+  "type": "object"
+}

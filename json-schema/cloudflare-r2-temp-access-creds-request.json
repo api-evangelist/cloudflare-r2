@@ -1,0 +1,69 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://raw.githubusercontent.com/api-evangelist/cloudflare-r2/main/json-schema/cloudflare-r2-temp-access-creds-request.json",
+  "title": "R2 Temp_Access_Creds_Request",
+  "example": {
+    "bucket": "example-bucket",
+    "objects": [
+      "example-object"
+    ],
+    "parentAccessKeyId": "example-access-key-id",
+    "permission": "object-read-write",
+    "prefixes": [
+      "example-prefix/"
+    ],
+    "ttlSeconds": 3600
+  },
+  "properties": {
+    "bucket": {
+      "description": "Name of the R2 bucket.",
+      "type": "string",
+      "x-auditable": true
+    },
+    "objects": {
+      "description": "Optional object paths to scope the credentials to.",
+      "items": {
+        "type": "string",
+        "x-auditable": true
+      },
+      "type": "array"
+    },
+    "parentAccessKeyId": {
+      "description": "The parent access key id to use for signing.",
+      "type": "string"
+    },
+    "permission": {
+      "description": "Permissions allowed on the credentials.",
+      "enum": [
+        "admin-read-write",
+        "admin-read-only",
+        "object-read-write",
+        "object-read-only"
+      ],
+      "type": "string",
+      "x-auditable": true
+    },
+    "prefixes": {
+      "description": "Optional prefix paths to scope the credentials to.",
+      "items": {
+        "type": "string",
+        "x-auditable": true
+      },
+      "type": "array"
+    },
+    "ttlSeconds": {
+      "default": 900,
+      "description": "How long the credentials will live for in seconds.",
+      "maximum": 604800,
+      "type": "number",
+      "x-auditable": true
+    }
+  },
+  "required": [
+    "bucket",
+    "permission",
+    "ttlSeconds",
+    "parentAccessKeyId"
+  ],
+  "type": "object"
+}

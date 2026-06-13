@@ -1,0 +1,177 @@
+vocabulary:
+  name: Cloudflare R2 Vocabulary
+  description: Key terms and concepts used in the Cloudflare R2 object storage API
+  url: https://developers.cloudflare.com/r2/
+  version: '1.0'
+  created: '2026-06-13'
+  modified: '2026-06-13'
+
+terms:
+
+  - term: bucket
+    label: Bucket
+    definition: >
+      A container for objects stored in Cloudflare R2. Each bucket has a globally
+      unique name within an account and is associated with a location policy.
+      R2 buckets use the 'auto' region which distributes data globally.
+    url: https://developers.cloudflare.com/r2/buckets/
+
+  - term: object
+    label: Object
+    definition: >
+      A file and its metadata stored in an R2 bucket. An object is uniquely
+      identified by a key within a bucket. Objects can range from 0 bytes to 5 TB
+      in size (individual upload up to 5 GB; multipart for larger).
+    url: https://developers.cloudflare.com/r2/objects/
+
+  - term: object-key
+    label: Object Key
+    definition: >
+      The unique identifier for an object within a bucket. Object keys are UTF-8
+      strings up to 1024 bytes. Keys can use slashes to simulate directory structure.
+
+  - term: etag
+    label: ETag
+    definition: >
+      An entity tag representing a specific version of an object. Used for cache
+      validation and conditional requests. For single-part uploads this is the
+      MD5 hex digest; for multipart uploads it is a composite hash followed by '-N'
+      where N is the number of parts.
+
+  - term: multipart-upload
+    label: Multipart Upload
+    definition: >
+      A mechanism for uploading large objects in parts (minimum 5 MB per part,
+      except the last part). Consists of three phases: initiate, upload parts,
+      complete. Supports up to 10,000 parts per upload.
+    url: https://developers.cloudflare.com/r2/objects/multipart-objects/
+
+  - term: upload-id
+    label: Upload ID
+    definition: >
+      A unique identifier returned when initiating a multipart upload. Required
+      for all subsequent operations on that multipart upload.
+
+  - term: jurisdiction
+    label: Jurisdiction
+    definition: >
+      The data residency jurisdiction for an R2 bucket. Options include 'default'
+      (global), 'eu' (European Union), and 'fedramp' (US FedRAMP). Set at bucket
+      creation and cannot be changed.
+    url: https://developers.cloudflare.com/r2/reference/data-location/
+
+  - term: location-hint
+    label: Location Hint
+    definition: >
+      An optional hint for the geographic region where R2 should store bucket data.
+      R2 uses 'auto' region; hints allow preference for WNAM (Western North America),
+      ENAM (Eastern North America), WEUR (Western Europe), EEUR (Eastern Europe),
+      APAC (Asia Pacific), or OC (Oceania).
+
+  - term: storage-class
+    label: Storage Class
+    definition: >
+      The storage tier for objects. R2 currently supports 'Standard' and
+      'InfrequentAccess'. Infrequent Access has lower storage cost but retrieval
+      charges apply.
+    url: https://developers.cloudflare.com/r2/buckets/storage-classes/
+
+  - term: sippy
+    label: Sippy
+    definition: >
+      Cloudflare R2 feature that incrementally migrates objects from an existing
+      S3-compatible or GCS bucket by transparently fetching and caching requested
+      objects in R2, eliminating egress costs during migration.
+    url: https://developers.cloudflare.com/r2/data-migration/sippy/
+
+  - term: cors
+    label: CORS
+    definition: >
+      Cross-Origin Resource Sharing configuration for an R2 bucket. Defines which
+      origins, methods, and headers are permitted for browser-based cross-origin
+      requests to the bucket's public or presigned URLs.
+
+  - term: lifecycle-rule
+    label: Lifecycle Rule
+    definition: >
+      A rule that automatically manages objects in a bucket based on conditions such
+      as object age or date. Lifecycle rules can expire objects (delete them) or
+      abort incomplete multipart uploads.
+    url: https://developers.cloudflare.com/r2/buckets/object-lifecycles/
+
+  - term: temp-access-credentials
+    label: Temporary Access Credentials
+    definition: >
+      Short-lived AWS-compatible credentials (access key ID, secret access key,
+      session token) scoped to specific buckets and prefixes with a configurable TTL.
+      Useful for granting limited, time-bound access to R2 resources.
+    url: https://developers.cloudflare.com/r2/api/tokens/
+
+  - term: event-notification
+    label: Event Notification
+    definition: >
+      Cloudflare R2 feature that sends events to a Cloudflare Queue when objects
+      are created, deleted, or otherwise modified in a bucket. Enables event-driven
+      architectures and real-time processing pipelines.
+    url: https://developers.cloudflare.com/r2/buckets/event-notifications/
+
+  - term: custom-domain
+    label: Custom Domain
+    definition: >
+      A user-defined domain name mapped to an R2 bucket for serving public objects.
+      Custom domains allow R2 buckets to be accessed via branded URLs with optional
+      Cloudflare CDN caching.
+    url: https://developers.cloudflare.com/r2/buckets/public-buckets/
+
+  - term: managed-domain
+    label: Managed Domain
+    definition: >
+      A Cloudflare-managed public URL for an R2 bucket using the
+      r2.dev subdomain format. Enables quick public access without a custom domain.
+    url: https://developers.cloudflare.com/r2/buckets/public-buckets/
+
+  - term: r2-data-catalog
+    label: R2 Data Catalog
+    definition: >
+      Cloudflare R2 Data Catalog is a managed Apache Iceberg catalog that enables
+      querying R2 data using SQL engines. Supports namespace and table management
+      with Iceberg REST Catalog API compatibility.
+    url: https://developers.cloudflare.com/r2/data-catalog/
+
+  - term: bucket-lock
+    label: Bucket Lock
+    definition: >
+      An immutability feature for R2 that prevents objects from being deleted or
+      overwritten for a specified retention period. Lock rules can be based on age,
+      a specific date, or set to indefinite.
+    url: https://developers.cloudflare.com/r2/buckets/object-lock/
+
+  - term: presigned-url
+    label: Presigned URL
+    definition: >
+      A time-limited URL that grants temporary access to a specific R2 object without
+      requiring AWS credentials. Generated client-side using the AWS SDK and the
+      account's R2 API token credentials.
+
+  - term: account-id
+    label: Account ID
+    definition: >
+      The unique Cloudflare account identifier used in both the Cloudflare API path
+      (/accounts/{account_id}/r2/...) and as the subdomain in the S3-compatible
+      endpoint (https://{account_id}.r2.cloudflarestorage.com).
+
+  - term: egress-free
+    label: Egress-Free
+    definition: >
+      Cloudflare R2's defining characteristic: no data transfer fees when reading
+      objects from R2, regardless of where the requesting client is located. This
+      differs from AWS S3, which charges for outbound data transfer.
+    url: https://developers.cloudflare.com/r2/pricing/
+
+  - term: s3-compatible
+    label: S3-Compatible
+    definition: >
+      R2 implements the AWS S3 REST API protocol, allowing use of existing AWS S3
+      SDKs and tools with minimal configuration changes (endpoint URL and credentials).
+      Not all S3 operations are supported; see compatibility docs for details.
+    url: https://developers.cloudflare.com/r2/api/s3/api/
