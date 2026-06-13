@@ -1,0 +1,96 @@
+specificationVersion: '0.1'
+id: cloudflare-r2-plans-pricing
+name: Cloudflare R2 Plans and Pricing
+description: Pricing plans for Cloudflare R2 object storage including free tier allowances, standard storage, and infrequent access storage tiers.
+url: https://developers.cloudflare.com/r2/pricing/
+created: 2026-06-13
+modified: 2026-06-13
+
+plans:
+  - name: Free Tier
+    description: Included with every Cloudflare account, no payment required. Resets monthly.
+    url: https://developers.cloudflare.com/r2/pricing/
+    price: 0
+    currency: USD
+    billingCycle: monthly
+    features:
+      - name: Storage
+        description: 10 GB-month of standard storage per month
+        limit: 10
+        unit: GB-month
+      - name: Class A Operations
+        description: Write and mutate operations (PutObject, DeleteObjects, CreateMultipartUpload, etc.)
+        limit: 1000000
+        unit: requests/month
+      - name: Class B Operations
+        description: Read operations (GetObject, HeadObject, ListObjects, etc.)
+        limit: 10000000
+        unit: requests/month
+      - name: Egress
+        description: Zero egress fees for data transfer out via S3 API, Workers, and public domains
+        limit: unlimited
+        unit: GB
+
+  - name: Standard Storage (Pay-as-you-go)
+    description: Pay-as-you-go pricing for standard storage beyond the free tier. Optimized for frequently accessed data.
+    url: https://developers.cloudflare.com/r2/pricing/
+    price: 0.015
+    currency: USD
+    billingCycle: per-GB-month
+    features:
+      - name: Storage
+        description: Standard storage billed per GB-month beyond free tier
+        price: 0.015
+        unit: per-GB-month
+      - name: Class A Operations
+        description: Write and mutate operations beyond free tier (PutObject, DeleteObjects, CreateMultipartUpload, CompleteMultipartUpload, CopyObject, ListBuckets, PutBucketCors, etc.)
+        price: 4.50
+        unit: per-million-requests
+      - name: Class B Operations
+        description: Read operations beyond free tier (GetObject, HeadObject, ListObjects, ListObjectsV2, ListParts, etc.)
+        price: 0.36
+        unit: per-million-requests
+      - name: Delete Operations
+        description: DeleteObject and AbortMultipartUpload operations
+        price: 0
+        unit: free
+      - name: Egress
+        description: Zero egress fees for data transfer out via S3 API, Workers, and public bucket domains
+        price: 0
+        unit: per-GB
+
+  - name: Infrequent Access Storage (Pay-as-you-go)
+    description: Lower per-GB storage cost for data accessed less frequently. Subject to a 30-day minimum storage duration and data retrieval fees.
+    url: https://developers.cloudflare.com/r2/pricing/
+    price: 0.01
+    currency: USD
+    billingCycle: per-GB-month
+    features:
+      - name: Storage
+        description: Infrequent access storage billed per GB-month; minimum 30-day storage duration enforced
+        price: 0.01
+        unit: per-GB-month
+      - name: Class A Operations
+        description: Write and mutate operations
+        price: 9.00
+        unit: per-million-requests
+      - name: Class B Operations
+        description: Read operations
+        price: 0.90
+        unit: per-million-requests
+      - name: Data Retrieval
+        description: Fee for retrieving data from infrequent access storage
+        price: 0.01
+        unit: per-GB-retrieved
+      - name: Egress
+        description: Zero egress fees for data transfer out
+        price: 0
+        unit: per-GB
+
+notes:
+  - Storage usage rounds up to the next whole unit (e.g., 1.1 GB is billed as 2 GB)
+  - Storage charges calculated using peak daily averages over a 30-day period
+  - Unauthorized requests returning HTTP 401 are not billed
+  - Class A operations include writes, deletes of object lists, and bucket configuration mutations
+  - Class B operations include reads, lists, and metadata retrievals
+  - Buckets per account limited to 1,000,000

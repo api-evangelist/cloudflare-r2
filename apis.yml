@@ -1,0 +1,82 @@
+aid: cloudflare-r2
+name: Cloudflare R2
+description: Cloudflare R2 is S3-compatible object storage with zero egress fees. It provides both an S3-compatible REST API and a Cloudflare API for managing buckets, objects, and storage policies at global scale. R2 offers a generous free tier including 10 GB storage, 1 million Class A operations, and 10 million Class B operations per month with no data transfer fees.
+type: Index
+image: https://kinlane-productions.s3.amazonaws.com/apis-json/apis-json-logo.jpg
+url: https://raw.githubusercontent.com/api-evangelist/cloudflare-r2/refs/heads/main/apis.yml
+created: 2026-06-13
+modified: 2026-06-13
+specificationVersion: '0.19'
+tags:
+  - Object Storage
+  - Cloud Storage
+  - S3-Compatible
+  - Egress-Free
+  - Buckets
+  - Developer Platform
+  - Cloudflare
+
+apis:
+  - aid: cloudflare-r2:cloudflare-r2-s3-compatible-api
+    name: Cloudflare R2 S3-Compatible API
+    description: An S3-compatible REST API for storing and retrieving objects in Cloudflare R2 buckets. Supports core S3 operations including bucket management, object CRUD, multipart uploads, CORS, lifecycle policies, and server-side encryption. Compatible with any AWS S3 SDK across Python, JavaScript, Go, Java, PHP, Ruby, and Rust.
+    image: https://kinlane-productions.s3.amazonaws.com/apis-json/apis-json-logo.jpg
+    humanURL: https://developers.cloudflare.com/r2/api/s3/api/
+    baseURL: https://<ACCOUNT_ID>.r2.cloudflarestorage.com
+    tags:
+      - S3-Compatible
+      - Object Storage
+      - Buckets
+      - Multipart Upload
+    properties:
+      - type: Documentation
+        url: https://developers.cloudflare.com/r2/api/s3/api/
+      - type: OpenAPI
+        url: https://raw.githubusercontent.com/cloudflare/api-schemas/refs/heads/main/openapi.yaml
+
+  - aid: cloudflare-r2:cloudflare-r2-cloudflare-api
+    name: Cloudflare R2 Cloudflare API
+    description: The Cloudflare API endpoints for managing Cloudflare R2 resources including bucket creation, deletion, configuration, custom domains, event notifications, access policies, and temporary credentials. Accessed via the Cloudflare API using account-level API tokens.
+    image: https://kinlane-productions.s3.amazonaws.com/apis-json/apis-json-logo.jpg
+    humanURL: https://developers.cloudflare.com/r2/api/
+    baseURL: https://api.cloudflare.com/client/v4
+    tags:
+      - Bucket Management
+      - Access Control
+      - Event Notifications
+      - Cloudflare API
+    properties:
+      - type: Documentation
+        url: https://developers.cloudflare.com/r2/api/
+      - type: OpenAPI
+        url: https://raw.githubusercontent.com/cloudflare/api-schemas/refs/heads/main/openapi.yaml
+
+common:
+  - type: Website
+    url: https://www.cloudflare.com/developer-platform/products/r2/
+  - type: Documentation
+    url: https://developers.cloudflare.com/r2/
+  - type: GitHubOrg
+    url: https://github.com/cloudflare
+  - type: GitHubRepo
+    url: https://github.com/cloudflare/api-schemas
+  - type: LinkedIn
+    url: https://www.linkedin.com/company/cloudflare
+  - type: Blog
+    url: https://blog.cloudflare.com/tag/cloudflare-r2/
+  - type: Pricing
+    url: https://developers.cloudflare.com/r2/pricing/
+  - type: StatusPage
+    url: https://www.cloudflarestatus.com/
+  - type: X
+    url: https://x.com/cloudflare
+  - type: Plans
+    url: plans/cloudflare-r2-plans-pricing.yml
+  - type: RateLimits
+    url: rate-limits/cloudflare-r2-rate-limits.yml
+  - type: FinOps
+    url: finops/cloudflare-r2-finops.yml
+
+maintainers:
+  - FN: Kin Lane
+    email: kin@apievangelist.com

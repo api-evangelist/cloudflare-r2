@@ -1,0 +1,156 @@
+specificationVersion: '1.0'
+id: cloudflare-r2-finops
+name: Cloudflare R2 FinOps Framework
+description: FinOps Framework 1.0 FOCUS-aligned cost and usage guidance for Cloudflare R2 object storage. Covers cost visibility, optimization strategies, allocation practices, and forecasting for teams managing R2 storage at scale.
+url: https://developers.cloudflare.com/r2/pricing/
+created: 2026-06-13
+modified: 2026-06-13
+
+provider: Cloudflare
+service: R2 Object Storage
+currency: USD
+
+focus:
+  serviceName: Cloudflare R2
+  serviceCategory: Storage
+  provider: Cloudflare
+  region: Global (auto-distributed)
+
+cost_dimensions:
+  - id: storage-standard
+    name: Standard Storage
+    description: Cost for data stored in the standard storage class, billed per GB-month
+    unit: GB-month
+    unitPrice: 0.015
+    freeTier: 10
+    freeTierUnit: GB-month
+    billingModel: pay-as-you-go
+
+  - id: storage-infrequent-access
+    name: Infrequent Access Storage
+    description: Cost for data stored in the infrequent access storage class; lower storage cost but includes data retrieval fees and 30-day minimum duration
+    unit: GB-month
+    unitPrice: 0.01
+    freeTier: 0
+    freeTierUnit: GB-month
+    billingModel: pay-as-you-go
+
+  - id: class-a-operations-standard
+    name: Class A Operations (Standard)
+    description: Write and mutate operations on standard storage — PutObject, DeleteObjects, CreateMultipartUpload, CompleteMultipartUpload, CopyObject, ListBuckets, and bucket configuration mutations
+    unit: million-requests
+    unitPrice: 4.50
+    freeTier: 1
+    freeTierUnit: million-requests
+    billingModel: pay-as-you-go
+
+  - id: class-b-operations-standard
+    name: Class B Operations (Standard)
+    description: Read operations on standard storage — GetObject, HeadObject, ListObjects, ListObjectsV2, GetBucketLocation, and related read requests
+    unit: million-requests
+    unitPrice: 0.36
+    freeTier: 10
+    freeTierUnit: million-requests
+    billingModel: pay-as-you-go
+
+  - id: class-a-operations-ia
+    name: Class A Operations (Infrequent Access)
+    description: Write and mutate operations on infrequent access storage
+    unit: million-requests
+    unitPrice: 9.00
+    freeTier: 0
+    freeTierUnit: million-requests
+    billingModel: pay-as-you-go
+
+  - id: class-b-operations-ia
+    name: Class B Operations (Infrequent Access)
+    description: Read operations on infrequent access storage
+    unit: million-requests
+    unitPrice: 0.90
+    freeTier: 0
+    freeTierUnit: million-requests
+    billingModel: pay-as-you-go
+
+  - id: data-retrieval-ia
+    name: Data Retrieval (Infrequent Access)
+    description: Fee charged per GB of data retrieved from the infrequent access storage class
+    unit: GB
+    unitPrice: 0.01
+    freeTier: 0
+    freeTierUnit: GB
+    billingModel: pay-as-you-go
+
+  - id: egress
+    name: Egress / Data Transfer Out
+    description: Data transfer out of R2 to the internet via the S3-compatible API, Cloudflare Workers, or public bucket domains — zero cost
+    unit: GB
+    unitPrice: 0.00
+    freeTier: unlimited
+    freeTierUnit: GB
+    billingModel: always-free
+    notes: This is R2's primary cost advantage over AWS S3 and GCS. Egress is always free regardless of volume.
+
+optimization_strategies:
+  - name: Use Infrequent Access for Cold Data
+    description: Move objects not accessed regularly (logs, backups, archives) to the Infrequent Access storage class to reduce per-GB storage cost from $0.015 to $0.010. Ensure objects will remain for at least 30 days to avoid early deletion charges.
+    savingsEstimate: 33%
+    category: storage-tiering
+
+  - name: Leverage the Free Tier
+    description: Design workloads to stay within monthly free tier limits — 10 GB storage, 1 million Class A ops, 10 million Class B ops — for zero-cost operation. Multiple accounts can be used for isolation if needed.
+    savingsEstimate: 100%
+    category: free-tier-optimization
+
+  - name: Use Workers Bindings for Internal Access
+    description: Access R2 from Cloudflare Workers using native bindings instead of the S3 API to reduce operation overhead and latency without incurring additional API costs.
+    savingsEstimate: variable
+    category: architecture
+
+  - name: Minimize Class A Operations
+    description: Class A (write) operations cost 12.5x more than Class B (read) on standard storage ($4.50 vs $0.36 per million). Batch writes, use multipart uploads efficiently, and avoid unnecessary overwrites.
+    savingsEstimate: variable
+    category: operation-optimization
+
+  - name: Eliminate Egress Costs via R2
+    description: Migrating from AWS S3 or Google Cloud Storage to Cloudflare R2 eliminates egress fees entirely. AWS charges ~$0.09/GB and GCS ~$0.12/GB for egress. For workloads with high data transfer, this is the dominant cost saving.
+    savingsEstimate: variable
+    category: migration
+
+  - name: Use Lifecycle Policies for Automatic Tiering
+    description: Configure R2 object lifecycle policies to automatically transition objects to Infrequent Access storage or expire objects after a defined period, reducing manual management overhead and storage costs.
+    savingsEstimate: variable
+    category: automation
+
+  - name: Custom Domains for High-Traffic Public Buckets
+    description: For public buckets serving high traffic, use custom domains rather than r2.dev endpoints. Custom domains benefit from Cloudflare CDN caching, reducing the number of Class B operations billed by serving cached responses.
+    savingsEstimate: variable
+    category: caching
+
+cost_allocation:
+  - name: Bucket-Level Tagging
+    description: Use distinct bucket names per team, project, or environment to enable cost allocation reporting via Cloudflare dashboard usage breakdowns.
+    type: bucket-naming-convention
+
+  - name: Multi-Account Isolation
+    description: Use separate Cloudflare accounts for different business units or environments to get independent billing and free tier allowances per account.
+    type: account-isolation
+
+  - name: Cloudflare Analytics
+    description: Monitor bucket-level usage via Cloudflare dashboard analytics to track storage, operations, and retrieval patterns for chargeback or showback.
+    url: https://dash.cloudflare.com/
+    type: monitoring
+
+forecasting:
+  - name: Storage Forecast
+    description: Estimate monthly storage cost as (peak_daily_GB_average * $0.015) - free_tier_10GB. Use Cloudflare dashboard metrics to track growth trends.
+    formula: MAX(0, avg_daily_storage_GB - 10) * 0.015
+
+  - name: Operations Forecast
+    description: Separate Class A and Class B operation counts. Apply free tier deductions then multiply by per-million rates.
+    formula:
+      classA: MAX(0, monthly_class_a_ops - 1000000) / 1000000 * 4.50
+      classB: MAX(0, monthly_class_b_ops - 10000000) / 1000000 * 0.36
+
+  - name: Total Monthly Estimate
+    description: Sum of storage + Class A ops + Class B ops + data retrieval (IA only). Egress is always zero.
+    formula: storage_cost + class_a_cost + class_b_cost + data_retrieval_cost

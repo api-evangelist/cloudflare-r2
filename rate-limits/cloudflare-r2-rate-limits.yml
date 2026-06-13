@@ -1,0 +1,106 @@
+specificationVersion: '0.1'
+id: cloudflare-r2-rate-limits
+name: Cloudflare R2 Rate Limits
+description: Rate limits and operational constraints for the Cloudflare R2 object storage APIs, including the S3-compatible API and the Cloudflare REST API.
+url: https://developers.cloudflare.com/r2/platform/limits/
+created: 2026-06-13
+modified: 2026-06-13
+
+limits:
+  - name: Cloudflare REST API Rate Limit
+    description: Maximum number of requests across all R2 REST API operations using the Cloudflare API (api.cloudflare.com)
+    scope: account
+    limit: 1200
+    period: 300
+    unit: requests
+    endpoint: https://api.cloudflare.com/client/v4/accounts/{account_id}/r2/
+    notes: 1,200 requests per 5-minute window; exceeding returns HTTP 429
+
+  - name: Bucket Management Operations
+    description: Rate limit for bucket-level management operations including create, delete, list, and configure
+    scope: account
+    limit: 50
+    period: 1
+    unit: requests-per-second
+    operations:
+      - CreateBucket
+      - DeleteBucket
+      - ListBuckets
+      - PutBucketCors
+      - PutBucketLifecycleConfiguration
+      - GetBucketLocation
+      - GetBucketEncryption
+
+  - name: Concurrent Object Writes
+    description: Maximum concurrent write operations targeting the same object key
+    scope: object
+    limit: 1
+    period: 1
+    unit: concurrent-writes-per-second
+    notes: Exceeding returns HTTP 429 Too Many Requests
+
+  - name: r2.dev Public Endpoint Rate Limit
+    description: Variable rate limit for the r2.dev public endpoint; suitable for development and low-traffic use cases
+    scope: bucket
+    limit: variable
+    unit: requests-per-second
+    notes: Handles hundreds of requests per second; exceeding triggers HTTP 429. For production use, Cloudflare recommends custom domains, S3-compatible API, or Workers bindings.
+
+  - name: S3-Compatible API
+    description: The S3-compatible API endpoint does not publish explicit per-second rate limits; designed for high-throughput production workloads
+    scope: account
+    limit: null
+    unit: requests-per-second
+    notes: No documented per-second limit for the S3-compatible API at https://<ACCOUNT_ID>.r2.cloudflarestorage.com; higher throughput available via custom domains
+
+storage_limits:
+  - name: Maximum Object Size
+    limit: 5368709120
+    unit: bytes
+    description: 5 GiB maximum for single-part uploads via PutObject
+
+  - name: Maximum Multipart Object Size
+    limit: 5497558138880
+    unit: bytes
+    description: 4.995 TiB maximum for multipart uploads (5 TiB technically)
+
+  - name: Maximum Upload Parts
+    limit: 10000
+    unit: parts
+    description: Maximum number of parts in a multipart upload
+
+  - name: Maximum Object Key Length
+    limit: 1024
+    unit: bytes
+    description: Object key names must not exceed 1,024 bytes
+
+  - name: Maximum Object Metadata Size
+    limit: 8192
+    unit: bytes
+    description: User-defined metadata for an object must not exceed 8,192 bytes
+
+  - name: Maximum Buckets Per Account
+    limit: 1000000
+    unit: buckets
+    description: Up to 1,000,000 buckets may be created per Cloudflare account
+
+  - name: Maximum Custom Domains Per Bucket
+    limit: 100
+    unit: domains
+    description: Up to 100 custom domains can be associated with a single R2 bucket
+
+  - name: Objects Per Bucket
+    limit: unlimited
+    unit: objects
+    description: No documented limit on number of objects per bucket
+
+  - name: Data Per Bucket
+    limit: unlimited
+    unit: bytes
+    description: No documented limit on total data stored per bucket
+
+http_status_codes:
+  - code: 429
+    meaning: Too Many Requests — rate limit exceeded; client should back off and retry
+  - code: 401
+    meaning: Unauthorized — invalid or missing credentials; these requests are not billed
