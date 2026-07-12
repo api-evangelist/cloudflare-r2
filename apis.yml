@@ -52,6 +52,12 @@ apis:
         url: https://raw.githubusercontent.com/cloudflare/api-schemas/refs/heads/main/openapi.yaml
 
 common:
+  - type: VulnerabilityDisclosure
+    url: security/cloudflare-r2-vulnerability-disclosure.yml
+  - type: DomainSecurity
+    url: security/cloudflare-r2-domain-security.yml
+  - type: Authentication
+    url: authentication/cloudflare-r2-authentication.yml
   - type: Website
     url: https://www.cloudflare.com/developer-platform/products/r2/
   - type: Documentation

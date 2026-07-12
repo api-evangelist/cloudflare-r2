@@ -1,0 +1,41 @@
+generated: '2026-07-11'
+method: derived
+source: openapi/cloudflare-r2-cloudflare-api-openapi.yml, openapi/cloudflare-r2-s3-compatible-api-openapi.yml
+summary:
+  types:
+  - apiKey
+  - http
+  api_key_in:
+  - header
+schemes:
+- name: api_email
+  type: apiKey
+  in: header
+  parameter: X-Auth-Email
+  sources:
+  - openapi/cloudflare-r2-cloudflare-api-openapi.yml
+- name: api_key
+  type: apiKey
+  in: header
+  parameter: X-Auth-Key
+  sources:
+  - openapi/cloudflare-r2-cloudflare-api-openapi.yml
+- name: api_token
+  type: http
+  scheme: bearer
+  sources:
+  - openapi/cloudflare-r2-cloudflare-api-openapi.yml
+- name: user_service_key
+  type: apiKey
+  in: header
+  parameter: X-Auth-User-Service-Key
+  sources:
+  - openapi/cloudflare-r2-cloudflare-api-openapi.yml
+- name: hmacAuth
+  type: apiKey
+  in: header
+  parameter: Authorization
+  description: AWS Signature Version 4 authentication. Use your R2 API token (Access Key ID
+    and Secret Access Key) generated from the R2 dashboard. Compatible with all AWS S3 SDKs.
+  sources:
+  - openapi/cloudflare-r2-s3-compatible-api-openapi.yml
