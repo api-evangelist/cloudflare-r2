@@ -52,6 +52,8 @@ apis:
         url: https://raw.githubusercontent.com/cloudflare/api-schemas/refs/heads/main/openapi.yaml
 
 common:
+  - type: AgenticAccess
+    url: agentic-access/cloudflare-r2-agentic-access.yml
   - type: VulnerabilityDisclosure
     url: security/cloudflare-r2-vulnerability-disclosure.yml
   - type: DomainSecurity
