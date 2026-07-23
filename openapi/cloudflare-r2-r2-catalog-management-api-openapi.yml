@@ -1,0 +1,590 @@
+openapi: 3.0.3
+info:
+  title: Cloudflare R2 Cloudflare Buckets R2 Catalog Management API
+  description: Cloudflare API endpoints for managing R2 object storage buckets, objects, CORS, lifecycle policies, custom domains, event notifications, data catalog, and temporary credentials.
+  version: 4.0.0
+  termsOfService: https://www.cloudflare.com/website-terms/
+  contact:
+    name: Cloudflare Developer Docs
+    url: https://developers.cloudflare.com/r2/
+servers:
+- url: https://api.cloudflare.com/client/v4
+  description: Cloudflare API v4
+tags:
+- name: R2 Catalog Management
+paths:
+  /accounts/{account_id}/r2-catalog:
+    get:
+      description: 'Returns a list of R2 buckets that have been enabled as Apache Iceberg catalogs
+
+        for the specified account. Each catalog represents an R2 bucket configured
+
+        to store Iceberg metadata and data files.
+
+        '
+      operationId: list-catalogs
+      parameters:
+      - description: Identifies the account.
+        in: path
+        name: account_id
+        required: true
+        schema:
+          $ref: '#/components/schemas/r2-data-catalog_account-id'
+      responses:
+        '200':
+          content:
+            application/json:
+              example:
+                errors: []
+                messages: []
+                result:
+                  warehouses:
+                  - bucket: analytics-bucket
+                    id: 550e8400-e29b-41d4-a716-446655440000
+                    maintenance_config:
+                      compaction:
+                        state: enabled
+                        target_size_mb: '128'
+                      snapshot_expiration:
+                        max_snapshot_age: 7d
+                        min_snapshots_to_keep: 100
+                        state: enabled
+                    name: account123_analytics-bucket
+                    status: active
+                  - bucket: logs-bucket
+                    id: 6ba7b810-9dad-11d1-80b4-00c04fd430c8
+                    maintenance_config:
+                      compaction:
+                        state: disabled
+                        target_size_mb: '128'
+                      snapshot_expiration:
+                        max_snapshot_age: 7d
+                        min_snapshots_to_keep: 100
+                        state: disabled
+                    name: account123_logs-bucket
+                    status: inactive
+                success: true
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/r2-data-catalog_api-response-single'
+                - properties:
+                    result:
+                      $ref: '#/components/schemas/r2-data-catalog_catalog-list'
+                  type: object
+          description: List of R2 catalogs.
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/r2-data-catalog_api-response-common-failure'
+          description: Bad request.
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/r2-data-catalog_api-response-common-failure'
+          description: Authentication failed.
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/r2-data-catalog_api-response-common-failure'
+          description: Forbidden.
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/r2-data-catalog_api-response-common-failure'
+          description: Internal server error.
+      security:
+      - api_token: []
+      - api_email: []
+        api_key: []
+      summary: List R2 catalogs
+      tags:
+      - R2 Catalog Management
+      x-api-token-group:
+      - Workers R2 Data Catalog Write
+      - Workers R2 Data Catalog Read
+  /accounts/{account_id}/r2-catalog/{bucket_name}:
+    get:
+      description: 'Retrieve detailed information about a specific R2 catalog by bucket name.
+
+        Returns catalog status, maintenance configuration, and credential status.
+
+        '
+      operationId: get-catalog-details
+      parameters:
+      - description: Identifies the account.
+        in: path
+        name: account_id
+        required: true
+        schema:
+          $ref: '#/components/schemas/r2-data-catalog_account-id'
+      - description: Specifies the R2 bucket name.
+        in: path
+        name: bucket_name
+        required: true
+        schema:
+          $ref: '#/components/schemas/r2-data-catalog_bucket-name'
+      responses:
+        '200':
+          content:
+            application/json:
+              example:
+                errors: []
+                messages: []
+                result:
+                  bucket: analytics-bucket
+                  credential_status: present
+                  id: 550e8400-e29b-41d4-a716-446655440000
+                  maintenance_config:
+                    compaction:
+                      state: enabled
+                      target_size_mb: '128'
+                    snapshot_expiration:
+                      max_snapshot_age: 7d
+                      min_snapshots_to_keep: 100
+                      state: enabled
+                  name: account123_analytics-bucket
+                  status: active
+                success: true
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/r2-data-catalog_api-response-single'
+                - properties:
+                    result:
+                      $ref: '#/components/schemas/r2-data-catalog_catalog'
+                  type: object
+          description: R2 catalog details.
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/r2-data-catalog_api-response-common-failure'
+          description: Bad request.
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/r2-data-catalog_api-response-common-failure'
+          description: Authentication failed.
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/r2-data-catalog_api-response-common-failure'
+          description: Forbidden.
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/r2-data-catalog_api-response-common-failure'
+          description: Catalog not found.
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/r2-data-catalog_api-response-common-failure'
+          description: Internal server error.
+      security:
+      - api_token: []
+      - api_email: []
+        api_key: []
+      summary: Get R2 catalog details
+      tags:
+      - R2 Catalog Management
+      x-api-token-group:
+      - Workers R2 Data Catalog Write
+      - Workers R2 Data Catalog Read
+  /accounts/{account_id}/r2-catalog/{bucket_name}/disable:
+    post:
+      description: 'Disable an R2 bucket as a catalog. This operation deactivates the catalog
+
+        but preserves existing metadata and data files. The catalog can be
+
+        re-enabled later.
+
+        '
+      operationId: disable-catalog
+      parameters:
+      - description: Identifies the account.
+        in: path
+        name: account_id
+        required: true
+        schema:
+          $ref: '#/components/schemas/r2-data-catalog_account-id'
+      - description: Specifies the R2 bucket name to disable as catalog.
+        in: path
+        name: bucket_name
+        required: true
+        schema:
+          $ref: '#/components/schemas/r2-data-catalog_bucket-name'
+      responses:
+        '204':
+          description: Catalog disabled successfully.
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/r2-data-catalog_api-response-common-failure'
+          description: Bad request.
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/r2-data-catalog_api-response-common-failure'
+          description: Authentication failed.
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/r2-data-catalog_api-response-common-failure'
+          description: Forbidden.
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/r2-data-catalog_api-response-common-failure'
+          description: Catalog not found.
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/r2-data-catalog_api-response-common-failure'
+          description: Internal server error.
+      security:
+      - api_token: []
+      - api_email: []
+        api_key: []
+      summary: Disable R2 catalog
+      tags:
+      - R2 Catalog Management
+      x-api-token-group:
+      - Workers R2 Data Catalog Write
+  /accounts/{account_id}/r2-catalog/{bucket_name}/enable:
+    post:
+      description: 'Enable an R2 bucket as an Apache Iceberg catalog. This operation creates
+
+        the necessary catalog infrastructure and activates the bucket for storing
+
+        Iceberg metadata and data files.
+
+        '
+      operationId: enable-catalog
+      parameters:
+      - description: Identifies the account.
+        in: path
+        name: account_id
+        required: true
+        schema:
+          $ref: '#/components/schemas/r2-data-catalog_account-id'
+      - description: Specifies the R2 bucket name to enable as catalog.
+        in: path
+        name: bucket_name
+        required: true
+        schema:
+          $ref: '#/components/schemas/r2-data-catalog_bucket-name'
+      responses:
+        '200':
+          content:
+            application/json:
+              example:
+                errors: []
+                messages: []
+                result:
+                  id: 550e8400-e29b-41d4-a716-446655440000
+                  name: account123_my-bucket
+                success: true
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/r2-data-catalog_api-response-single'
+                - properties:
+                    result:
+                      $ref: '#/components/schemas/r2-data-catalog_catalog-activation-response'
+                  type: object
+          description: Catalog enabled successfully.
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/r2-data-catalog_api-response-common-failure'
+          description: Bad request.
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/r2-data-catalog_api-response-common-failure'
+          description: Authentication failed.
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/r2-data-catalog_api-response-common-failure'
+          description: Forbidden.
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/r2-data-catalog_api-response-common-failure'
+          description: R2 bucket not found.
+        '409':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/r2-data-catalog_api-response-common-failure'
+          description: Catalog already enabled.
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/r2-data-catalog_api-response-common-failure'
+          description: Internal server error.
+      security:
+      - api_token: []
+      - api_email: []
+        api_key: []
+      summary: Enable R2 bucket as a catalog
+      tags:
+      - R2 Catalog Management
+      x-api-token-group:
+      - Workers R2 Data Catalog Write
+components:
+  schemas:
+    r2-data-catalog_catalog-list:
+      description: Contains the list of catalogs.
+      properties:
+        warehouses:
+          description: Lists catalogs in the account.
+          items:
+            $ref: '#/components/schemas/r2-data-catalog_catalog'
+          type: array
+      required:
+      - warehouses
+      type: object
+    r2-data-catalog_catalog-compaction-config:
+      description: Configures compaction for catalog maintenance.
+      properties:
+        state:
+          $ref: '#/components/schemas/r2-data-catalog_catalog-maintenance-state'
+        target_size_mb:
+          $ref: '#/components/schemas/r2-data-catalog_catalog-target-file-size'
+      required:
+      - state
+      - target_size_mb
+      type: object
+    r2-data-catalog_credential-status:
+      description: Shows the credential configuration status.
+      enum:
+      - present
+      - absent
+      example: present
+      type: string
+    r2-data-catalog_catalog:
+      description: Contains R2 Data Catalog information.
+      properties:
+        bucket:
+          description: Specifies the associated R2 bucket name.
+          example: my-data-bucket
+          type: string
+        credential_status:
+          allOf:
+          - $ref: '#/components/schemas/r2-data-catalog_credential-status'
+          description: Shows the credential configuration status.
+          nullable: true
+          type: string
+        id:
+          description: Use this to uniquely identify the catalog.
+          example: 550e8400-e29b-41d4-a716-446655440000
+          format: uuid
+          type: string
+        maintenance_config:
+          allOf:
+          - $ref: '#/components/schemas/r2-data-catalog_catalog-maintenance-config'
+          description: Configures maintenance for the catalog.
+          nullable: true
+          type: object
+        name:
+          description: Specifies the catalog name (generated from account and bucket name).
+          example: account123_my-bucket
+          type: string
+        status:
+          $ref: '#/components/schemas/r2-data-catalog_catalog-status'
+      required:
+      - id
+      - name
+      - bucket
+      - status
+      type: object
+    r2-data-catalog_api-response-errors:
+      description: Contains errors if the API call was unsuccessful.
+      items:
+        properties:
+          code:
+            description: Specifies the error code.
+            type: integer
+          message:
+            description: Describes the error.
+            type: string
+        required:
+        - code
+        - message
+        type: object
+      type: array
+    r2-data-catalog_catalog-target-file-size:
+      description: Sets the target file size for compaction in megabytes. Defaults to "128".
+      enum:
+      - '64'
+      - '128'
+      - '256'
+      - '512'
+      example: '128'
+      type: string
+    r2-data-catalog_api-response-success:
+      description: Indicates whether the API call was successful.
+      example: true
+      type: boolean
+    r2-data-catalog_api-response-messages:
+      description: Contains informational messages.
+      items:
+        properties:
+          code:
+            description: Specifies the message code.
+            type: integer
+          message:
+            description: Contains the message text.
+            type: string
+        required:
+        - code
+        - message
+        type: object
+      type: array
+    r2-data-catalog_catalog-maintenance-state:
+      description: Specifies the state of maintenance operations.
+      enum:
+      - enabled
+      - disabled
+      example: enabled
+      type: string
+    r2-data-catalog_api-response-common-failure:
+      properties:
+        errors:
+          items:
+            properties:
+              code:
+                type: integer
+              message:
+                type: string
+            type: object
+          minItems: 1
+          type: array
+        messages:
+          items:
+            type: object
+          type: array
+        success:
+          enum:
+          - false
+          type: boolean
+      type: object
+    r2-data-catalog_bucket-name:
+      description: Specifies the R2 bucket name.
+      example: my-data-bucket
+      maxLength: 63
+      minLength: 3
+      pattern: ^[a-z0-9]([a-z0-9\-]*[a-z0-9])?$
+      type: string
+    r2-data-catalog_account-id:
+      description: Use this to identify the account.
+      example: 0123456789abcdef0123456789abcdef
+      pattern: ^[a-fA-F0-9]{32}$
+      type: string
+    r2-data-catalog_api-response-single:
+      properties:
+        errors:
+          $ref: '#/components/schemas/r2-data-catalog_api-response-errors'
+        messages:
+          $ref: '#/components/schemas/r2-data-catalog_api-response-messages'
+        success:
+          $ref: '#/components/schemas/r2-data-catalog_api-response-success'
+      required:
+      - success
+      - errors
+      - messages
+      type: object
+    r2-data-catalog_catalog-activation-response:
+      description: Contains response from activating an R2 bucket as a catalog.
+      properties:
+        id:
+          description: Use this to uniquely identify the activated catalog.
+          example: 550e8400-e29b-41d4-a716-446655440000
+          format: uuid
+          type: string
+        name:
+          description: Specifies the name of the activated catalog.
+          example: account123_my-bucket
+          type: string
+      required:
+      - id
+      - name
+      type: object
+    r2-data-catalog_catalog-maintenance-config:
+      description: Configures maintenance for the catalog.
+      properties:
+        compaction:
+          $ref: '#/components/schemas/r2-data-catalog_catalog-compaction-config'
+        snapshot_expiration:
+          $ref: '#/components/schemas/r2-data-catalog_snapshot-expiration-config'
+      type: object
+    r2-data-catalog_catalog-status:
+      description: Indicates the status of the catalog.
+      enum:
+      - active
+      - inactive
+      example: active
+      type: string
+    r2-data-catalog_snapshot-expiration-config:
+      description: Configures snapshot expiration settings.
+      properties:
+        max_snapshot_age:
+          description: 'Specifies the maximum age for snapshots. The system deletes snapshots older than this age.
+
+            Format: <number><unit> where unit is d (days), h (hours), m (minutes), or s (seconds).
+
+            Examples: "7d" (7 days), "48h" (48 hours), "2880m" (2,880 minutes).
+
+            Defaults to "7d".
+
+            '
+          example: 7d
+          pattern: ^\d+(d|h|m|s)$
+          type: string
+        min_snapshots_to_keep:
+          description: Specifies the minimum number of snapshots to retain. Defaults to 100.
+          example: 100
+          format: int64
+          minimum: 1
+          type: integer
+        state:
+          $ref: '#/components/schemas/r2-data-catalog_catalog-maintenance-state'
+      required:
+      - state
+      - min_snapshots_to_keep
+      - max_snapshot_age
+      type: object
+  securitySchemes:
+    api_email:
+      in: header
+      name: X-Auth-Email
+      type: apiKey
+    api_key:
+      in: header
+      name: X-Auth-Key
+      type: apiKey
+    api_token:
+      scheme: bearer
+      type: http
+    user_service_key:
+      in: header
+      name: X-Auth-User-Service-Key
+      type: apiKey

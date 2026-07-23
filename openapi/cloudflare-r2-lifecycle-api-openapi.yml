@@ -1,0 +1,143 @@
+openapi: 3.0.3
+info:
+  title: Cloudflare R2 Cloudflare Buckets Lifecycle API
+  description: Cloudflare API endpoints for managing R2 object storage buckets, objects, CORS, lifecycle policies, custom domains, event notifications, data catalog, and temporary credentials.
+  version: 4.0.0
+  termsOfService: https://www.cloudflare.com/website-terms/
+  contact:
+    name: Cloudflare Developer Docs
+    url: https://developers.cloudflare.com/r2/
+servers:
+- url: https://api.cloudflare.com/client/v4
+  description: Cloudflare API v4
+tags:
+- name: Lifecycle
+paths:
+  /{bucket}?lifecycle:
+    get:
+      operationId: get-bucket-lifecycle
+      summary: Get Bucket Lifecycle Configuration
+      description: Returns the lifecycle configuration for the bucket.
+      tags:
+      - Lifecycle
+      parameters:
+      - name: bucket
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Lifecycle configuration
+          content:
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/LifecycleConfiguration'
+        4XX:
+          description: Error
+          content:
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Error'
+    put:
+      operationId: put-bucket-lifecycle
+      summary: Put Bucket Lifecycle Configuration
+      description: Sets the lifecycle configuration for the bucket.
+      tags:
+      - Lifecycle
+      parameters:
+      - name: bucket
+        in: path
+        required: true
+        schema:
+          type: string
+      requestBody:
+        required: true
+        content:
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/LifecycleConfiguration'
+      responses:
+        '200':
+          description: Lifecycle configuration set
+        4XX:
+          description: Error
+          content:
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Error'
+components:
+  schemas:
+    Error:
+      type: object
+      properties:
+        Code:
+          type: string
+          description: Error code
+        Message:
+          type: string
+          description: Human-readable error message
+        Resource:
+          type: string
+          description: The resource that caused the error
+        RequestId:
+          type: string
+          description: The request ID for troubleshooting
+      xml:
+        name: Error
+    LifecycleConfiguration:
+      type: object
+      properties:
+        Rule:
+          type: array
+          items:
+            type: object
+            properties:
+              ID:
+                type: string
+              Status:
+                type: string
+                enum:
+                - Enabled
+                - Disabled
+              Filter:
+                type: object
+                properties:
+                  Prefix:
+                    type: string
+              Expiration:
+                type: object
+                properties:
+                  Days:
+                    type: integer
+                  Date:
+                    type: string
+                    format: date-time
+              NoncurrentVersionExpiration:
+                type: object
+                properties:
+                  NoncurrentDays:
+                    type: integer
+              AbortIncompleteMultipartUpload:
+                type: object
+                properties:
+                  DaysAfterInitiation:
+                    type: integer
+      xml:
+        name: LifecycleConfiguration
+  securitySchemes:
+    api_email:
+      in: header
+      name: X-Auth-Email
+      type: apiKey
+    api_key:
+      in: header
+      name: X-Auth-Key
+      type: apiKey
+    api_token:
+      scheme: bearer
+      type: http
+    user_service_key:
+      in: header
+      name: X-Auth-User-Service-Key
+      type: apiKey

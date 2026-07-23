@@ -1,0 +1,356 @@
+openapi: 3.0.3
+info:
+  title: Cloudflare R2 Cloudflare Buckets Namespace Management API
+  description: Cloudflare API endpoints for managing R2 object storage buckets, objects, CORS, lifecycle policies, custom domains, event notifications, data catalog, and temporary credentials.
+  version: 4.0.0
+  termsOfService: https://www.cloudflare.com/website-terms/
+  contact:
+    name: Cloudflare Developer Docs
+    url: https://developers.cloudflare.com/r2/
+servers:
+- url: https://api.cloudflare.com/client/v4
+  description: Cloudflare API v4
+tags:
+- name: Namespace Management
+paths:
+  /accounts/{account_id}/r2-catalog/{bucket_name}/namespaces:
+    get:
+      description: 'Returns a list of namespaces in the specified R2 catalog.
+
+        Supports hierarchical filtering and pagination for efficient traversal
+
+        of large namespace hierarchies.
+
+        '
+      operationId: list-namespaces
+      parameters:
+      - description: Identifies the account.
+        in: path
+        name: account_id
+        required: true
+        schema:
+          $ref: '#/components/schemas/r2-data-catalog_account-id'
+      - description: Specifies the R2 bucket name.
+        in: path
+        name: bucket_name
+        required: true
+        schema:
+          $ref: '#/components/schemas/r2-data-catalog_bucket-name'
+      - description: 'Opaque pagination token from a previous response.
+
+          Use this to fetch the next page of results.
+
+          '
+        example: MSYxNzU5NzU1NTc4NTA0MTk0JjAxOTliOTliLTJjODgtNzNiMy04ZGJiLTQyMWUwZThmMjc1Nw
+        in: query
+        name: page_token
+        schema:
+          type: string
+      - description: 'Maximum number of namespaces to return per page.
+
+          Defaults to 100, maximum 1000.
+
+          '
+        example: 100
+        in: query
+        name: page_size
+        schema:
+          default: 100
+          maximum: 1000
+          minimum: 1
+          type: integer
+      - description: 'Parent namespace to filter by. Only returns direct children of this namespace.
+
+          For nested namespaces, use %1F as separator (e.g., "bronze%1Fanalytics").
+
+          Omit this parameter to list top-level namespaces.
+
+          '
+        example: bronze
+        in: query
+        name: parent
+        schema:
+          type: string
+      - description: 'Whether to include namespace UUIDs in the response.
+
+          Set to true to receive the namespace_uuids array.
+
+          '
+        example: true
+        in: query
+        name: return_uuids
+        schema:
+          default: false
+          type: boolean
+      - description: 'Whether to include additional metadata (timestamps).
+
+          When true, response includes created_at and updated_at arrays.
+
+          '
+        example: true
+        in: query
+        name: return_details
+        schema:
+          default: false
+          type: boolean
+      responses:
+        '200':
+          content:
+            application/json:
+              example:
+                errors: []
+                messages: []
+                result:
+                  details:
+                  - created_at: '2025-10-07T10:00:00Z'
+                    namespace:
+                    - bronze
+                    namespace_uuid: 0199b999-6869-7383-bb1f-d30e059d5326
+                    updated_at: '2025-10-07T12:00:00Z'
+                  - created_at: '2025-10-07T10:15:00Z'
+                    namespace:
+                    - silver
+                    namespace_uuid: 0199b99b-2c88-73b3-8dbb-421e0e8f2757
+                    updated_at: null
+                  - created_at: '2025-10-07T10:30:00Z'
+                    namespace:
+                    - gold
+                    namespace_uuid: 0199b99c-3d99-73c4-9dcc-532f1f9g3868
+                    updated_at: '2025-10-07T11:00:00Z'
+                  namespace_uuids:
+                  - 0199b999-6869-7383-bb1f-d30e059d5326
+                  - 0199b99b-2c88-73b3-8dbb-421e0e8f2757
+                  - 0199b99c-3d99-73c4-9dcc-532f1f9g3868
+                  namespaces:
+                  - - bronze
+                  - - silver
+                  - - gold
+                  next_page_token: null
+                success: true
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/r2-data-catalog_api-response-single'
+                - properties:
+                    result:
+                      $ref: '#/components/schemas/r2-data-catalog_namespace-list-response'
+                  type: object
+          description: List of namespaces retrieved successfully.
+        '400':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/r2-data-catalog_api-response-common-failure'
+          description: Bad request (e.g., invalid page_size, malformed parent namespace).
+        '401':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/r2-data-catalog_api-response-common-failure'
+          description: Authentication failed.
+        '403':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/r2-data-catalog_api-response-common-failure'
+          description: Forbidden.
+        '404':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/r2-data-catalog_api-response-common-failure'
+          description: Catalog not found.
+        '500':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/r2-data-catalog_api-response-common-failure'
+          description: Internal server error.
+      security:
+      - api_token: []
+      - api_email: []
+        api_key: []
+      summary: List namespaces in catalog
+      tags:
+      - Namespace Management
+      x-api-token-group:
+      - Workers R2 Data Catalog Write
+      - Workers R2 Data Catalog Read
+components:
+  schemas:
+    r2-data-catalog_api-response-errors:
+      description: Contains errors if the API call was unsuccessful.
+      items:
+        properties:
+          code:
+            description: Specifies the error code.
+            type: integer
+          message:
+            description: Describes the error.
+            type: string
+        required:
+        - code
+        - message
+        type: object
+      type: array
+    r2-data-catalog_api-response-success:
+      description: Indicates whether the API call was successful.
+      example: true
+      type: boolean
+    r2-data-catalog_api-response-messages:
+      description: Contains informational messages.
+      items:
+        properties:
+          code:
+            description: Specifies the message code.
+            type: integer
+          message:
+            description: Contains the message text.
+            type: string
+        required:
+        - code
+        - message
+        type: object
+      type: array
+    r2-data-catalog_namespace-identifier:
+      description: 'Specifies the hierarchical namespace parts as an array of strings.
+
+        For example, ["bronze", "analytics"] represents the namespace "bronze.analytics".
+
+        '
+      example:
+      - bronze
+      - analytics
+      items:
+        type: string
+      maxItems: 16
+      minItems: 1
+      type: array
+    r2-data-catalog_bucket-name:
+      description: Specifies the R2 bucket name.
+      example: my-data-bucket
+      maxLength: 63
+      minLength: 3
+      pattern: ^[a-z0-9]([a-z0-9\-]*[a-z0-9])?$
+      type: string
+    r2-data-catalog_account-id:
+      description: Use this to identify the account.
+      example: 0123456789abcdef0123456789abcdef
+      pattern: ^[a-fA-F0-9]{32}$
+      type: string
+    r2-data-catalog_api-response-single:
+      properties:
+        errors:
+          $ref: '#/components/schemas/r2-data-catalog_api-response-errors'
+        messages:
+          $ref: '#/components/schemas/r2-data-catalog_api-response-messages'
+        success:
+          $ref: '#/components/schemas/r2-data-catalog_api-response-success'
+      required:
+      - success
+      - errors
+      - messages
+      type: object
+    r2-data-catalog_api-response-common-failure:
+      properties:
+        errors:
+          items:
+            properties:
+              code:
+                type: integer
+              message:
+                type: string
+            type: object
+          minItems: 1
+          type: array
+        messages:
+          items:
+            type: object
+          type: array
+        success:
+          enum:
+          - false
+          type: boolean
+      type: object
+    r2-data-catalog_namespace-list-response:
+      description: Contains the list of namespaces with optional pagination.
+      properties:
+        details:
+          description: 'Contains detailed metadata for each namespace when return_details is true.
+
+            Each object includes the namespace, UUID, and timestamps.
+
+            '
+          items:
+            $ref: '#/components/schemas/r2-data-catalog_namespace-details'
+          nullable: true
+          type: array
+        namespace_uuids:
+          description: 'Contains UUIDs for each namespace when return_uuids is true.
+
+            The order corresponds to the namespaces array.
+
+            '
+          example:
+          - 0199b999-6869-7383-bb1f-d30e059d5326
+          - 0199b99b-2c88-73b3-8dbb-421e0e8f2757
+          items:
+            format: uuid
+            type: string
+          nullable: true
+          type: array
+        namespaces:
+          description: Lists namespaces in the catalog.
+          items:
+            $ref: '#/components/schemas/r2-data-catalog_namespace-identifier'
+          type: array
+        next_page_token:
+          description: 'Use this opaque token to fetch the next page of results.
+
+            A null or absent value indicates the last page.
+
+            '
+          example: MSYxNzU5NzU1NTc4NTA0MTk0JjAxOTliOTliLTJjODgtNzNiMy04ZGJiLTQyMWUwZThmMjc1Nw
+          nullable: true
+          type: string
+      required:
+      - namespaces
+      type: object
+    r2-data-catalog_namespace-details:
+      description: Contains namespace with metadata details.
+      properties:
+        created_at:
+          description: Indicates the creation timestamp in ISO 8601 format.
+          format: date-time
+          nullable: true
+          type: string
+        namespace:
+          $ref: '#/components/schemas/r2-data-catalog_namespace-identifier'
+        namespace_uuid:
+          description: Contains the UUID that persists across renames.
+          format: uuid
+          type: string
+        updated_at:
+          description: Shows the last update timestamp in ISO 8601 format. Null if never updated.
+          format: date-time
+          nullable: true
+          type: string
+      required:
+      - namespace
+      - namespace_uuid
+      type: object
+  securitySchemes:
+    api_email:
+      in: header
+      name: X-Auth-Email
+      type: apiKey
+    api_key:
+      in: header
+      name: X-Auth-Key
+      type: apiKey
+    api_token:
+      scheme: bearer
+      type: http
+    user_service_key:
+      in: header
+      name: X-Auth-User-Service-Key
+      type: apiKey

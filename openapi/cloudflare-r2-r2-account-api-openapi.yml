@@ -1,0 +1,161 @@
+openapi: 3.0.3
+info:
+  title: Cloudflare R2 Cloudflare Buckets R2 Account API
+  description: Cloudflare API endpoints for managing R2 object storage buckets, objects, CORS, lifecycle policies, custom domains, event notifications, data catalog, and temporary credentials.
+  version: 4.0.0
+  termsOfService: https://www.cloudflare.com/website-terms/
+  contact:
+    name: Cloudflare Developer Docs
+    url: https://developers.cloudflare.com/r2/
+servers:
+- url: https://api.cloudflare.com/client/v4
+  description: Cloudflare API v4
+tags:
+- name: R2 Account
+paths:
+  /accounts/{account_id}/r2/metrics:
+    get:
+      description: Get Storage/Object Count Metrics across all buckets in your account. Note that Account-Level Metrics may not immediately reflect the latest data.
+      operationId: r2-get-account-level-metrics
+      parameters:
+      - in: path
+        name: account_id
+        required: true
+        schema:
+          $ref: '#/components/schemas/r2_account_identifier'
+      responses:
+        4XX:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/r2_v4_response_failure'
+          description: Get Account-Level Metrics response failure.
+        '200':
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/r2_v4_response'
+                - properties:
+                    result:
+                      $ref: '#/components/schemas/r2_account_level_metrics'
+                  type: object
+          description: Get Account-Level Metrics response.
+      security:
+      - api_token: []
+      summary: Get Account-Level Metrics
+      tags:
+      - R2 Account
+      x-cfPermissionsRequired: null
+components:
+  schemas:
+    r2_class_based_metrics:
+      description: Metrics based on what state they are in(uploaded or published).
+      properties:
+        published:
+          $ref: '#/components/schemas/r2_object_size_metrics'
+        uploaded:
+          $ref: '#/components/schemas/r2_object_size_metrics'
+      type: object
+    r2_v4_response_failure:
+      properties:
+        errors:
+          $ref: '#/components/schemas/r2_errors'
+        messages:
+          $ref: '#/components/schemas/r2_messages'
+        result:
+          enum:
+          - null
+          nullable: true
+          type: object
+        success:
+          description: Whether the API call was successful.
+          enum:
+          - false
+          example: false
+          type: boolean
+      required:
+      - success
+      - errors
+      - messages
+      - result
+      type: object
+    r2_account_identifier:
+      description: Account ID.
+      example: 023e105f4ecef8ad9ca31a8372d0c353
+      maxLength: 32
+      type: string
+    r2_errors:
+      items:
+        properties:
+          code:
+            minimum: 1000
+            type: integer
+          message:
+            type: string
+        required:
+        - code
+        - message
+        type: object
+        uniqueItems: true
+      type: array
+    r2_v4_response:
+      properties:
+        errors:
+          $ref: '#/components/schemas/r2_errors'
+        messages:
+          $ref: '#/components/schemas/r2_messages'
+        result:
+          type: object
+        success:
+          description: Whether the API call was successful.
+          enum:
+          - true
+          type: boolean
+      required:
+      - success
+      - errors
+      - messages
+      - result
+      type: object
+    r2_object_size_metrics:
+      description: Metrics on number of objects/amount of storage used.
+      properties:
+        metadataSize:
+          description: Amount of.
+          type: number
+        objects:
+          description: Number of objects stored.
+          type: number
+        payloadSize:
+          description: Amount of storage used by object data.
+          type: number
+      type: object
+    r2_messages:
+      items:
+        type: string
+      type: array
+    r2_account_level_metrics:
+      description: Metrics based on the class they belong to.
+      properties:
+        infrequentAccess:
+          $ref: '#/components/schemas/r2_class_based_metrics'
+        standard:
+          $ref: '#/components/schemas/r2_class_based_metrics'
+      type: object
+  securitySchemes:
+    api_email:
+      in: header
+      name: X-Auth-Email
+      type: apiKey
+    api_key:
+      in: header
+      name: X-Auth-Key
+      type: apiKey
+    api_token:
+      scheme: bearer
+      type: http
+    user_service_key:
+      in: header
+      name: X-Auth-User-Service-Key
+      type: apiKey

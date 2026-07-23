@@ -1,0 +1,753 @@
+openapi: 3.0.3
+info:
+  title: Cloudflare R2 Cloudflare Buckets R2 Object API
+  description: Cloudflare API endpoints for managing R2 object storage buckets, objects, CORS, lifecycle policies, custom domains, event notifications, data catalog, and temporary credentials.
+  version: 4.0.0
+  termsOfService: https://www.cloudflare.com/website-terms/
+  contact:
+    name: Cloudflare Developer Docs
+    url: https://developers.cloudflare.com/r2/
+servers:
+- url: https://api.cloudflare.com/client/v4
+  description: Cloudflare API v4
+tags:
+- name: R2 Object
+paths:
+  /accounts/{account_id}/r2/buckets/{bucket_name}/objects:
+    delete:
+      description: "Deletes multiple objects from an R2 bucket. Two modes are supported:\n\n1. **Delete by list** (default): Provide a JSON array of object keys in the request body.\n   All listed objects are deleted; per-key errors are reported in the response.\n2. **Delete by prefix**: Provide the `prefix` query parameter (and an empty/no body)\n   to schedule deletion of every object whose key begins with the given prefix.\n   This kicks off an asynchronous prefix-delete job and returns the job descriptor.\n\nFor most workloads, we recommend using R2's [S3-compatible API](https://developers.cloudflare.com/r2/api/s3/api/) or a [Worker with an R2 binding](https://developers.cloudflare.com/r2/api/workers/workers-api-reference/) instead.\n"
+      operationId: r2-delete-objects
+      parameters:
+      - in: path
+        name: account_id
+        required: true
+        schema:
+          $ref: '#/components/schemas/r2_account_identifier'
+      - in: path
+        name: bucket_name
+        required: true
+        schema:
+          $ref: '#/components/schemas/r2_bucket_name'
+      - in: header
+        name: cf-r2-jurisdiction
+        schema:
+          $ref: '#/components/schemas/r2_jurisdiction'
+      - in: query
+        name: prefix
+        schema:
+          description: 'When set, switches the operation to "delete by prefix" mode and asynchronously
+
+            deletes every object whose key begins with the given prefix. When omitted, the
+
+            request body is interpreted as a JSON array of object keys to delete.
+
+            '
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              example:
+              - path/to/object-a.txt
+              - path/to/object-b.txt
+              items:
+                type: string
+              type: array
+        description: 'Required for "delete by list" mode (when `prefix` query parameter is omitted).
+
+          A JSON array of object keys to delete. Ignored when `prefix` is provided.
+
+          '
+      responses:
+        4XX:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/r2_v4_response_failure'
+          description: Delete Objects response failure.
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  errors:
+                    $ref: '#/components/schemas/r2_errors'
+                  messages:
+                    $ref: '#/components/schemas/r2_messages'
+                  result:
+                    oneOf:
+                    - description: Per-key delete results returned in "delete by list" mode.
+                      items:
+                        $ref: '#/components/schemas/r2_r2_delete_object_result'
+                      type: array
+                    - $ref: '#/components/schemas/r2_r2_delete_objects_by_prefix_result'
+                  success:
+                    description: Whether the API call was successful.
+                    enum:
+                    - true
+                    type: boolean
+                required:
+                - success
+                - errors
+                - messages
+                - result
+                type: object
+          description: 'Delete Objects response. Body shape depends on the operation mode:
+
+            - "delete by list" returns an array of `{ key }` entries for successfully deleted objects;
+
+            - "delete by prefix" returns the prefix-delete job descriptor.
+
+            '
+      security:
+      - api_token: []
+      summary: Delete Objects
+      tags:
+      - R2 Object
+      x-api-token-group:
+      - Workers R2 Storage Write
+    get:
+      description: 'Lists objects in an R2 bucket. Returns object metadata including key, size, etag, last modified date, HTTP metadata, and custom metadata.
+
+
+        For most workloads, we recommend using R2''s [S3-compatible API](https://developers.cloudflare.com/r2/api/s3/api/) or a [Worker with an R2 binding](https://developers.cloudflare.com/r2/api/workers/workers-api-reference/) instead.
+
+        '
+      operationId: r2-list-objects
+      parameters:
+      - in: path
+        name: account_id
+        required: true
+        schema:
+          $ref: '#/components/schemas/r2_account_identifier'
+      - in: path
+        name: bucket_name
+        required: true
+        schema:
+          $ref: '#/components/schemas/r2_bucket_name'
+      - in: header
+        name: cf-r2-jurisdiction
+        schema:
+          $ref: '#/components/schemas/r2_jurisdiction'
+      - in: query
+        name: per_page
+        schema:
+          default: 20
+          description: Maximum number of objects to return per page.
+          maximum: 1000
+          minimum: 1
+          type: integer
+      - in: query
+        name: prefix
+        schema:
+          description: Restricts results to only those objects whose keys begin with the specified prefix.
+          type: string
+      - in: query
+        name: delimiter
+        schema:
+          description: A single character used to group keys. All keys that contain the delimiter between the prefix and the first occurrence of the delimiter after the prefix are grouped under a single result element.
+          type: string
+      - in: query
+        name: cursor
+        schema:
+          description: Pagination cursor received from a previous List Objects call. Used to retrieve the next page of results.
+          type: string
+      - in: query
+        name: start_after
+        schema:
+          description: Returns objects with keys that come after the specified key in lexicographic order.
+          type: string
+      responses:
+        4XX:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/r2_v4_response_failure'
+          description: List Objects response failure.
+        '200':
+          content:
+            application/json:
+              schema:
+                properties:
+                  errors:
+                    $ref: '#/components/schemas/r2_errors'
+                  messages:
+                    $ref: '#/components/schemas/r2_messages'
+                  result:
+                    items:
+                      $ref: '#/components/schemas/r2_r2_object'
+                    type: array
+                  result_info:
+                    $ref: '#/components/schemas/r2_r2_list_objects_result_info'
+                  success:
+                    description: Whether the API call was successful.
+                    enum:
+                    - true
+                    type: boolean
+                required:
+                - success
+                - errors
+                - messages
+                - result
+                type: object
+          description: List Objects response.
+      security:
+      - api_token: []
+      summary: List Objects
+      tags:
+      - R2 Object
+      x-cfPermissionsRequired:
+        enum:
+        - com.cloudflare.edge.r2.bucket.read
+  /accounts/{account_id}/r2/buckets/{bucket_name}/objects/{object_key}:
+    delete:
+      description: 'Deletes an object from an R2 bucket.
+
+
+        For most workloads, we recommend using R2''s [S3-compatible API](https://developers.cloudflare.com/r2/api/s3/api/) or a [Worker with an R2 binding](https://developers.cloudflare.com/r2/api/workers/workers-api-reference/) instead.
+
+        '
+      operationId: r2-delete-object
+      parameters:
+      - in: path
+        name: account_id
+        required: true
+        schema:
+          $ref: '#/components/schemas/r2_account_identifier'
+      - in: path
+        name: bucket_name
+        required: true
+        schema:
+          $ref: '#/components/schemas/r2_bucket_name'
+      - allowReserved: true
+        example: path/to/my-object.txt
+        in: path
+        name: object_key
+        required: true
+        schema:
+          description: 'The key (name) of the object to delete. May contain slashes for path-like keys.
+
+            Slashes (`/`) within the key MUST be sent literally and MUST NOT be percent-encoded
+
+            (i.e. `%2F`); other reserved characters should be percent-encoded as usual.
+
+            '
+          type: string
+      - in: header
+        name: cf-r2-jurisdiction
+        schema:
+          $ref: '#/components/schemas/r2_jurisdiction'
+      responses:
+        4XX:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/r2_v4_response_failure'
+          description: Delete Object response failure.
+        '200':
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/r2_v4_response'
+                - properties:
+                    result:
+                      $ref: '#/components/schemas/r2_r2_delete_object_result'
+                  type: object
+          description: Delete Object response.
+      security:
+      - api_token: []
+      summary: Delete Object
+      tags:
+      - R2 Object
+      x-api-token-group:
+      - Workers R2 Storage Write
+    get:
+      description: 'Retrieves an object from an R2 bucket. Returns the object body along with metadata headers.
+
+
+        For most workloads, we recommend using R2''s [S3-compatible API](https://developers.cloudflare.com/r2/api/s3/api/) or a [Worker with an R2 binding](https://developers.cloudflare.com/r2/api/workers/workers-api-reference/) instead.
+
+        '
+      operationId: r2-get-object
+      parameters:
+      - in: path
+        name: account_id
+        required: true
+        schema:
+          $ref: '#/components/schemas/r2_account_identifier'
+      - in: path
+        name: bucket_name
+        required: true
+        schema:
+          $ref: '#/components/schemas/r2_bucket_name'
+      - allowReserved: true
+        example: path/to/my-object.txt
+        in: path
+        name: object_key
+        required: true
+        schema:
+          description: 'The key (name) of the object to retrieve. May contain slashes for path-like keys.
+
+            Slashes (`/`) within the key MUST be sent literally and MUST NOT be percent-encoded
+
+            (i.e. `%2F`); other reserved characters should be percent-encoded as usual.
+
+            '
+          type: string
+      - in: header
+        name: cf-r2-jurisdiction
+        schema:
+          $ref: '#/components/schemas/r2_jurisdiction'
+      - in: header
+        name: If-None-Match
+        schema:
+          description: Returns the object only if its ETag does not match the given value.
+          type: string
+      - in: header
+        name: If-Modified-Since
+        schema:
+          description: 'Returns the object only if it has been modified since the specified time.
+
+            Must be formatted as an HTTP-date (RFC 7231), e.g. `Tue, 15 Jan 2024 10:30:00 GMT`.
+
+            '
+          type: string
+      responses:
+        4XX:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/r2_v4_response_failure'
+          description: Get Object response failure.
+        '200':
+          content:
+            application/octet-stream:
+              schema:
+                description: The object body.
+                format: binary
+                type: string
+          description: Get Object response. Returns the object body with metadata headers.
+          headers:
+            Content-Length:
+              description: The size of the object in bytes.
+              schema:
+                type: integer
+            Content-Type:
+              description: The MIME type of the object.
+              schema:
+                type: string
+            ETag:
+              description: 'The entity tag for the object, wrapped in double-quotes per RFC 7232,
+
+                e.g. `"d41d8cd98f00b204e9800998ecf8427e"`.
+
+                '
+              schema:
+                type: string
+            Last-Modified:
+              description: 'The date and time the object was last modified, formatted as an HTTP-date (RFC 7231),
+
+                e.g. `Tue, 15 Jan 2024 10:30:00 GMT`.
+
+                '
+              schema:
+                type: string
+            cf-r2-storage-class:
+              description: The storage class of the object.
+              schema:
+                $ref: '#/components/schemas/r2_storage_class'
+        '304':
+          description: Not Modified. Returned when conditional request headers indicate the object has not changed.
+      security:
+      - api_token: []
+      summary: Get Object
+      tags:
+      - R2 Object
+      x-cfPermissionsRequired:
+        enum:
+        - com.cloudflare.edge.r2.bucket.read
+    put:
+      description: 'Uploads an object to an R2 bucket. The object body is provided as the request body. Returns metadata about the uploaded object.
+
+
+        The maximum upload size for this endpoint is 300 MB. For most workloads, we recommend using R2''s [S3-compatible API](https://developers.cloudflare.com/r2/api/s3/api/) or a [Worker with an R2 binding](https://developers.cloudflare.com/r2/api/workers/workers-api-reference/) instead.
+
+        '
+      operationId: r2-put-object
+      parameters:
+      - in: path
+        name: account_id
+        required: true
+        schema:
+          $ref: '#/components/schemas/r2_account_identifier'
+      - in: path
+        name: bucket_name
+        required: true
+        schema:
+          $ref: '#/components/schemas/r2_bucket_name'
+      - allowReserved: true
+        example: path/to/my-object.txt
+        in: path
+        name: object_key
+        required: true
+        schema:
+          description: 'The key (name) to assign to the object. May contain slashes for path-like keys.
+
+            Slashes (`/`) within the key MUST be sent literally and MUST NOT be percent-encoded
+
+            (i.e. `%2F`); other reserved characters should be percent-encoded as usual.
+
+            '
+          type: string
+      - in: header
+        name: cf-r2-jurisdiction
+        schema:
+          $ref: '#/components/schemas/r2_jurisdiction'
+      - in: header
+        name: Content-Type
+        schema:
+          description: The MIME type of the object being uploaded.
+          type: string
+      - in: header
+        name: Content-Length
+        schema:
+          description: The size of the object body in bytes.
+          type: integer
+      - description: Storage class for this object. Overrides the bucket default.
+        in: header
+        name: cf-r2-storage-class
+        schema:
+          $ref: '#/components/schemas/r2_storage_class'
+      requestBody:
+        content:
+          application/octet-stream:
+            schema:
+              description: The object body to upload.
+              format: binary
+              type: string
+        required: true
+      responses:
+        4XX:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/r2_v4_response_failure'
+          description: Upload Object response failure.
+        '200':
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/r2_v4_response'
+                - properties:
+                    result:
+                      $ref: '#/components/schemas/r2_r2_put_object_result'
+                  type: object
+          description: Upload Object response.
+      security:
+      - api_token: []
+      summary: Upload Object
+      tags:
+      - R2 Object
+      x-cfPermissionsRequired:
+        enum:
+        - com.cloudflare.edge.r2.bucket.write
+components:
+  schemas:
+    r2_r2_put_object_result:
+      description: Result of a successful object upload.
+      properties:
+        etag:
+          description: The entity tag for the uploaded object.
+          example: d41d8cd98f00b204e9800998ecf8427e
+          type: string
+        key:
+          description: The key (name) of the uploaded object.
+          example: path/to/my-object.txt
+          type: string
+        size:
+          description: The size of the uploaded object in bytes (as a string).
+          example: '1048576'
+          type: string
+        storage_class:
+          $ref: '#/components/schemas/r2_storage_class'
+        uploaded:
+          description: The date and time the object was uploaded.
+          example: '2024-01-15T10:30:00Z'
+          format: date-time
+          type: string
+        version:
+          description: The version UUID of the uploaded object.
+          example: 3fd5b4a8-1234-5678-abcd-ef0123456789
+          type: string
+      type: object
+    r2_bucket_name:
+      description: Name of the bucket.
+      example: example-bucket
+      maxLength: 64
+      minLength: 3
+      pattern: ^[a-z0-9][a-z0-9-]*[a-z0-9]
+      type: string
+      x-auditable: true
+    r2_r2_list_objects_result_info:
+      description: Pagination information for list objects responses.
+      properties:
+        cursor:
+          description: Pagination cursor to use in the next List Objects call to retrieve the next page of results.
+          example: eyJrZXkiOiJwYXRoL3RvL215LW9iamVjdC50eHQifQ==
+          type: string
+        delimited:
+          description: 'Common prefixes found when a delimiter is specified. Each entry represents a group
+
+            of keys sharing a common prefix up to the delimiter. Equivalent to S3''s `CommonPrefixes`
+
+            in `ListObjectsV2`; the field name differs because of the existing R2 API wire format.
+
+            '
+          example:
+          - path/to/
+          - another/path/
+          items:
+            type: string
+          type: array
+        is_truncated:
+          description: Whether the result was truncated. If true, use the cursor to retrieve the next page.
+          example: true
+          type: boolean
+        per_page:
+          description: The maximum number of objects returned per page.
+          example: 20
+          type: integer
+      type: object
+    r2_errors:
+      items:
+        properties:
+          code:
+            minimum: 1000
+            type: integer
+          message:
+            type: string
+        required:
+        - code
+        - message
+        type: object
+        uniqueItems: true
+      type: array
+    r2_account_identifier:
+      description: Account ID.
+      example: 023e105f4ecef8ad9ca31a8372d0c353
+      maxLength: 32
+      type: string
+    r2_v4_response_failure:
+      properties:
+        errors:
+          $ref: '#/components/schemas/r2_errors'
+        messages:
+          $ref: '#/components/schemas/r2_messages'
+        result:
+          enum:
+          - null
+          nullable: true
+          type: object
+        success:
+          description: Whether the API call was successful.
+          enum:
+          - false
+          example: false
+          type: boolean
+      required:
+      - success
+      - errors
+      - messages
+      - result
+      type: object
+    r2_storage_class:
+      default: Standard
+      description: Storage class for newly uploaded objects, unless specified otherwise.
+      enum:
+      - Standard
+      - InfrequentAccess
+      type: string
+      x-auditable: true
+    r2_jurisdiction:
+      default: default
+      description: Jurisdiction where objects in this bucket are guaranteed to be stored.
+      enum:
+      - default
+      - eu
+      - fedramp
+      type: string
+      x-auditable: true
+      x-stainless-param: jurisdiction
+    r2_r2_object_http_metadata:
+      description: HTTP metadata associated with an R2 object.
+      properties:
+        cacheControl:
+          description: Specifies caching behavior for the object.
+          example: max-age=3600
+          type: string
+        cacheExpiry:
+          description: The date and time at which the object's cache entry expires.
+          example: '2024-12-31T23:59:59Z'
+          format: date-time
+          type: string
+        contentDisposition:
+          description: Specifies presentational information for the object.
+          example: attachment; filename="example.jpg"
+          type: string
+        contentEncoding:
+          description: Specifies the content encoding applied to the object.
+          example: gzip
+          type: string
+        contentLanguage:
+          description: The language of the object content.
+          example: en-US
+          type: string
+        contentType:
+          description: The MIME type of the object.
+          example: image/jpeg
+          type: string
+      type: object
+    r2_v4_response:
+      properties:
+        errors:
+          $ref: '#/components/schemas/r2_errors'
+        messages:
+          $ref: '#/components/schemas/r2_messages'
+        result:
+          type: object
+        success:
+          description: Whether the API call was successful.
+          enum:
+          - true
+          type: boolean
+      required:
+      - success
+      - errors
+      - messages
+      - result
+      type: object
+    r2_r2_delete_objects_by_prefix_result:
+      description: 'Descriptor of an asynchronous prefix-delete job, returned when the bulk
+
+        delete-objects endpoint is invoked with a `prefix` query parameter.
+
+        '
+      properties:
+        endTime:
+          description: When the job finished, if it has finished.
+          format: date-time
+          type: string
+        id:
+          description: Unique identifier for the prefix-delete job.
+          type: string
+        jobType:
+          description: The job kind. Always `prefixDelete` for this endpoint.
+          enum:
+          - prefixDelete
+          type: string
+        prefixDelete:
+          description: Details specific to the prefix-delete job.
+          properties:
+            deletedObjects:
+              description: Number of objects deleted by the job so far.
+              example: 0
+              type: integer
+            isBucketClear:
+              description: 'True when the job was created to clear the entire bucket
+
+                (i.e. an empty prefix). Distinguishes bucket-level clear operations
+
+                from prefix-specific delete operations.
+
+                '
+              type: boolean
+            prefix:
+              description: The prefix matched against object keys for deletion.
+              example: path/to/
+              type: string
+          type: object
+        startTime:
+          description: When the job was created.
+          format: date-time
+          type: string
+        status:
+          description: Lifecycle status of the job.
+          enum:
+          - ENQUEUED
+          - RUNNING
+          - COMPLETED
+          - FAILED
+          - CANCELLED
+          type: string
+      type: object
+    r2_r2_delete_object_result:
+      description: Result of a successful object deletion.
+      properties:
+        key:
+          description: The key (name) of the deleted object.
+          example: path/to/my-object.txt
+          type: string
+      type: object
+    r2_messages:
+      items:
+        type: string
+      type: array
+    r2_r2_object:
+      description: Metadata for an R2 object.
+      properties:
+        custom_metadata:
+          additionalProperties:
+            type: string
+          description: Custom metadata key-value pairs associated with the object.
+          example: {}
+          type: object
+        etag:
+          description: 'The entity tag for the object. In JSON list/get responses this is the raw
+
+            hex digest (without surrounding quotes). The HTTP `ETag` response header on
+
+            Get Object follows RFC 7232 and IS wrapped in surrounding double-quotes.
+
+            '
+          example: d41d8cd98f00b204e9800998ecf8427e
+          type: string
+        http_metadata:
+          $ref: '#/components/schemas/r2_r2_object_http_metadata'
+        key:
+          description: The object key (name).
+          example: path/to/my-object.txt
+          type: string
+        last_modified:
+          description: The date and time the object was last modified.
+          example: '2024-01-15T10:30:00Z'
+          format: date-time
+          type: string
+        size:
+          description: The size of the object in bytes.
+          example: 1048576.0
+          type: integer
+        ssec:
+          description: Whether the object is encrypted with a customer-supplied encryption key.
+          example: false
+          type: boolean
+        storage_class:
+          $ref: '#/components/schemas/r2_storage_class'
+      type: object
+  securitySchemes:
+    api_email:
+      in: header
+      name: X-Auth-Email
+      type: apiKey
+    api_key:
+      in: header
+      name: X-Auth-Key
+      type: apiKey
+    api_token:
+      scheme: bearer
+      type: http
+    user_service_key:
+      in: header
+      name: X-Auth-User-Service-Key
+      type: apiKey

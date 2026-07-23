@@ -1,0 +1,152 @@
+openapi: 3.0.3
+info:
+  title: Cloudflare R2 Cloudflare Buckets CORS API
+  description: Cloudflare API endpoints for managing R2 object storage buckets, objects, CORS, lifecycle policies, custom domains, event notifications, data catalog, and temporary credentials.
+  version: 4.0.0
+  termsOfService: https://www.cloudflare.com/website-terms/
+  contact:
+    name: Cloudflare Developer Docs
+    url: https://developers.cloudflare.com/r2/
+servers:
+- url: https://api.cloudflare.com/client/v4
+  description: Cloudflare API v4
+tags:
+- name: CORS
+paths:
+  /{bucket}?cors:
+    get:
+      operationId: get-bucket-cors
+      summary: Get Bucket CORS
+      description: Returns the CORS configuration for the bucket.
+      tags:
+      - CORS
+      parameters:
+      - name: bucket
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: CORS configuration
+          content:
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/CORSConfiguration'
+        4XX:
+          description: Error
+          content:
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Error'
+    put:
+      operationId: put-bucket-cors
+      summary: Put Bucket CORS
+      description: Sets the CORS configuration for the bucket.
+      tags:
+      - CORS
+      parameters:
+      - name: bucket
+        in: path
+        required: true
+        schema:
+          type: string
+      requestBody:
+        required: true
+        content:
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/CORSConfiguration'
+      responses:
+        '200':
+          description: CORS configuration set
+        4XX:
+          description: Error
+          content:
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Error'
+    delete:
+      operationId: delete-bucket-cors
+      summary: Delete Bucket CORS
+      description: Removes the CORS configuration from the bucket.
+      tags:
+      - CORS
+      parameters:
+      - name: bucket
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '204':
+          description: CORS configuration deleted
+        4XX:
+          description: Error
+          content:
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Error'
+components:
+  schemas:
+    Error:
+      type: object
+      properties:
+        Code:
+          type: string
+          description: Error code
+        Message:
+          type: string
+          description: Human-readable error message
+        Resource:
+          type: string
+          description: The resource that caused the error
+        RequestId:
+          type: string
+          description: The request ID for troubleshooting
+      xml:
+        name: Error
+    CORSConfiguration:
+      type: object
+      properties:
+        CORSRule:
+          type: array
+          items:
+            type: object
+            properties:
+              AllowedHeader:
+                type: array
+                items:
+                  type: string
+              AllowedMethod:
+                type: array
+                items:
+                  type: string
+              AllowedOrigin:
+                type: array
+                items:
+                  type: string
+              ExposeHeader:
+                type: array
+                items:
+                  type: string
+              MaxAgeSeconds:
+                type: integer
+      xml:
+        name: CORSConfiguration
+  securitySchemes:
+    api_email:
+      in: header
+      name: X-Auth-Email
+      type: apiKey
+    api_key:
+      in: header
+      name: X-Auth-Key
+      type: apiKey
+    api_token:
+      scheme: bearer
+      type: http
+    user_service_key:
+      in: header
+      name: X-Auth-User-Service-Key
+      type: apiKey

@@ -1,0 +1,530 @@
+openapi: 3.0.3
+info:
+  title: Cloudflare R2 Cloudflare Buckets Objects API
+  description: Cloudflare API endpoints for managing R2 object storage buckets, objects, CORS, lifecycle policies, custom domains, event notifications, data catalog, and temporary credentials.
+  version: 4.0.0
+  termsOfService: https://www.cloudflare.com/website-terms/
+  contact:
+    name: Cloudflare Developer Docs
+    url: https://developers.cloudflare.com/r2/
+servers:
+- url: https://api.cloudflare.com/client/v4
+  description: Cloudflare API v4
+tags:
+- name: Objects
+paths:
+  /{bucket}:
+    get:
+      operationId: list-objects-v2
+      summary: List Objects V2
+      description: Returns some or all (up to 1,000) of the objects in a bucket. ListObjectsV2 is preferred over ListObjects.
+      tags:
+      - Objects
+      parameters:
+      - name: bucket
+        in: path
+        required: true
+        schema:
+          type: string
+        description: Name of the bucket
+      - name: list-type
+        in: query
+        required: false
+        schema:
+          type: integer
+          enum:
+          - 2
+        description: Set to 2 to use ListObjectsV2
+      - name: prefix
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Limits the response to keys that begin with the specified prefix
+      - name: delimiter
+        in: query
+        required: false
+        schema:
+          type: string
+        description: A delimiter is a character you use to group keys
+      - name: max-keys
+        in: query
+        required: false
+        schema:
+          type: integer
+          default: 1000
+          maximum: 1000
+        description: Maximum number of keys to return
+      - name: continuation-token
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Token from previous response to get next page
+      - name: start-after
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Start listing after this key
+      - name: marker
+        in: query
+        required: false
+        schema:
+          type: string
+        description: (V1) Where to begin listing. The response starts listing after this marker
+      - name: uploads
+        in: query
+        required: false
+        schema:
+          type: boolean
+        description: List in-progress multipart uploads when present
+      - name: location
+        in: query
+        required: false
+        schema:
+          type: boolean
+        description: Return bucket location when present
+      - name: cors
+        in: query
+        required: false
+        schema:
+          type: boolean
+        description: Return CORS configuration when present
+      - name: lifecycle
+        in: query
+        required: false
+        schema:
+          type: boolean
+        description: Return lifecycle configuration when present
+      - name: encryption
+        in: query
+        required: false
+        schema:
+          type: boolean
+        description: Return encryption configuration when present
+      responses:
+        '200':
+          description: Success
+          content:
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/ListBucketResult'
+        4XX:
+          description: Error
+          content:
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /{bucket}/{key}:
+    head:
+      operationId: head-object
+      summary: Head Object
+      description: Retrieves metadata from an object without returning the object itself.
+      tags:
+      - Objects
+      parameters:
+      - name: bucket
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: key
+        in: path
+        required: true
+        schema:
+          type: string
+        description: Object key
+      - name: Range
+        in: header
+        required: false
+        schema:
+          type: string
+        description: HTTP Range header for partial content
+      - name: If-Match
+        in: header
+        required: false
+        schema:
+          type: string
+      - name: If-None-Match
+        in: header
+        required: false
+        schema:
+          type: string
+      - name: If-Modified-Since
+        in: header
+        required: false
+        schema:
+          type: string
+          format: date-time
+      - name: If-Unmodified-Since
+        in: header
+        required: false
+        schema:
+          type: string
+          format: date-time
+      responses:
+        '200':
+          description: Object metadata
+          headers:
+            Content-Type:
+              schema:
+                type: string
+            Content-Length:
+              schema:
+                type: integer
+            ETag:
+              schema:
+                type: string
+            Last-Modified:
+              schema:
+                type: string
+        4XX:
+          description: Error
+          content:
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Error'
+    get:
+      operationId: get-object
+      summary: Get Object
+      description: Retrieves an object from a bucket.
+      tags:
+      - Objects
+      parameters:
+      - name: bucket
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: key
+        in: path
+        required: true
+        schema:
+          type: string
+        description: Object key
+      - name: Range
+        in: header
+        required: false
+        schema:
+          type: string
+        description: HTTP Range header for partial content retrieval
+      - name: If-Match
+        in: header
+        required: false
+        schema:
+          type: string
+      - name: If-None-Match
+        in: header
+        required: false
+        schema:
+          type: string
+      - name: If-Modified-Since
+        in: header
+        required: false
+        schema:
+          type: string
+          format: date-time
+      - name: If-Unmodified-Since
+        in: header
+        required: false
+        schema:
+          type: string
+          format: date-time
+      - name: response-content-type
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: response-content-disposition
+        in: query
+        required: false
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Object data
+          content:
+            application/octet-stream:
+              schema:
+                type: string
+                format: binary
+        '206':
+          description: Partial content
+          content:
+            application/octet-stream:
+              schema:
+                type: string
+                format: binary
+        4XX:
+          description: Error
+          content:
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Error'
+    put:
+      operationId: put-object
+      summary: Put Object
+      description: Adds an object to a bucket.
+      tags:
+      - Objects
+      parameters:
+      - name: bucket
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: key
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: Content-Type
+        in: header
+        required: false
+        schema:
+          type: string
+      - name: Content-MD5
+        in: header
+        required: false
+        schema:
+          type: string
+      - name: Content-Length
+        in: header
+        required: false
+        schema:
+          type: integer
+      - name: Cache-Control
+        in: header
+        required: false
+        schema:
+          type: string
+      - name: Content-Disposition
+        in: header
+        required: false
+        schema:
+          type: string
+      - name: Content-Encoding
+        in: header
+        required: false
+        schema:
+          type: string
+      - name: x-amz-meta-*
+        in: header
+        required: false
+        schema:
+          type: string
+        description: User-defined metadata headers
+      - name: x-amz-copy-source
+        in: header
+        required: false
+        schema:
+          type: string
+        description: Source for server-side copy
+      requestBody:
+        required: false
+        content:
+          application/octet-stream:
+            schema:
+              type: string
+              format: binary
+      responses:
+        '200':
+          description: Object stored
+          headers:
+            ETag:
+              schema:
+                type: string
+        4XX:
+          description: Error
+          content:
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Error'
+    delete:
+      operationId: delete-object
+      summary: Delete Object
+      description: Removes an object from a bucket.
+      tags:
+      - Objects
+      parameters:
+      - name: bucket
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: key
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '204':
+          description: Object deleted
+        4XX:
+          description: Error
+          content:
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /{bucket}?delete:
+    post:
+      operationId: delete-objects
+      summary: Delete Multiple Objects
+      description: Removes multiple objects from a bucket in a single request. Up to 1000 objects can be deleted per request.
+      tags:
+      - Objects
+      parameters:
+      - name: bucket
+        in: path
+        required: true
+        schema:
+          type: string
+      requestBody:
+        required: true
+        content:
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/DeleteObjects'
+      responses:
+        '200':
+          description: Delete results
+          content:
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/DeleteResult'
+        4XX:
+          description: Error
+          content:
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Error'
+components:
+  schemas:
+    DeleteObjects:
+      type: object
+      properties:
+        Object:
+          type: array
+          items:
+            type: object
+            required:
+            - Key
+            properties:
+              Key:
+                type: string
+              VersionId:
+                type: string
+        Quiet:
+          type: boolean
+      xml:
+        name: Delete
+    Error:
+      type: object
+      properties:
+        Code:
+          type: string
+          description: Error code
+        Message:
+          type: string
+          description: Human-readable error message
+        Resource:
+          type: string
+          description: The resource that caused the error
+        RequestId:
+          type: string
+          description: The request ID for troubleshooting
+      xml:
+        name: Error
+    DeleteResult:
+      type: object
+      properties:
+        Deleted:
+          type: array
+          items:
+            type: object
+            properties:
+              Key:
+                type: string
+        Error:
+          type: array
+          items:
+            type: object
+            properties:
+              Key:
+                type: string
+              Code:
+                type: string
+              Message:
+                type: string
+      xml:
+        name: DeleteResult
+    ListBucketResult:
+      type: object
+      properties:
+        Name:
+          type: string
+          description: Bucket name
+        Prefix:
+          type: string
+          description: Prefix filter used
+        Delimiter:
+          type: string
+          description: Delimiter used for grouping keys
+        MaxKeys:
+          type: integer
+          description: Maximum number of keys returned
+        IsTruncated:
+          type: boolean
+          description: Whether results are truncated
+        NextContinuationToken:
+          type: string
+          description: Token for next page (V2)
+        NextMarker:
+          type: string
+          description: Next marker for pagination (V1)
+        KeyCount:
+          type: integer
+          description: Number of keys returned
+        Contents:
+          type: array
+          items:
+            type: object
+            properties:
+              Key:
+                type: string
+              LastModified:
+                type: string
+                format: date-time
+              ETag:
+                type: string
+              Size:
+                type: integer
+                format: int64
+              StorageClass:
+                type: string
+        CommonPrefixes:
+          type: array
+          items:
+            type: object
+            properties:
+              Prefix:
+                type: string
+      xml:
+        name: ListBucketResult
+  securitySchemes:
+    api_email:
+      in: header
+      name: X-Auth-Email
+      type: apiKey
+    api_key:
+      in: header
+      name: X-Auth-Key
+      type: apiKey
+    api_token:
+      scheme: bearer
+      type: http
+    user_service_key:
+      in: header
+      name: X-Auth-User-Service-Key
+      type: apiKey

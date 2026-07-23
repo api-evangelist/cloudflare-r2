@@ -1,0 +1,172 @@
+openapi: 3.0.3
+info:
+  title: Cloudflare R2 Cloudflare Buckets API
+  description: Cloudflare API endpoints for managing R2 object storage buckets, objects, CORS, lifecycle policies, custom domains, event notifications, data catalog, and temporary credentials.
+  version: 4.0.0
+  termsOfService: https://www.cloudflare.com/website-terms/
+  contact:
+    name: Cloudflare Developer Docs
+    url: https://developers.cloudflare.com/r2/
+servers:
+- url: https://api.cloudflare.com/client/v4
+  description: Cloudflare API v4
+tags:
+- name: Buckets
+paths:
+  /:
+    get:
+      operationId: list-buckets
+      summary: List Buckets
+      description: Returns a list of all buckets owned by the authenticated user.
+      tags:
+      - Buckets
+      responses:
+        '200':
+          description: Success
+          content:
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/ListAllMyBucketsResult'
+        4XX:
+          description: Error
+          content:
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /{bucket}:
+    head:
+      operationId: head-bucket
+      summary: Head Bucket
+      description: Checks if a bucket exists and if you have access to it.
+      tags:
+      - Buckets
+      parameters:
+      - name: bucket
+        in: path
+        required: true
+        schema:
+          type: string
+        description: Name of the bucket
+      responses:
+        '200':
+          description: Bucket exists and is accessible
+        '403':
+          description: Access denied
+        '404':
+          description: Bucket not found
+    put:
+      operationId: create-bucket
+      summary: Create Bucket
+      description: Creates a new R2 bucket. The region is always 'auto' for R2.
+      tags:
+      - Buckets
+      parameters:
+      - name: bucket
+        in: path
+        required: true
+        schema:
+          type: string
+        description: Name of the bucket to create
+      - name: cf-r2-jurisdiction
+        in: header
+        required: false
+        schema:
+          type: string
+          enum:
+          - default
+          - eu
+          - fedramp
+        description: Jurisdiction for the bucket
+      responses:
+        '200':
+          description: Bucket created successfully
+        4XX:
+          description: Error
+          content:
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Error'
+    delete:
+      operationId: delete-bucket
+      summary: Delete Bucket
+      description: Deletes an empty R2 bucket.
+      tags:
+      - Buckets
+      parameters:
+      - name: bucket
+        in: path
+        required: true
+        schema:
+          type: string
+        description: Name of the bucket to delete
+      responses:
+        '204':
+          description: Bucket deleted successfully
+        4XX:
+          description: Error
+          content:
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Error'
+components:
+  schemas:
+    Error:
+      type: object
+      properties:
+        Code:
+          type: string
+          description: Error code
+        Message:
+          type: string
+          description: Human-readable error message
+        Resource:
+          type: string
+          description: The resource that caused the error
+        RequestId:
+          type: string
+          description: The request ID for troubleshooting
+      xml:
+        name: Error
+    ListAllMyBucketsResult:
+      type: object
+      properties:
+        Owner:
+          type: object
+          properties:
+            ID:
+              type: string
+            DisplayName:
+              type: string
+        Buckets:
+          type: object
+          properties:
+            Bucket:
+              type: array
+              items:
+                type: object
+                properties:
+                  Name:
+                    type: string
+                    description: Bucket name
+                  CreationDate:
+                    type: string
+                    format: date-time
+                    description: Bucket creation date
+      xml:
+        name: ListAllMyBucketsResult
+  securitySchemes:
+    api_email:
+      in: header
+      name: X-Auth-Email
+      type: apiKey
+    api_key:
+      in: header
+      name: X-Auth-Key
+      type: apiKey
+    api_token:
+      scheme: bearer
+      type: http
+    user_service_key:
+      in: header
+      name: X-Auth-User-Service-Key
+      type: apiKey

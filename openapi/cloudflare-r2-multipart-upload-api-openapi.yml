@@ -1,0 +1,435 @@
+openapi: 3.0.3
+info:
+  title: Cloudflare R2 Cloudflare Buckets Multipart Upload API
+  description: Cloudflare API endpoints for managing R2 object storage buckets, objects, CORS, lifecycle policies, custom domains, event notifications, data catalog, and temporary credentials.
+  version: 4.0.0
+  termsOfService: https://www.cloudflare.com/website-terms/
+  contact:
+    name: Cloudflare Developer Docs
+    url: https://developers.cloudflare.com/r2/
+servers:
+- url: https://api.cloudflare.com/client/v4
+  description: Cloudflare API v4
+tags:
+- name: Multipart Upload
+paths:
+  /{bucket}/{key}?uploads:
+    post:
+      operationId: create-multipart-upload
+      summary: Create Multipart Upload
+      description: Initiates a multipart upload and returns an upload ID.
+      tags:
+      - Multipart Upload
+      parameters:
+      - name: bucket
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: key
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: Content-Type
+        in: header
+        required: false
+        schema:
+          type: string
+      - name: x-amz-meta-*
+        in: header
+        required: false
+        schema:
+          type: string
+        description: User-defined metadata headers
+      responses:
+        '200':
+          description: Multipart upload initiated
+          content:
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/InitiateMultipartUploadResult'
+        4XX:
+          description: Error
+          content:
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /{bucket}/{key}?partNumber={partNumber}&uploadId={uploadId}:
+    put:
+      operationId: upload-part
+      summary: Upload Part
+      description: Uploads a part in a multipart upload.
+      tags:
+      - Multipart Upload
+      parameters:
+      - name: bucket
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: key
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: partNumber
+        in: path
+        required: true
+        schema:
+          type: integer
+          minimum: 1
+          maximum: 10000
+        description: Part number (1 to 10000)
+      - name: uploadId
+        in: path
+        required: true
+        schema:
+          type: string
+        description: Upload ID from CreateMultipartUpload
+      - name: x-amz-copy-source
+        in: header
+        required: false
+        schema:
+          type: string
+        description: Source for UploadPartCopy
+      - name: x-amz-copy-source-range
+        in: header
+        required: false
+        schema:
+          type: string
+        description: Byte range for UploadPartCopy
+      requestBody:
+        required: false
+        content:
+          application/octet-stream:
+            schema:
+              type: string
+              format: binary
+      responses:
+        '200':
+          description: Part uploaded
+          headers:
+            ETag:
+              schema:
+                type: string
+        4XX:
+          description: Error
+          content:
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /{bucket}/{key}?uploadId={uploadId}:
+    post:
+      operationId: complete-multipart-upload
+      summary: Complete Multipart Upload
+      description: Completes a multipart upload by assembling previously uploaded parts.
+      tags:
+      - Multipart Upload
+      parameters:
+      - name: bucket
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: key
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: uploadId
+        in: path
+        required: true
+        schema:
+          type: string
+      requestBody:
+        required: true
+        content:
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/CompleteMultipartUpload'
+      responses:
+        '200':
+          description: Multipart upload completed
+          content:
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/CompleteMultipartUploadResult'
+        4XX:
+          description: Error
+          content:
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Error'
+    delete:
+      operationId: abort-multipart-upload
+      summary: Abort Multipart Upload
+      description: Aborts a multipart upload and frees any storage consumed by the upload.
+      tags:
+      - Multipart Upload
+      parameters:
+      - name: bucket
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: key
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: uploadId
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '204':
+          description: Multipart upload aborted
+        4XX:
+          description: Error
+          content:
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Error'
+    get:
+      operationId: list-parts
+      summary: List Parts
+      description: Lists the parts that have been uploaded for a specific multipart upload.
+      tags:
+      - Multipart Upload
+      parameters:
+      - name: bucket
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: key
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: uploadId
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: max-parts
+        in: query
+        required: false
+        schema:
+          type: integer
+          default: 1000
+        description: Maximum number of parts to return
+      - name: part-number-marker
+        in: query
+        required: false
+        schema:
+          type: integer
+        description: Part number after which listing begins
+      responses:
+        '200':
+          description: Parts list
+          content:
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/ListPartsResult'
+        4XX:
+          description: Error
+          content:
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /{bucket}?uploads:
+    get:
+      operationId: list-multipart-uploads
+      summary: List Multipart Uploads
+      description: Lists in-progress multipart uploads in a bucket.
+      tags:
+      - Multipart Upload
+      parameters:
+      - name: bucket
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: prefix
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: delimiter
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: max-uploads
+        in: query
+        required: false
+        schema:
+          type: integer
+          default: 1000
+      - name: key-marker
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: upload-id-marker
+        in: query
+        required: false
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Multipart uploads list
+          content:
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/ListMultipartUploadsResult'
+        4XX:
+          description: Error
+          content:
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Error'
+components:
+  schemas:
+    InitiateMultipartUploadResult:
+      type: object
+      properties:
+        Bucket:
+          type: string
+        Key:
+          type: string
+        UploadId:
+          type: string
+      xml:
+        name: InitiateMultipartUploadResult
+    ListPartsResult:
+      type: object
+      properties:
+        Bucket:
+          type: string
+        Key:
+          type: string
+        UploadId:
+          type: string
+        PartNumberMarker:
+          type: integer
+        NextPartNumberMarker:
+          type: integer
+        MaxParts:
+          type: integer
+        IsTruncated:
+          type: boolean
+        Part:
+          type: array
+          items:
+            type: object
+            properties:
+              PartNumber:
+                type: integer
+              LastModified:
+                type: string
+                format: date-time
+              ETag:
+                type: string
+              Size:
+                type: integer
+                format: int64
+      xml:
+        name: ListPartsResult
+    CompleteMultipartUploadResult:
+      type: object
+      properties:
+        Location:
+          type: string
+        Bucket:
+          type: string
+        Key:
+          type: string
+        ETag:
+          type: string
+      xml:
+        name: CompleteMultipartUploadResult
+    CompleteMultipartUpload:
+      type: object
+      properties:
+        Part:
+          type: array
+          items:
+            type: object
+            required:
+            - PartNumber
+            - ETag
+            properties:
+              PartNumber:
+                type: integer
+              ETag:
+                type: string
+      xml:
+        name: CompleteMultipartUpload
+    Error:
+      type: object
+      properties:
+        Code:
+          type: string
+          description: Error code
+        Message:
+          type: string
+          description: Human-readable error message
+        Resource:
+          type: string
+          description: The resource that caused the error
+        RequestId:
+          type: string
+          description: The request ID for troubleshooting
+      xml:
+        name: Error
+    ListMultipartUploadsResult:
+      type: object
+      properties:
+        Bucket:
+          type: string
+        KeyMarker:
+          type: string
+        UploadIdMarker:
+          type: string
+        NextKeyMarker:
+          type: string
+        NextUploadIdMarker:
+          type: string
+        MaxUploads:
+          type: integer
+        IsTruncated:
+          type: boolean
+        Upload:
+          type: array
+          items:
+            type: object
+            properties:
+              Key:
+                type: string
+              UploadId:
+                type: string
+              Initiated:
+                type: string
+                format: date-time
+      xml:
+        name: ListMultipartUploadsResult
+  securitySchemes:
+    api_email:
+      in: header
+      name: X-Auth-Email
+      type: apiKey
+    api_key:
+      in: header
+      name: X-Auth-Key
+      type: apiKey
+    api_token:
+      scheme: bearer
+      type: http
+    user_service_key:
+      in: header
+      name: X-Auth-User-Service-Key
+      type: apiKey
