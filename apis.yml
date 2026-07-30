@@ -2,7 +2,20 @@ aid: cloudflare-r2
 name: Cloudflare R2
 description: Cloudflare R2 is S3-compatible object storage with zero egress fees. It provides both an S3-compatible REST API and a Cloudflare API for managing buckets, objects, and storage policies at global scale. R2 offers a generous free tier including 10 GB storage, 1 million Class A operations, and 10 million Class B operations per month with no data transfer fees.
 type: Index
-image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
+accessModel:
+  pricing: freemium
+  onboarding: self-serve
+  trial: false
+  try_now: true
+  public: false
+  label: Freemium · Self-serve signup
+  confidence: high
+  source:
+  - plans
+  - authentication
+  generated: '2026-07-22'
+  method: derived
+image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/icons/cloudflare-r2.png
 url: https://raw.githubusercontent.com/api-evangelist/cloudflare-r2/refs/heads/main/apis.yml
 created: 2026-06-13
 modified: 2026-06-13
@@ -17,40 +30,208 @@ tags:
   - Cloudflare
 
 apis:
-  - aid: cloudflare-r2:cloudflare-r2-s3-compatible-api
-    name: Cloudflare R2 S3-Compatible API
-    description: An S3-compatible REST API for storing and retrieving objects in Cloudflare R2 buckets. Supports core S3 operations including bucket management, object CRUD, multipart uploads, CORS, lifecycle policies, and server-side encryption. Compatible with any AWS S3 SDK across Python, JavaScript, Go, Java, PHP, Ruby, and Rust.
-    image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
-    humanURL: https://developers.cloudflare.com/r2/api/s3/api/
-    baseURL: https://<ACCOUNT_ID>.r2.cloudflarestorage.com
-    tags:
-      - S3-Compatible
-      - Object Storage
-      - Buckets
-      - Multipart Upload
-    properties:
-      - type: Documentation
-        url: https://developers.cloudflare.com/r2/api/s3/api/
-      - type: OpenAPI
-        url: https://raw.githubusercontent.com/cloudflare/api-schemas/refs/heads/main/openapi.yaml
-
-  - aid: cloudflare-r2:cloudflare-r2-cloudflare-api
-    name: Cloudflare R2 Cloudflare API
-    description: The Cloudflare API endpoints for managing Cloudflare R2 resources including bucket creation, deletion, configuration, custom domains, event notifications, access policies, and temporary credentials. Accessed via the Cloudflare API using account-level API tokens.
-    image: https://kinlane-images.s3.amazonaws.com/shared/apis-json/apis-json-logo.jpg
-    humanURL: https://developers.cloudflare.com/r2/api/
-    baseURL: https://api.cloudflare.com/client/v4
-    tags:
-      - Bucket Management
-      - Access Control
-      - Event Notifications
-      - Cloudflare API
-    properties:
-      - type: Documentation
-        url: https://developers.cloudflare.com/r2/api/
-      - type: OpenAPI
-        url: https://raw.githubusercontent.com/cloudflare/api-schemas/refs/heads/main/openapi.yaml
-
+- aid: cloudflare-r2:cloudflare-r2-buckets-api
+  name: Cloudflare R2 Buckets API
+  description: The Buckets API from Cloudflare R2 — 2 operation(s) for buckets.
+  humanURL: https://developers.cloudflare.com/r2/api/s3/api/
+  baseURL: https://<ACCOUNT_ID>.r2.cloudflarestorage.com
+  tags:
+  - Buckets
+  properties:
+  - type: OpenAPI
+    url: openapi/cloudflare-r2-buckets-api-openapi.yml
+  - type: Documentation
+    url: https://developers.cloudflare.com/r2/api/s3/api/
+  - type: Documentation
+    url: https://developers.cloudflare.com/r2/api/
+- aid: cloudflare-r2:cloudflare-r2-cors-api
+  name: Cloudflare R2 CORS API
+  description: The CORS API from Cloudflare R2 — 1 operation(s) for cors.
+  humanURL: https://developers.cloudflare.com/r2/api/s3/api/
+  baseURL: https://<ACCOUNT_ID>.r2.cloudflarestorage.com
+  tags:
+  - CORS
+  properties:
+  - type: OpenAPI
+    url: openapi/cloudflare-r2-cors-api-openapi.yml
+  - type: Documentation
+    url: https://developers.cloudflare.com/r2/api/s3/api/
+  - type: Documentation
+    url: https://developers.cloudflare.com/r2/api/
+- aid: cloudflare-r2:cloudflare-r2-credential-management-api
+  name: Cloudflare R2 Credential Management API
+  description: >-
+    The Credential Management API from Cloudflare R2 — 1 operation(s) for credential management.
+  humanURL: https://developers.cloudflare.com/r2/api/s3/api/
+  baseURL: https://<ACCOUNT_ID>.r2.cloudflarestorage.com
+  tags:
+  - Credential Management
+  properties:
+  - type: OpenAPI
+    url: openapi/cloudflare-r2-credential-management-api-openapi.yml
+  - type: Documentation
+    url: https://developers.cloudflare.com/r2/api/s3/api/
+  - type: Documentation
+    url: https://developers.cloudflare.com/r2/api/
+- aid: cloudflare-r2:cloudflare-r2-lifecycle-api
+  name: Cloudflare R2 Lifecycle API
+  description: The Lifecycle API from Cloudflare R2 — 1 operation(s) for lifecycle.
+  humanURL: https://developers.cloudflare.com/r2/api/s3/api/
+  baseURL: https://<ACCOUNT_ID>.r2.cloudflarestorage.com
+  tags:
+  - Lifecycle
+  properties:
+  - type: OpenAPI
+    url: openapi/cloudflare-r2-lifecycle-api-openapi.yml
+  - type: Documentation
+    url: https://developers.cloudflare.com/r2/api/s3/api/
+  - type: Documentation
+    url: https://developers.cloudflare.com/r2/api/
+- aid: cloudflare-r2:cloudflare-r2-maintenance-configuration-api
+  name: Cloudflare R2 Maintenance Configuration API
+  description: >-
+    The Maintenance Configuration API from Cloudflare R2 — 1 operation(s) for maintenance configuration.
+  humanURL: https://developers.cloudflare.com/r2/api/s3/api/
+  baseURL: https://<ACCOUNT_ID>.r2.cloudflarestorage.com
+  tags:
+  - Maintenance Configuration
+  properties:
+  - type: OpenAPI
+    url: openapi/cloudflare-r2-maintenance-configuration-api-openapi.yml
+  - type: Documentation
+    url: https://developers.cloudflare.com/r2/api/s3/api/
+  - type: Documentation
+    url: https://developers.cloudflare.com/r2/api/
+- aid: cloudflare-r2:cloudflare-r2-multipart-upload-api
+  name: Cloudflare R2 Multipart Upload API
+  description: The Multipart Upload API from Cloudflare R2 — 4 operation(s) for multipart upload.
+  humanURL: https://developers.cloudflare.com/r2/api/s3/api/
+  baseURL: https://<ACCOUNT_ID>.r2.cloudflarestorage.com
+  tags:
+  - Multipart Upload
+  properties:
+  - type: OpenAPI
+    url: openapi/cloudflare-r2-multipart-upload-api-openapi.yml
+  - type: Documentation
+    url: https://developers.cloudflare.com/r2/api/s3/api/
+  - type: Documentation
+    url: https://developers.cloudflare.com/r2/api/
+- aid: cloudflare-r2:cloudflare-r2-namespace-management-api
+  name: Cloudflare R2 Namespace Management API
+  description: >-
+    The Namespace Management API from Cloudflare R2 — 1 operation(s) for namespace management.
+  humanURL: https://developers.cloudflare.com/r2/api/s3/api/
+  baseURL: https://<ACCOUNT_ID>.r2.cloudflarestorage.com
+  tags:
+  - Namespace Management
+  properties:
+  - type: OpenAPI
+    url: openapi/cloudflare-r2-namespace-management-api-openapi.yml
+  - type: Documentation
+    url: https://developers.cloudflare.com/r2/api/s3/api/
+  - type: Documentation
+    url: https://developers.cloudflare.com/r2/api/
+- aid: cloudflare-r2:cloudflare-r2-objects-api
+  name: Cloudflare R2 Objects API
+  description: The Objects API from Cloudflare R2 — 3 operation(s) for objects.
+  humanURL: https://developers.cloudflare.com/r2/api/s3/api/
+  baseURL: https://<ACCOUNT_ID>.r2.cloudflarestorage.com
+  tags:
+  - Objects
+  properties:
+  - type: OpenAPI
+    url: openapi/cloudflare-r2-objects-api-openapi.yml
+  - type: Documentation
+    url: https://developers.cloudflare.com/r2/api/s3/api/
+  - type: Documentation
+    url: https://developers.cloudflare.com/r2/api/
+- aid: cloudflare-r2:cloudflare-r2-r2-account-api
+  name: Cloudflare R2 R2 Account API
+  description: The R2 Account API from Cloudflare R2 — 1 operation(s) for r2 account.
+  humanURL: https://developers.cloudflare.com/r2/api/s3/api/
+  baseURL: https://<ACCOUNT_ID>.r2.cloudflarestorage.com
+  tags:
+  - R2 Account
+  properties:
+  - type: OpenAPI
+    url: openapi/cloudflare-r2-r2-account-api-openapi.yml
+  - type: Documentation
+    url: https://developers.cloudflare.com/r2/api/s3/api/
+  - type: Documentation
+    url: https://developers.cloudflare.com/r2/api/
+- aid: cloudflare-r2:cloudflare-r2-r2-bucket-api
+  name: Cloudflare R2 R2 Bucket API
+  description: The R2 Bucket API from Cloudflare R2 — 13 operation(s) for r2 bucket.
+  humanURL: https://developers.cloudflare.com/r2/api/s3/api/
+  baseURL: https://<ACCOUNT_ID>.r2.cloudflarestorage.com
+  tags:
+  - R2 Bucket
+  properties:
+  - type: OpenAPI
+    url: openapi/cloudflare-r2-r2-bucket-api-openapi.yml
+  - type: Documentation
+    url: https://developers.cloudflare.com/r2/api/s3/api/
+  - type: Documentation
+    url: https://developers.cloudflare.com/r2/api/
+- aid: cloudflare-r2:cloudflare-r2-r2-catalog-management-api
+  name: Cloudflare R2 R2 Catalog Management API
+  description: >-
+    The R2 Catalog Management API from Cloudflare R2 — 4 operation(s) for r2 catalog management.
+  humanURL: https://developers.cloudflare.com/r2/api/s3/api/
+  baseURL: https://<ACCOUNT_ID>.r2.cloudflarestorage.com
+  tags:
+  - R2 Catalog Management
+  properties:
+  - type: OpenAPI
+    url: openapi/cloudflare-r2-r2-catalog-management-api-openapi.yml
+  - type: Documentation
+    url: https://developers.cloudflare.com/r2/api/s3/api/
+  - type: Documentation
+    url: https://developers.cloudflare.com/r2/api/
+- aid: cloudflare-r2:cloudflare-r2-r2-object-api
+  name: Cloudflare R2 R2 Object API
+  description: The R2 Object API from Cloudflare R2 — 2 operation(s) for r2 object.
+  humanURL: https://developers.cloudflare.com/r2/api/s3/api/
+  baseURL: https://<ACCOUNT_ID>.r2.cloudflarestorage.com
+  tags:
+  - R2 Object
+  properties:
+  - type: OpenAPI
+    url: openapi/cloudflare-r2-r2-object-api-openapi.yml
+  - type: Documentation
+    url: https://developers.cloudflare.com/r2/api/s3/api/
+  - type: Documentation
+    url: https://developers.cloudflare.com/r2/api/
+- aid: cloudflare-r2:cloudflare-r2-table-maintenance-configuration-api
+  name: Cloudflare R2 Table Maintenance Configuration API
+  description: >-
+    The Table Maintenance Configuration API from Cloudflare R2 — 1 operation(s) for table maintenance
+    configuration.
+  humanURL: https://developers.cloudflare.com/r2/api/s3/api/
+  baseURL: https://<ACCOUNT_ID>.r2.cloudflarestorage.com
+  tags:
+  - Table Maintenance Configuration
+  properties:
+  - type: OpenAPI
+    url: openapi/cloudflare-r2-table-maintenance-configuration-api-openapi.yml
+  - type: Documentation
+    url: https://developers.cloudflare.com/r2/api/s3/api/
+  - type: Documentation
+    url: https://developers.cloudflare.com/r2/api/
+- aid: cloudflare-r2:cloudflare-r2-table-management-api
+  name: Cloudflare R2 Table Management API
+  description: The Table Management API from Cloudflare R2 — 1 operation(s) for table management.
+  humanURL: https://developers.cloudflare.com/r2/api/s3/api/
+  baseURL: https://<ACCOUNT_ID>.r2.cloudflarestorage.com
+  tags:
+  - Table Management
+  properties:
+  - type: OpenAPI
+    url: openapi/cloudflare-r2-table-management-api-openapi.yml
+  - type: Documentation
+    url: https://developers.cloudflare.com/r2/api/s3/api/
+  - type: Documentation
+    url: https://developers.cloudflare.com/r2/api/
 common:
   - type: AgenticAccess
     url: agentic-access/cloudflare-r2-agentic-access.yml
