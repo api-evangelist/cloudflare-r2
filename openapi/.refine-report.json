@@ -1,0 +1,40 @@
+{
+  "provider": "cloudflare-r2",
+  "sources": [
+    "cloudflare-r2-buckets-api-openapi.yml",
+    "cloudflare-r2-cors-api-openapi.yml",
+    "cloudflare-r2-credential-management-api-openapi.yml",
+    "cloudflare-r2-lifecycle-api-openapi.yml",
+    "cloudflare-r2-maintenance-configuration-api-openapi.yml",
+    "cloudflare-r2-multipart-upload-api-openapi.yml",
+    "cloudflare-r2-namespace-management-api-openapi.yml",
+    "cloudflare-r2-objects-api-openapi.yml",
+    "cloudflare-r2-r2-account-api-openapi.yml",
+    "cloudflare-r2-r2-bucket-api-openapi.yml",
+    "cloudflare-r2-r2-catalog-management-api-openapi.yml",
+    "cloudflare-r2-r2-object-api-openapi.yml",
+    "cloudflare-r2-table-maintenance-configuration-api-openapi.yml",
+    "cloudflare-r2-table-management-api-openapi.yml"
+  ],
+  "outputs": [
+    "cloudflare-r2-buckets-api-openapi.yml",
+    "cloudflare-r2-cors-api-openapi.yml",
+    "cloudflare-r2-credential-management-api-openapi.yml",
+    "cloudflare-r2-lifecycle-api-openapi.yml",
+    "cloudflare-r2-maintenance-configuration-api-openapi.yml",
+    "cloudflare-r2-multipart-upload-api-openapi.yml",
+    "cloudflare-r2-namespace-management-api-openapi.yml",
+    "cloudflare-r2-objects-api-openapi.yml",
+    "cloudflare-r2-r2-account-api-openapi.yml",
+    "cloudflare-r2-r2-bucket-api-openapi.yml",
+    "cloudflare-r2-r2-catalog-management-api-openapi.yml",
+    "cloudflare-r2-r2-object-api-openapi.yml",
+    "cloudflare-r2-table-maintenance-configuration-api-openapi.yml",
+    "cloudflare-r2-table-management-api-openapi.yml"
+  ],
+  "archived": [],
+  "errors": [],
+  "warnings": [],
+  "notes": [],
+  "skipped": []
+}

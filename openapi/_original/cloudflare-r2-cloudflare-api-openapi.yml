@@ -1,0 +1,4793 @@
+openapi: 3.0.3
+info:
+  title: Cloudflare R2 Cloudflare API
+  description: Cloudflare API endpoints for managing R2 object storage buckets, objects, CORS, lifecycle policies, custom domains, event notifications, data catalog, and temporary credentials.
+  version: 4.0.0
+  termsOfService: https://www.cloudflare.com/website-terms/
+  contact:
+    name: Cloudflare Developer Docs
+    url: https://developers.cloudflare.com/r2/
+servers:
+- url: https://api.cloudflare.com/client/v4
+  description: Cloudflare API v4
+paths:
+  /accounts/{account_id}/event_notifications/r2/{bucket_name}/configuration:
+    get:
+      description: List all event notification rules for a bucket.
+      operationId: r2-get-event-notification-configs
+      parameters:
+      - in: path
+        name: bucket_name
+        required: true
+        schema:
+          $ref: '#/components/schemas/r2_bucket_name'
+      - in: path
+        name: account_id
+        required: true
+        schema:
+          $ref: '#/components/schemas/r2_account_identifier'
+      - in: header
+        name: cf-r2-jurisdiction
+        schema:
+          $ref: '#/components/schemas/r2_jurisdiction'
+      responses:
+        4XX:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/r2_v4_response_failure'
+          description: Read Configuration failure.
+        "200":
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/r2_v4_response'
+                - properties:
+                    result:
+                      $ref: '#/components/schemas/r2_bucket-config'
+                  type: object
+          description: Read Configuration response.
+        "404":
+          content:
+            application/json:
+              example:
+                errors:
+                - code: 11015
+                  message: workers.api.error.no_configs_found_for_bucket
+                messages: []
+                result:
+                success: false
+              schema:
+                $ref: '#/components/schemas/r2_v4_response_failure'
+          description: No Configuration Found response.
+      security:
+      - api_token: []
+      summary: List Event Notification Rules
+      tags:
+      - R2 Bucket
+      x-api-token-group:
+      - Workers R2 Storage Write
+      - Workers R2 Storage Read
+  /accounts/{account_id}/event_notifications/r2/{bucket_name}/configuration/queues/{queue_id}:
+    delete:
+      description: Delete an event notification rule. **If no body is provided, all rules for specified queue will be deleted**.
+      operationId: r2-event-notification-delete-config
+      parameters:
+      - in: path
+        name: queue_id
+        required: true
+        schema:
+          $ref: '#/components/schemas/r2_queue_identifier'
+      - in: path
+        name: bucket_name
+        required: true
+        schema:
+          $ref: '#/components/schemas/r2_bucket_name'
+      - in: path
+        name: account_id
+        required: true
+        schema:
+          $ref: '#/components/schemas/r2_account_identifier'
+      - in: header
+        name: cf-r2-jurisdiction
+        schema:
+          $ref: '#/components/schemas/r2_jurisdiction'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                ruleIds:
+                  description: Array of rule ids to delete.
+                  items:
+                    description: rule ids to be deleted.
+                    type: string
+                  type: array
+              type: object
+      responses:
+        4XX:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/r2_v4_response_failure'
+          description: Delete Configuration failure.
+        "200":
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/r2_v4_response'
+                - type: object
+          description: Delete Configuration response.
+      security:
+      - api_token: []
+      summary: Delete Event Notification Rules
+      tags:
+      - R2 Bucket
+      x-api-token-group:
+      - Workers R2 Storage Write
+    get:
+      description: Get a single event notification rule.
+      operationId: r2-get-event-notification-config
+      parameters:
+      - in: path
+        name: queue_id
+        required: true
+        schema:
+          $ref: '#/components/schemas/r2_queue_identifier'
+      - in: path
+        name: bucket_name
+        required: true
+        schema:
+          $ref: '#/components/schemas/r2_bucket_name'
+      - in: path
+        name: account_id
+        required: true
+        schema:
+          $ref: '#/components/schemas/r2_account_identifier'
+      - in: header
+        name: cf-r2-jurisdiction
+        schema:
+          default: default
+          description: The bucket jurisdiction.
+          enum:
+          - default
+          - eu
+          - fedramp
+          type: string
+          x-stainless-param: jurisdiction
+      responses:
+        4XX:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/r2_v4_response_failure'
+          description: Read Configuration failure.
+        "200":
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/r2_v4_response'
+                - properties:
+                    result:
+                      $ref: '#/components/schemas/r2_queues-config'
+                  type: object
+          description: Read Configuration response.
+        "404":
+          content:
+            application/json:
+              example:
+                errors:
+                - code: 11015
+                  message: workers.api.error.no_configs_found_for_bucket
+                messages: []
+                result:
+                success: false
+              schema:
+                $ref: '#/components/schemas/r2_v4_response_failure'
+          description: No Configuration Found response.
+      security:
+      - api_token: []
+      summary: Get Event Notification Rule
+      tags:
+      - R2 Bucket
+      x-api-token-group:
+      - Workers R2 Storage Write
+      - Workers R2 Storage Read
+    put:
+      description: Create event notification rule.
+      operationId: r2-put-event-notification-config
+      parameters:
+      - in: path
+        name: queue_id
+        required: true
+        schema:
+          $ref: '#/components/schemas/r2_queue_identifier'
+      - in: path
+        name: bucket_name
+        required: true
+        schema:
+          $ref: '#/components/schemas/r2_bucket_name'
+      - in: path
+        name: account_id
+        required: true
+        schema:
+          $ref: '#/components/schemas/r2_account_identifier'
+      - in: header
+        name: cf-r2-jurisdiction
+        schema:
+          $ref: '#/components/schemas/r2_jurisdiction'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                rules:
+                  description: Array of rules to drive notifications.
+                  items:
+                    $ref: '#/components/schemas/r2_rule'
+                  minItems: 1
+                  type: array
+              required:
+              - rules
+              type: object
+        required: true
+      responses:
+        4XX:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/r2_v4_response_failure'
+          description: Create Configuration failure.
+        "200":
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/r2_v4_response'
+                - type: object
+          description: Create Configuration response.
+      security:
+      - api_token: []
+      summary: Create Event Notification Rule
+      tags:
+      - R2 Bucket
+      x-api-token-group:
+      - Workers R2 Storage Write
+  /accounts/{account_id}/r2-catalog:
+    get:
+      description: |
+        Returns a list of R2 buckets that have been enabled as Apache Iceberg catalogs
+        for the specified account. Each catalog represents an R2 bucket configured
+        to store Iceberg metadata and data files.
+      operationId: list-catalogs
+      parameters:
+      - description: Identifies the account.
+        in: path
+        name: account_id
+        required: true
+        schema:
+          $ref: '#/components/schemas/r2-data-catalog_account-id'
+      responses:
+        "200":
+          content:
+            application/json:
+              example:
+                errors: []
+                messages: []
+                result:
+                  warehouses:
+                  - bucket: analytics-bucket
+                    id: 550e8400-e29b-41d4-a716-446655440000
+                    maintenance_config:
+                      compaction:
+                        state: enabled
+                        target_size_mb: "128"
+                      snapshot_expiration:
+                        max_snapshot_age: 7d
+                        min_snapshots_to_keep: 100
+                        state: enabled
+                    name: account123_analytics-bucket
+                    status: active
+                  - bucket: logs-bucket
+                    id: 6ba7b810-9dad-11d1-80b4-00c04fd430c8
+                    maintenance_config:
+                      compaction:
+                        state: disabled
+                        target_size_mb: "128"
+                      snapshot_expiration:
+                        max_snapshot_age: 7d
+                        min_snapshots_to_keep: 100
+                        state: disabled
+                    name: account123_logs-bucket
+                    status: inactive
+                success: true
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/r2-data-catalog_api-response-single'
+                - properties:
+                    result:
+                      $ref: '#/components/schemas/r2-data-catalog_catalog-list'
+                  type: object
+          description: List of R2 catalogs.
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/r2-data-catalog_api-response-common-failure'
+          description: Bad request.
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/r2-data-catalog_api-response-common-failure'
+          description: Authentication failed.
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/r2-data-catalog_api-response-common-failure'
+          description: Forbidden.
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/r2-data-catalog_api-response-common-failure'
+          description: Internal server error.
+      security:
+      - api_token: []
+      - api_email: []
+        api_key: []
+      summary: List R2 catalogs
+      tags:
+      - R2 Catalog Management
+      x-api-token-group:
+      - Workers R2 Data Catalog Write
+      - Workers R2 Data Catalog Read
+  /accounts/{account_id}/r2-catalog/{bucket_name}:
+    get:
+      description: |
+        Retrieve detailed information about a specific R2 catalog by bucket name.
+        Returns catalog status, maintenance configuration, and credential status.
+      operationId: get-catalog-details
+      parameters:
+      - description: Identifies the account.
+        in: path
+        name: account_id
+        required: true
+        schema:
+          $ref: '#/components/schemas/r2-data-catalog_account-id'
+      - description: Specifies the R2 bucket name.
+        in: path
+        name: bucket_name
+        required: true
+        schema:
+          $ref: '#/components/schemas/r2-data-catalog_bucket-name'
+      responses:
+        "200":
+          content:
+            application/json:
+              example:
+                errors: []
+                messages: []
+                result:
+                  bucket: analytics-bucket
+                  credential_status: present
+                  id: 550e8400-e29b-41d4-a716-446655440000
+                  maintenance_config:
+                    compaction:
+                      state: enabled
+                      target_size_mb: "128"
+                    snapshot_expiration:
+                      max_snapshot_age: 7d
+                      min_snapshots_to_keep: 100
+                      state: enabled
+                  name: account123_analytics-bucket
+                  status: active
+                success: true
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/r2-data-catalog_api-response-single'
+                - properties:
+                    result:
+                      $ref: '#/components/schemas/r2-data-catalog_catalog'
+                  type: object
+          description: R2 catalog details.
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/r2-data-catalog_api-response-common-failure'
+          description: Bad request.
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/r2-data-catalog_api-response-common-failure'
+          description: Authentication failed.
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/r2-data-catalog_api-response-common-failure'
+          description: Forbidden.
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/r2-data-catalog_api-response-common-failure'
+          description: Catalog not found.
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/r2-data-catalog_api-response-common-failure'
+          description: Internal server error.
+      security:
+      - api_token: []
+      - api_email: []
+        api_key: []
+      summary: Get R2 catalog details
+      tags:
+      - R2 Catalog Management
+      x-api-token-group:
+      - Workers R2 Data Catalog Write
+      - Workers R2 Data Catalog Read
+  /accounts/{account_id}/r2-catalog/{bucket_name}/credential:
+    post:
+      description: |
+        Store authentication credentials for a catalog. These credentials are used
+        to authenticate with R2 storage when performing catalog operations.
+      operationId: store-credentials
+      parameters:
+      - description: Identifies the account.
+        in: path
+        name: account_id
+        required: true
+        schema:
+          $ref: '#/components/schemas/r2-data-catalog_account-id'
+      - description: Specifies the R2 bucket name.
+        in: path
+        name: bucket_name
+        required: true
+        schema:
+          $ref: '#/components/schemas/r2-data-catalog_bucket-name'
+      requestBody:
+        content:
+          application/json:
+            example:
+              token: your-cloudflare-api-token-here
+            schema:
+              $ref: '#/components/schemas/r2-data-catalog_catalog-credential-request'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              example:
+                errors: []
+                messages: []
+                result:
+                success: true
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/r2-data-catalog_api-response-single'
+                - properties:
+                    result:
+                      nullable: true
+                      type: object
+                  type: object
+          description: Credentials stored successfully.
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/r2-data-catalog_api-response-common-failure'
+          description: Bad request.
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/r2-data-catalog_api-response-common-failure'
+          description: Authentication failed.
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/r2-data-catalog_api-response-common-failure'
+          description: Forbidden.
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/r2-data-catalog_api-response-common-failure'
+          description: Catalog not found.
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/r2-data-catalog_api-response-common-failure'
+          description: Internal server error.
+      security:
+      - api_token: []
+      - api_email: []
+        api_key: []
+      summary: Store catalog credentials
+      tags:
+      - Credential Management
+      x-api-token-group:
+      - Workers R2 Data Catalog Write
+  /accounts/{account_id}/r2-catalog/{bucket_name}/disable:
+    post:
+      description: |
+        Disable an R2 bucket as a catalog. This operation deactivates the catalog
+        but preserves existing metadata and data files. The catalog can be
+        re-enabled later.
+      operationId: disable-catalog
+      parameters:
+      - description: Identifies the account.
+        in: path
+        name: account_id
+        required: true
+        schema:
+          $ref: '#/components/schemas/r2-data-catalog_account-id'
+      - description: Specifies the R2 bucket name to disable as catalog.
+        in: path
+        name: bucket_name
+        required: true
+        schema:
+          $ref: '#/components/schemas/r2-data-catalog_bucket-name'
+      responses:
+        "204":
+          description: Catalog disabled successfully.
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/r2-data-catalog_api-response-common-failure'
+          description: Bad request.
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/r2-data-catalog_api-response-common-failure'
+          description: Authentication failed.
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/r2-data-catalog_api-response-common-failure'
+          description: Forbidden.
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/r2-data-catalog_api-response-common-failure'
+          description: Catalog not found.
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/r2-data-catalog_api-response-common-failure'
+          description: Internal server error.
+      security:
+      - api_token: []
+      - api_email: []
+        api_key: []
+      summary: Disable R2 catalog
+      tags:
+      - R2 Catalog Management
+      x-api-token-group:
+      - Workers R2 Data Catalog Write
+  /accounts/{account_id}/r2-catalog/{bucket_name}/enable:
+    post:
+      description: |
+        Enable an R2 bucket as an Apache Iceberg catalog. This operation creates
+        the necessary catalog infrastructure and activates the bucket for storing
+        Iceberg metadata and data files.
+      operationId: enable-catalog
+      parameters:
+      - description: Identifies the account.
+        in: path
+        name: account_id
+        required: true
+        schema:
+          $ref: '#/components/schemas/r2-data-catalog_account-id'
+      - description: Specifies the R2 bucket name to enable as catalog.
+        in: path
+        name: bucket_name
+        required: true
+        schema:
+          $ref: '#/components/schemas/r2-data-catalog_bucket-name'
+      responses:
+        "200":
+          content:
+            application/json:
+              example:
+                errors: []
+                messages: []
+                result:
+                  id: 550e8400-e29b-41d4-a716-446655440000
+                  name: account123_my-bucket
+                success: true
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/r2-data-catalog_api-response-single'
+                - properties:
+                    result:
+                      $ref: '#/components/schemas/r2-data-catalog_catalog-activation-response'
+                  type: object
+          description: Catalog enabled successfully.
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/r2-data-catalog_api-response-common-failure'
+          description: Bad request.
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/r2-data-catalog_api-response-common-failure'
+          description: Authentication failed.
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/r2-data-catalog_api-response-common-failure'
+          description: Forbidden.
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/r2-data-catalog_api-response-common-failure'
+          description: R2 bucket not found.
+        "409":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/r2-data-catalog_api-response-common-failure'
+          description: Catalog already enabled.
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/r2-data-catalog_api-response-common-failure'
+          description: Internal server error.
+      security:
+      - api_token: []
+      - api_email: []
+        api_key: []
+      summary: Enable R2 bucket as a catalog
+      tags:
+      - R2 Catalog Management
+      x-api-token-group:
+      - Workers R2 Data Catalog Write
+  /accounts/{account_id}/r2-catalog/{bucket_name}/maintenance-configs:
+    get:
+      description: |
+        Retrieve the maintenance configuration for a specific catalog,
+        including compaction settings and credential status.
+      operationId: get-maintenance-config
+      parameters:
+      - description: Identifies the account.
+        in: path
+        name: account_id
+        required: true
+        schema:
+          $ref: '#/components/schemas/r2-data-catalog_account-id'
+      - description: Specifies the R2 bucket name.
+        in: path
+        name: bucket_name
+        required: true
+        schema:
+          $ref: '#/components/schemas/r2-data-catalog_bucket-name'
+      responses:
+        "200":
+          content:
+            application/json:
+              example:
+                errors: []
+                messages: []
+                result:
+                  credential_status: present
+                  maintenance_config:
+                    compaction:
+                      state: enabled
+                      target_size_mb: "128"
+                    snapshot_expiration:
+                      max_snapshot_age: 7d
+                      min_snapshots_to_keep: 100
+                      state: enabled
+                success: true
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/r2-data-catalog_api-response-single'
+                - properties:
+                    result:
+                      $ref: '#/components/schemas/r2-data-catalog_catalog-maintenance-config-response'
+                  type: object
+          description: Maintenance configuration retrieved successfully.
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/r2-data-catalog_api-response-common-failure'
+          description: Bad request.
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/r2-data-catalog_api-response-common-failure'
+          description: Authentication failed.
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/r2-data-catalog_api-response-common-failure'
+          description: Forbidden.
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/r2-data-catalog_api-response-common-failure'
+          description: Catalog not found.
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/r2-data-catalog_api-response-common-failure'
+          description: Internal server error.
+      security:
+      - api_token: []
+      - api_email: []
+        api_key: []
+      summary: Get catalog maintenance configuration
+      tags:
+      - Maintenance Configuration
+      x-api-token-group:
+      - Workers R2 Data Catalog Write
+      - Workers R2 Data Catalog Read
+    post:
+      description: |
+        Update the maintenance configuration for a catalog. This allows you to
+        enable or disable compaction and adjust target file sizes for optimization.
+      operationId: update-maintenance-config
+      parameters:
+      - description: Identifies the account.
+        in: path
+        name: account_id
+        required: true
+        schema:
+          $ref: '#/components/schemas/r2-data-catalog_account-id'
+      - description: Specifies the R2 bucket name.
+        in: path
+        name: bucket_name
+        required: true
+        schema:
+          $ref: '#/components/schemas/r2-data-catalog_bucket-name'
+      requestBody:
+        content:
+          application/json:
+            example:
+              compaction:
+                state: enabled
+                target_size_mb: "256"
+              snapshot_expiration:
+                max_snapshot_age: 14d
+                min_snapshots_to_keep: 5
+                state: enabled
+            schema:
+              $ref: '#/components/schemas/r2-data-catalog_catalog-maintenance-update-request'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              example:
+                errors: []
+                messages: []
+                result:
+                  compaction:
+                    state: enabled
+                    target_size_mb: "256"
+                  snapshot_expiration:
+                    max_snapshot_age: 14d
+                    min_snapshots_to_keep: 5
+                    state: enabled
+                success: true
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/r2-data-catalog_api-response-single'
+                - properties:
+                    result:
+                      $ref: '#/components/schemas/r2-data-catalog_catalog-maintenance-config'
+                  type: object
+          description: Maintenance configuration updated successfully.
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/r2-data-catalog_api-response-common-failure'
+          description: Bad request.
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/r2-data-catalog_api-response-common-failure'
+          description: Authentication failed.
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/r2-data-catalog_api-response-common-failure'
+          description: Forbidden.
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/r2-data-catalog_api-response-common-failure'
+          description: Catalog not found.
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/r2-data-catalog_api-response-common-failure'
+          description: Internal server error.
+      security:
+      - api_token: []
+      - api_email: []
+        api_key: []
+      summary: Update catalog maintenance configuration
+      tags:
+      - Maintenance Configuration
+      x-api-token-group:
+      - Workers R2 Data Catalog Write
+  /accounts/{account_id}/r2-catalog/{bucket_name}/namespaces:
+    get:
+      description: |
+        Returns a list of namespaces in the specified R2 catalog.
+        Supports hierarchical filtering and pagination for efficient traversal
+        of large namespace hierarchies.
+      operationId: list-namespaces
+      parameters:
+      - description: Identifies the account.
+        in: path
+        name: account_id
+        required: true
+        schema:
+          $ref: '#/components/schemas/r2-data-catalog_account-id'
+      - description: Specifies the R2 bucket name.
+        in: path
+        name: bucket_name
+        required: true
+        schema:
+          $ref: '#/components/schemas/r2-data-catalog_bucket-name'
+      - description: |
+          Opaque pagination token from a previous response.
+          Use this to fetch the next page of results.
+        example: MSYxNzU5NzU1NTc4NTA0MTk0JjAxOTliOTliLTJjODgtNzNiMy04ZGJiLTQyMWUwZThmMjc1Nw
+        in: query
+        name: page_token
+        schema:
+          type: string
+      - description: |
+          Maximum number of namespaces to return per page.
+          Defaults to 100, maximum 1000.
+        example: 100
+        in: query
+        name: page_size
+        schema:
+          default: 100
+          maximum: 1000
+          minimum: 1
+          type: integer
+      - description: |
+          Parent namespace to filter by. Only returns direct children of this namespace.
+          For nested namespaces, use %1F as separator (e.g., "bronze%1Fanalytics").
+          Omit this parameter to list top-level namespaces.
+        example: bronze
+        in: query
+        name: parent
+        schema:
+          type: string
+      - description: |
+          Whether to include namespace UUIDs in the response.
+          Set to true to receive the namespace_uuids array.
+        example: true
+        in: query
+        name: return_uuids
+        schema:
+          default: false
+          type: boolean
+      - description: |
+          Whether to include additional metadata (timestamps).
+          When true, response includes created_at and updated_at arrays.
+        example: true
+        in: query
+        name: return_details
+        schema:
+          default: false
+          type: boolean
+      responses:
+        "200":
+          content:
+            application/json:
+              example:
+                errors: []
+                messages: []
+                result:
+                  details:
+                  - created_at: "2025-10-07T10:00:00Z"
+                    namespace:
+                    - bronze
+                    namespace_uuid: 0199b999-6869-7383-bb1f-d30e059d5326
+                    updated_at: "2025-10-07T12:00:00Z"
+                  - created_at: "2025-10-07T10:15:00Z"
+                    namespace:
+                    - silver
+                    namespace_uuid: 0199b99b-2c88-73b3-8dbb-421e0e8f2757
+                    updated_at:
+                  - created_at: "2025-10-07T10:30:00Z"
+                    namespace:
+                    - gold
+                    namespace_uuid: 0199b99c-3d99-73c4-9dcc-532f1f9g3868
+                    updated_at: "2025-10-07T11:00:00Z"
+                  namespace_uuids:
+                  - 0199b999-6869-7383-bb1f-d30e059d5326
+                  - 0199b99b-2c88-73b3-8dbb-421e0e8f2757
+                  - 0199b99c-3d99-73c4-9dcc-532f1f9g3868
+                  namespaces:
+                  - - bronze
+                  - - silver
+                  - - gold
+                  next_page_token:
+                success: true
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/r2-data-catalog_api-response-single'
+                - properties:
+                    result:
+                      $ref: '#/components/schemas/r2-data-catalog_namespace-list-response'
+                  type: object
+          description: List of namespaces retrieved successfully.
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/r2-data-catalog_api-response-common-failure'
+          description: Bad request (e.g., invalid page_size, malformed parent namespace).
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/r2-data-catalog_api-response-common-failure'
+          description: Authentication failed.
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/r2-data-catalog_api-response-common-failure'
+          description: Forbidden.
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/r2-data-catalog_api-response-common-failure'
+          description: Catalog not found.
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/r2-data-catalog_api-response-common-failure'
+          description: Internal server error.
+      security:
+      - api_token: []
+      - api_email: []
+        api_key: []
+      summary: List namespaces in catalog
+      tags:
+      - Namespace Management
+      x-api-token-group:
+      - Workers R2 Data Catalog Write
+      - Workers R2 Data Catalog Read
+  /accounts/{account_id}/r2-catalog/{bucket_name}/namespaces/{namespace}/tables:
+    get:
+      description: |
+        Returns a list of tables in the specified namespace within an R2 catalog.
+        Supports pagination for efficient traversal of large table collections.
+      operationId: list-tables
+      parameters:
+      - description: Identifies the account.
+        in: path
+        name: account_id
+        required: true
+        schema:
+          $ref: '#/components/schemas/r2-data-catalog_account-id'
+      - description: Specifies the R2 bucket name.
+        in: path
+        name: bucket_name
+        required: true
+        schema:
+          $ref: '#/components/schemas/r2-data-catalog_bucket-name'
+      - description: |
+          The namespace identifier.
+          For nested namespaces, use %1F as separator (e.g., "bronze%1Fanalytics").
+        example: bronze
+        in: path
+        name: namespace
+        required: true
+        schema:
+          type: string
+      - description: |
+          Opaque pagination token from a previous response.
+          Use this to fetch the next page of results.
+        example: MSYxNzU5NzU2MTI4NTU2Njk2JjAxOTliOWEzLTkxMmUtN2ZhMS05YzllLTg5MTAxMGQzYTg0MQ
+        in: query
+        name: page_token
+        schema:
+          type: string
+      - description: |
+          Maximum number of tables to return per page.
+          Defaults to 100, maximum 1000.
+        example: 100
+        in: query
+        name: page_size
+        schema:
+          default: 100
+          maximum: 1000
+          minimum: 1
+          type: integer
+      - description: |
+          Whether to include table UUIDs in the response.
+          Set to true to receive the table_uuids array.
+        example: true
+        in: query
+        name: return_uuids
+        schema:
+          default: false
+          type: boolean
+      - description: |
+          Whether to include additional metadata (timestamps, locations).
+          When true, response includes created_at, updated_at, metadata_locations, and locations arrays.
+        example: true
+        in: query
+        name: return_details
+        schema:
+          default: false
+          type: boolean
+      responses:
+        "200":
+          content:
+            application/json:
+              example:
+                errors: []
+                messages: []
+                result:
+                  details:
+                  - created_at: "2025-10-07T10:00:00Z"
+                    identifier:
+                      name: events
+                      namespace:
+                      - bronze
+                    location: s3://my-bucket/__r2_data_catalog/wh-id/table-id/
+                    metadata_location: s3://my-bucket/__r2_data_catalog/wh-id/table-id/metadata/v1.metadata.json
+                    table_uuid: 0199b9a1-28a0-71e0-a73e-b0fc32c8468e
+                    updated_at: "2025-10-07T15:00:00Z"
+                  - created_at: "2025-10-07T10:30:00Z"
+                    identifier:
+                      name: users
+                      namespace:
+                      - bronze
+                    location: s3://my-bucket/__r2_data_catalog/wh-id/table-id-2/
+                    metadata_location: s3://my-bucket/__r2_data_catalog/wh-id/table-id-2/metadata/v2.metadata.json
+                    table_uuid: 0199b9a1-3c74-7731-bf53-d8c67ead079d
+                    updated_at: "2025-10-07T16:00:00Z"
+                  identifiers:
+                  - name: events
+                    namespace:
+                    - bronze
+                  - name: users
+                    namespace:
+                    - bronze
+                  next_page_token:
+                  table_uuids:
+                  - 0199b9a1-28a0-71e0-a73e-b0fc32c8468e
+                  - 0199b9a1-3c74-7731-bf53-d8c67ead079d
+                success: true
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/r2-data-catalog_api-response-single'
+                - properties:
+                    result:
+                      $ref: '#/components/schemas/r2-data-catalog_table-list-response'
+                  type: object
+          description: List of tables retrieved successfully.
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/r2-data-catalog_api-response-common-failure'
+          description: Bad request (e.g., invalid page_size, malformed namespace).
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/r2-data-catalog_api-response-common-failure'
+          description: Authentication failed.
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/r2-data-catalog_api-response-common-failure'
+          description: Forbidden.
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/r2-data-catalog_api-response-common-failure'
+          description: Catalog or namespace not found.
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/r2-data-catalog_api-response-common-failure'
+          description: Internal server error.
+      security:
+      - api_token: []
+      - api_email: []
+        api_key: []
+      summary: List tables in namespace
+      tags:
+      - Table Management
+      x-api-token-group:
+      - Workers R2 Data Catalog Write
+      - Workers R2 Data Catalog Read
+  /accounts/{account_id}/r2-catalog/{bucket_name}/namespaces/{namespace}/tables/{table_name}/maintenance-configs:
+    get:
+      description: |
+        Retrieve the maintenance configuration for a specific table,
+        including compaction settings.
+      operationId: get-table-maintenance-config
+      parameters:
+      - description: Identifies the account.
+        in: path
+        name: account_id
+        required: true
+        schema:
+          $ref: '#/components/schemas/r2-data-catalog_account-id'
+      - description: Specifies the R2 bucket name.
+        in: path
+        name: bucket_name
+        required: true
+        schema:
+          $ref: '#/components/schemas/r2-data-catalog_bucket-name'
+      - description: The namespace identifier (use %1F as separator for nested namespaces).
+        example: my_namespace%1Fsub_namespace
+        in: path
+        name: namespace
+        required: true
+        schema:
+          type: string
+      - description: The table name.
+        example: my_table
+        in: path
+        name: table_name
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          content:
+            application/json:
+              example:
+                errors: []
+                messages: []
+                result:
+                  maintenance_config:
+                    compaction:
+                      state: enabled
+                      target_size_mb: "128"
+                    snapshot_expiration:
+                      max_snapshot_age: 7d
+                      min_snapshots_to_keep: 100
+                      state: enabled
+                success: true
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/r2-data-catalog_api-response-single'
+                - properties:
+                    result:
+                      $ref: '#/components/schemas/r2-data-catalog_table-maintenance-config-response'
+                  type: object
+          description: Table maintenance configuration retrieved successfully.
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/r2-data-catalog_api-response-common-failure'
+          description: Bad request.
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/r2-data-catalog_api-response-common-failure'
+          description: Authentication failed.
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/r2-data-catalog_api-response-common-failure'
+          description: Forbidden.
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/r2-data-catalog_api-response-common-failure'
+          description: Table not found.
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/r2-data-catalog_api-response-common-failure'
+          description: Internal server error.
+      security:
+      - api_token: []
+      - api_email: []
+        api_key: []
+      summary: Get table maintenance configuration
+      tags:
+      - Table Maintenance Configuration
+      x-api-token-group:
+      - Workers R2 Data Catalog Write
+      - Workers R2 Data Catalog Read
+    post:
+      description: |
+        Update the maintenance configuration for a specific table. This allows you to
+        enable or disable compaction and adjust target file sizes for optimization.
+      operationId: update-table-maintenance-config
+      parameters:
+      - description: Identifies the account.
+        in: path
+        name: account_id
+        required: true
+        schema:
+          $ref: '#/components/schemas/r2-data-catalog_account-id'
+      - description: Specifies the R2 bucket name.
+        in: path
+        name: bucket_name
+        required: true
+        schema:
+          $ref: '#/components/schemas/r2-data-catalog_bucket-name'
+      - description: The namespace identifier (use %1F as separator for nested namespaces).
+        example: my_namespace%1Fsub_namespace
+        in: path
+        name: namespace
+        required: true
+        schema:
+          type: string
+      - description: The table name.
+        example: my_table
+        in: path
+        name: table_name
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            example:
+              compaction:
+                state: enabled
+                target_size_mb: "256"
+              snapshot_expiration:
+                max_snapshot_age: 14d
+                min_snapshots_to_keep: 5
+                state: enabled
+            schema:
+              $ref: '#/components/schemas/r2-data-catalog_table-maintenance-update-request'
+        required: true
+      responses:
+        "200":
+          content:
+            application/json:
+              example:
+                errors: []
+                messages: []
+                result:
+                  compaction:
+                    state: enabled
+                    target_size_mb: "256"
+                  snapshot_expiration:
+                    max_snapshot_age: 14d
+                    min_snapshots_to_keep: 5
+                    state: enabled
+                success: true
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/r2-data-catalog_api-response-single'
+                - properties:
+                    result:
+                      $ref: '#/components/schemas/r2-data-catalog_table-maintenance-config'
+                  type: object
+          description: Table maintenance configuration updated successfully.
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/r2-data-catalog_api-response-common-failure'
+          description: Bad request.
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/r2-data-catalog_api-response-common-failure'
+          description: Authentication failed.
+        "403":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/r2-data-catalog_api-response-common-failure'
+          description: Forbidden.
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/r2-data-catalog_api-response-common-failure'
+          description: Table not found.
+        "500":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/r2-data-catalog_api-response-common-failure'
+          description: Internal server error.
+      security:
+      - api_token: []
+      - api_email: []
+        api_key: []
+      summary: Update table maintenance configuration
+      tags:
+      - Table Maintenance Configuration
+      x-api-token-group:
+      - Workers R2 Data Catalog Write
+  /accounts/{account_id}/r2/buckets:
+    get:
+      description: Lists all R2 buckets on your account.
+      operationId: r2-list-buckets
+      parameters:
+      - in: path
+        name: account_id
+        required: true
+        schema:
+          $ref: '#/components/schemas/r2_account_identifier'
+      - in: query
+        name: name_contains
+        schema:
+          description: Bucket names to filter by. Only buckets with this phrase in their name will be returned.
+          example: my-bucket
+          type: string
+      - in: query
+        name: start_after
+        schema:
+          description: Bucket name to start searching after. Buckets are ordered lexicographically.
+          example: my-bucket
+          type: string
+      - in: query
+        name: per_page
+        schema:
+          default: 20
+          description: Maximum number of buckets to return in a single call.
+          maximum: 1000
+          minimum: 1
+          type: number
+      - in: query
+        name: order
+        schema:
+          description: Field to order buckets by.
+          enum:
+          - name
+          type: string
+      - in: query
+        name: direction
+        schema:
+          description: Direction to order buckets.
+          enum:
+          - asc
+          - desc
+          example: desc
+          type: string
+      - in: query
+        name: cursor
+        schema:
+          description: Pagination cursor received during the last List Buckets call. R2 buckets are paginated using cursors instead of page numbers.
+          type: string
+      - in: header
+        name: cf-r2-jurisdiction
+        schema:
+          $ref: '#/components/schemas/r2_jurisdiction'
+      responses:
+        4XX:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/r2_v4_response_failure'
+          description: List Buckets response failure.
+        "200":
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/r2_v4_response_list'
+                - properties:
+                    result:
+                      properties:
+                        buckets:
+                          items:
+                            $ref: '#/components/schemas/r2_bucket'
+                          type: array
+                      type: object
+                  type: object
+          description: List Buckets response.
+      security:
+      - api_token: []
+      summary: List Buckets
+      tags:
+      - R2 Bucket
+      x-api-token-group:
+      - Workers R2 Storage Write
+      - Workers R2 Storage Read
+    post:
+      description: Creates a new R2 bucket.
+      operationId: r2-create-bucket
+      parameters:
+      - in: path
+        name: account_id
+        required: true
+        schema:
+          $ref: '#/components/schemas/r2_account_identifier'
+      - in: header
+        name: cf-r2-jurisdiction
+        schema:
+          $ref: '#/components/schemas/r2_jurisdiction'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              example: '{"name": "example-bucket"}'
+              properties:
+                locationHint:
+                  $ref: '#/components/schemas/r2_bucket_location'
+                name:
+                  $ref: '#/components/schemas/r2_bucket_name'
+                storageClass:
+                  $ref: '#/components/schemas/r2_storage_class'
+              required:
+              - name
+              type: object
+        required: true
+      responses:
+        4XX:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/r2_v4_response_failure'
+          description: Create Bucket response failure.
+        "200":
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/r2_v4_response'
+                - properties:
+                    result:
+                      $ref: '#/components/schemas/r2_bucket'
+                  type: object
+          description: Create Bucket response.
+      security:
+      - api_token: []
+      summary: Create Bucket
+      tags:
+      - R2 Bucket
+      x-api-token-group:
+      - Workers R2 Storage Write
+  /accounts/{account_id}/r2/buckets/{bucket_name}:
+    delete:
+      description: Deletes an existing R2 bucket.
+      operationId: r2-delete-bucket
+      parameters:
+      - in: path
+        name: bucket_name
+        required: true
+        schema:
+          $ref: '#/components/schemas/r2_bucket_name'
+      - in: path
+        name: account_id
+        required: true
+        schema:
+          $ref: '#/components/schemas/r2_account_identifier'
+      - in: header
+        name: cf-r2-jurisdiction
+        schema:
+          $ref: '#/components/schemas/r2_jurisdiction'
+      responses:
+        4XX:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/r2_v4_response_failure'
+          description: Delete Bucket response failure.
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/r2_v4_response'
+          description: Delete Bucket response.
+      security:
+      - api_token: []
+      summary: Delete Bucket
+      tags:
+      - R2 Bucket
+      x-api-token-group:
+      - Workers R2 Storage Write
+    get:
+      description: Gets properties of an existing R2 bucket.
+      operationId: r2-get-bucket
+      parameters:
+      - in: path
+        name: account_id
+        required: true
+        schema:
+          $ref: '#/components/schemas/r2_account_identifier'
+      - in: path
+        name: bucket_name
+        required: true
+        schema:
+          $ref: '#/components/schemas/r2_bucket_name'
+      - in: header
+        name: cf-r2-jurisdiction
+        schema:
+          $ref: '#/components/schemas/r2_jurisdiction'
+      responses:
+        4XX:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/r2_v4_response_failure'
+          description: Get Bucket response failure.
+        "200":
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/r2_v4_response'
+                - properties:
+                    result:
+                      $ref: '#/components/schemas/r2_bucket'
+                  type: object
+          description: Get Bucket response.
+      security:
+      - api_token: []
+      summary: Get Bucket
+      tags:
+      - R2 Bucket
+      x-cfPermissionsRequired:
+        enum:
+        - com.cloudflare.edge.r2.bucket.read
+    patch:
+      description: Updates properties of an existing R2 bucket.
+      operationId: r2-patch-bucket
+      parameters:
+      - in: path
+        name: account_id
+        required: true
+        schema:
+          $ref: '#/components/schemas/r2_account_identifier'
+      - in: path
+        name: bucket_name
+        required: true
+        schema:
+          $ref: '#/components/schemas/r2_bucket_name'
+      - in: header
+        name: cf-r2-jurisdiction
+        schema:
+          $ref: '#/components/schemas/r2_jurisdiction'
+      - in: header
+        name: cf-r2-storage-class
+        required: true
+        schema:
+          allOf:
+          - $ref: '#/components/schemas/r2_storage_class'
+          x-stainless-param: storage_class
+      responses:
+        4XX:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/r2_v4_response_failure'
+          description: Get Bucket response failure.
+        "200":
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/r2_v4_response'
+                - properties:
+                    result:
+                      $ref: '#/components/schemas/r2_bucket'
+                  type: object
+          description: Patch Bucket response.
+      security:
+      - api_token: []
+      summary: Patch Bucket
+      tags:
+      - R2 Bucket
+      x-cfPermissionsRequired:
+        enum:
+        - com.cloudflare.edge.r2.bucket.write
+  /accounts/{account_id}/r2/buckets/{bucket_name}/cors:
+    delete:
+      description: Delete the CORS policy for a bucket.
+      operationId: r2-delete-bucket-cors-policy
+      parameters:
+      - in: path
+        name: bucket_name
+        required: true
+        schema:
+          $ref: '#/components/schemas/r2_bucket_name'
+      - in: path
+        name: account_id
+        required: true
+        schema:
+          $ref: '#/components/schemas/r2_account_identifier'
+      - in: header
+        name: cf-r2-jurisdiction
+        schema:
+          $ref: '#/components/schemas/r2_jurisdiction'
+      responses:
+        4XX:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/r2_v4_response_failure'
+          description: Error Response.
+        "200":
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/r2_v4_response'
+                - type: object
+          description: Success Response.
+      security:
+      - api_token: []
+      summary: Delete Bucket CORS Policy
+      tags:
+      - R2 Bucket
+    get:
+      description: Get the CORS policy for a bucket.
+      operationId: r2-get-bucket-cors-policy
+      parameters:
+      - in: path
+        name: bucket_name
+        required: true
+        schema:
+          $ref: '#/components/schemas/r2_bucket_name'
+      - in: path
+        name: account_id
+        required: true
+        schema:
+          $ref: '#/components/schemas/r2_account_identifier'
+      - in: header
+        name: cf-r2-jurisdiction
+        schema:
+          $ref: '#/components/schemas/r2_jurisdiction'
+      responses:
+        4XX:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/r2_v4_response_failure'
+          description: Error Response.
+        "200":
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/r2_v4_response'
+                - properties:
+                    result:
+                      properties:
+                        rules:
+                          items:
+                            $ref: '#/components/schemas/r2_cors-rule'
+                          type: array
+                      type: object
+                  type: object
+          description: Success Response.
+      security:
+      - api_token: []
+      summary: Get Bucket CORS Policy
+      tags:
+      - R2 Bucket
+    put:
+      description: Set the CORS policy for a bucket.
+      operationId: r2-put-bucket-cors-policy
+      parameters:
+      - in: path
+        name: bucket_name
+        required: true
+        schema:
+          $ref: '#/components/schemas/r2_bucket_name'
+      - in: path
+        name: account_id
+        required: true
+        schema:
+          $ref: '#/components/schemas/r2_account_identifier'
+      - in: header
+        name: cf-r2-jurisdiction
+        schema:
+          $ref: '#/components/schemas/r2_jurisdiction'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                rules:
+                  items:
+                    $ref: '#/components/schemas/r2_cors-rule'
+                  type: array
+              type: object
+        required: true
+      responses:
+        4XX:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/r2_v4_response_failure'
+          description: Error Response.
+        "200":
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/r2_v4_response'
+                - type: object
+          description: Success Response.
+      security:
+      - api_token: []
+      summary: Put Bucket CORS Policy
+      tags:
+      - R2 Bucket
+  /accounts/{account_id}/r2/buckets/{bucket_name}/domains/custom:
+    get:
+      description: Gets a list of all custom domains registered with an existing R2 bucket.
+      operationId: r2-list-custom-domains
+      parameters:
+      - in: path
+        name: account_id
+        required: true
+        schema:
+          $ref: '#/components/schemas/r2_account_identifier'
+      - in: path
+        name: bucket_name
+        required: true
+        schema:
+          $ref: '#/components/schemas/r2_bucket_name'
+      - in: header
+        name: cf-r2-jurisdiction
+        schema:
+          $ref: '#/components/schemas/r2_jurisdiction'
+      responses:
+        4XX:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/r2_v4_response_failure'
+          description: List Custom Domains response failure.
+        "200":
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/r2_v4_response'
+                - properties:
+                    result:
+                      $ref: '#/components/schemas/r2_list_custom_domains_response'
+                  type: object
+          description: List Custom Domains response.
+      security:
+      - api_token: []
+      summary: List Custom Domains of Bucket
+      tags:
+      - R2 Bucket
+      x-cfPermissionsRequired:
+        enum:
+        - com.cloudflare.edge.r2.bucket.read
+    post:
+      description: Register a new custom domain for an existing R2 bucket.
+      operationId: r2-add-custom-domain
+      parameters:
+      - in: path
+        name: account_id
+        required: true
+        schema:
+          $ref: '#/components/schemas/r2_account_identifier'
+      - in: path
+        name: bucket_name
+        required: true
+        schema:
+          $ref: '#/components/schemas/r2_bucket_name'
+      - in: header
+        name: cf-r2-jurisdiction
+        schema:
+          $ref: '#/components/schemas/r2_jurisdiction'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/r2_add_custom_domain_request'
+        required: true
+      responses:
+        4XX:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/r2_v4_response_failure'
+          description: Add Custom Domain response failure.
+        "200":
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/r2_v4_response'
+                - properties:
+                    result:
+                      $ref: '#/components/schemas/r2_add_custom_domain_response'
+                  type: object
+          description: Add Custom Domain response.
+      security:
+      - api_token: []
+      summary: Attach Custom Domain To Bucket
+      tags:
+      - R2 Bucket
+      x-cfPermissionsRequired:
+        enum:
+        - com.cloudflare.edge.r2.bucket.write
+  /accounts/{account_id}/r2/buckets/{bucket_name}/domains/custom/{domain}:
+    delete:
+      description: Remove custom domain registration from an existing R2 bucket.
+      operationId: r2-delete-custom-domain
+      parameters:
+      - in: path
+        name: bucket_name
+        required: true
+        schema:
+          $ref: '#/components/schemas/r2_bucket_name'
+      - in: path
+        name: account_id
+        required: true
+        schema:
+          $ref: '#/components/schemas/r2_account_identifier'
+      - in: path
+        name: domain
+        required: true
+        schema:
+          $ref: '#/components/schemas/r2_domain_name'
+      - in: header
+        name: cf-r2-jurisdiction
+        schema:
+          $ref: '#/components/schemas/r2_jurisdiction'
+      responses:
+        4XX:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/r2_v4_response_failure'
+          description: Delete Custom Domain response failure.
+        "200":
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/r2_v4_response'
+                - properties:
+                    result:
+                      $ref: '#/components/schemas/r2_remove_custom_domain_response'
+                  type: object
+          description: Delete Custom Domain response.
+      security:
+      - api_token: []
+      summary: Remove Custom Domain From Bucket
+      tags:
+      - R2 Bucket
+      x-api-token-group:
+      - Workers R2 Storage Write
+    get:
+      description: Get the configuration for a custom domain on an existing R2 bucket.
+      operationId: r2-get-custom-domain-settings
+      parameters:
+      - in: path
+        name: account_id
+        required: true
+        schema:
+          $ref: '#/components/schemas/r2_account_identifier'
+      - in: path
+        name: bucket_name
+        required: true
+        schema:
+          $ref: '#/components/schemas/r2_bucket_name'
+      - in: path
+        name: domain
+        required: true
+        schema:
+          $ref: '#/components/schemas/r2_domain_name'
+      - in: header
+        name: cf-r2-jurisdiction
+        schema:
+          $ref: '#/components/schemas/r2_jurisdiction'
+      responses:
+        4XX:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/r2_v4_response_failure'
+          description: Get Custom Domain Configuration response failure.
+        "200":
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/r2_v4_response'
+                - properties:
+                    result:
+                      allOf:
+                      - $ref: '#/components/schemas/r2_get_custom_domain_response'
+                  type: object
+          description: Get Custom Domain Configuration response.
+      security:
+      - api_token: []
+      summary: Get Custom Domain Settings
+      tags:
+      - R2 Bucket
+      x-api-token-group:
+      - Workers R2 Storage Write
+      - Workers R2 Storage Read
+    put:
+      description: Edit the configuration for a custom domain on an existing R2 bucket.
+      operationId: r2-edit-custom-domain-settings
+      parameters:
+      - in: path
+        name: account_id
+        required: true
+        schema:
+          $ref: '#/components/schemas/r2_account_identifier'
+      - in: path
+        name: bucket_name
+        required: true
+        schema:
+          $ref: '#/components/schemas/r2_bucket_name'
+      - in: path
+        name: domain
+        required: true
+        schema:
+          $ref: '#/components/schemas/r2_domain_name'
+      - in: header
+        name: cf-r2-jurisdiction
+        schema:
+          $ref: '#/components/schemas/r2_jurisdiction'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/r2_edit_custom_domain_request'
+        required: true
+      responses:
+        4XX:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/r2_v4_response_failure'
+          description: Edit Custom Domain Configuration response failure.
+        "200":
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/r2_v4_response'
+                - properties:
+                    result:
+                      allOf:
+                      - $ref: '#/components/schemas/r2_edit_custom_domain_response'
+                  type: object
+          description: Edit Custom Domain Configuration response.
+      security:
+      - api_token: []
+      summary: Configure Custom Domain Settings
+      tags:
+      - R2 Bucket
+      x-cfPermissionsRequired:
+        enum:
+        - com.cloudflare.edge.r2.bucket.write
+  /accounts/{account_id}/r2/buckets/{bucket_name}/domains/managed:
+    get:
+      description: Gets state of public access over the bucket's R2-managed (r2.dev) domain.
+      operationId: r2-get-bucket-public-policy
+      parameters:
+      - in: path
+        name: account_id
+        required: true
+        schema:
+          $ref: '#/components/schemas/r2_account_identifier'
+      - in: path
+        name: bucket_name
+        required: true
+        schema:
+          $ref: '#/components/schemas/r2_bucket_name'
+      - in: header
+        name: cf-r2-jurisdiction
+        schema:
+          $ref: '#/components/schemas/r2_jurisdiction'
+      responses:
+        4XX:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/r2_v4_response_failure'
+          description: Get Managed Subdomain response failure.
+        "200":
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/r2_v4_response'
+                - properties:
+                    result:
+                      $ref: '#/components/schemas/r2_managed_domain_response'
+                  type: object
+          description: Get Managed Subdomain response.
+      security:
+      - api_token: []
+      summary: Get r2.dev Domain of Bucket
+      tags:
+      - R2 Bucket
+      x-cfPermissionsRequired:
+        enum:
+        - com.cloudflare.edge.r2.bucket.read
+    put:
+      description: Updates state of public access over the bucket's R2-managed (r2.dev) domain.
+      operationId: r2-put-bucket-public-policy
+      parameters:
+      - in: path
+        name: account_id
+        required: true
+        schema:
+          $ref: '#/components/schemas/r2_account_identifier'
+      - in: path
+        name: bucket_name
+        required: true
+        schema:
+          $ref: '#/components/schemas/r2_bucket_name'
+      - in: header
+        name: cf-r2-jurisdiction
+        schema:
+          $ref: '#/components/schemas/r2_jurisdiction'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/r2_edit_managed_domain_request'
+        required: true
+      responses:
+        4XX:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/r2_v4_response_failure'
+          description: Update Managed Subdomain response failure.
+        "200":
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/r2_v4_response'
+                - properties:
+                    result:
+                      $ref: '#/components/schemas/r2_managed_domain_response'
+                  type: object
+          description: Update Managed Subdomain response.
+      security:
+      - api_token: []
+      summary: Update r2.dev Domain of Bucket
+      tags:
+      - R2 Bucket
+      x-cfPermissionsRequired:
+        enum:
+        - com.cloudflare.edge.r2.bucket.write
+  /accounts/{account_id}/r2/buckets/{bucket_name}/lifecycle:
+    get:
+      description: Get object lifecycle rules for a bucket.
+      operationId: r2-get-bucket-lifecycle-configuration
+      parameters:
+      - in: path
+        name: bucket_name
+        required: true
+        schema:
+          $ref: '#/components/schemas/r2_bucket_name'
+      - in: path
+        name: account_id
+        required: true
+        schema:
+          $ref: '#/components/schemas/r2_account_identifier'
+      - in: header
+        name: cf-r2-jurisdiction
+        schema:
+          $ref: '#/components/schemas/r2_jurisdiction'
+      responses:
+        4XX:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/r2_v4_response_failure'
+          description: Error Response.
+        "200":
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/r2_v4_response'
+                - properties:
+                    result:
+                      $ref: '#/components/schemas/r2_lifecycle-config'
+                  type: object
+          description: Success Response.
+      security:
+      - api_token: []
+      summary: Get Object Lifecycle Rules
+      tags:
+      - R2 Bucket
+    put:
+      description: Set the object lifecycle rules for a bucket.
+      operationId: r2-put-bucket-lifecycle-configuration
+      parameters:
+      - in: path
+        name: bucket_name
+        required: true
+        schema:
+          $ref: '#/components/schemas/r2_bucket_name'
+      - in: path
+        name: account_id
+        required: true
+        schema:
+          $ref: '#/components/schemas/r2_account_identifier'
+      - in: header
+        name: cf-r2-jurisdiction
+        schema:
+          $ref: '#/components/schemas/r2_jurisdiction'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                rules:
+                  items:
+                    $ref: '#/components/schemas/r2_lifecycle-rule'
+                  type: array
+              type: object
+        required: true
+      responses:
+        4XX:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/r2_v4_response_failure'
+          description: Error Response.
+        "200":
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/r2_v4_response'
+                - type: object
+          description: Success Response.
+      security:
+      - api_token: []
+      summary: Put Object Lifecycle Rules
+      tags:
+      - R2 Bucket
+  /accounts/{account_id}/r2/buckets/{bucket_name}/local-uploads:
+    get:
+      description: Get the local uploads configuration for a bucket. When enabled, object's data is written to the nearest region first, then asynchronously replicated to the bucket's primary region.
+      operationId: r2-get-bucket-local-uploads-configuration
+      parameters:
+      - in: path
+        name: bucket_name
+        required: true
+        schema:
+          $ref: '#/components/schemas/r2_bucket_name'
+      - in: path
+        name: account_id
+        required: true
+        schema:
+          $ref: '#/components/schemas/r2_account_identifier'
+      responses:
+        4XX:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/r2_v4_response_failure'
+          description: Error Response.
+        "200":
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/r2_v4_response'
+                - properties:
+                    result:
+                      $ref: '#/components/schemas/r2_local_uploads_configuration'
+                  type: object
+          description: Success Response.
+      security:
+      - api_token: []
+      summary: Get Local Uploads Configuration
+      tags:
+      - R2 Bucket
+      x-cfPermissionsRequired:
+        enum:
+        - com.cloudflare.edge.r2.bucket.read
+    put:
+      description: Set the local uploads configuration for a bucket. When enabled, object's data is written to the nearest region first, then asynchronously replicated to the bucket's primary region.
+      operationId: r2-put-bucket-local-uploads-configuration
+      parameters:
+      - in: path
+        name: bucket_name
+        required: true
+        schema:
+          $ref: '#/components/schemas/r2_bucket_name'
+      - in: path
+        name: account_id
+        required: true
+        schema:
+          $ref: '#/components/schemas/r2_account_identifier'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                enabled:
+                  description: Whether to enable local uploads for this bucket.
+                  type: boolean
+                  x-auditable: true
+              required:
+              - enabled
+              type: object
+        required: true
+      responses:
+        4XX:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/r2_v4_response_failure'
+          description: Error Response.
+        "200":
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/r2_v4_response'
+                - type: object
+          description: Success Response.
+      security:
+      - api_token: []
+      summary: Put Local Uploads Configuration
+      tags:
+      - R2 Bucket
+      x-cfPermissionsRequired:
+        enum:
+        - com.cloudflare.edge.r2.bucket.write
+  /accounts/{account_id}/r2/buckets/{bucket_name}/lock:
+    get:
+      description: Get lock rules for a bucket.
+      operationId: r2-get-bucket-lock-configuration
+      parameters:
+      - in: path
+        name: bucket_name
+        required: true
+        schema:
+          $ref: '#/components/schemas/r2_bucket_name'
+      - in: path
+        name: account_id
+        required: true
+        schema:
+          $ref: '#/components/schemas/r2_account_identifier'
+      - in: header
+        name: cf-r2-jurisdiction
+        schema:
+          $ref: '#/components/schemas/r2_jurisdiction'
+      responses:
+        4XX:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/r2_v4_response_failure'
+          description: Error Response.
+        "200":
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/r2_v4_response'
+                - properties:
+                    result:
+                      $ref: '#/components/schemas/r2_bucket-lock-rule-config'
+                  type: object
+          description: Success Response.
+      security:
+      - api_token: []
+      summary: Get Bucket Lock Rules
+      tags:
+      - R2 Bucket
+    put:
+      description: Set lock rules for a bucket.
+      operationId: r2-put-bucket-lock-configuration
+      parameters:
+      - in: path
+        name: bucket_name
+        required: true
+        schema:
+          $ref: '#/components/schemas/r2_bucket_name'
+      - in: path
+        name: account_id
+        required: true
+        schema:
+          $ref: '#/components/schemas/r2_account_identifier'
+      - in: header
+        name: cf-r2-jurisdiction
+        schema:
+          $ref: '#/components/schemas/r2_jurisdiction'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                rules:
+                  items:
+                    $ref: '#/components/schemas/r2_bucket-lock-rule'
+                  type: array
+              type: object
+        required: true
+      responses:
+        4XX:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/r2_v4_response_failure'
+          description: Error Response.
+        "200":
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/r2_v4_response'
+                - type: object
+          description: Success Response.
+      security:
+      - api_token: []
+      summary: Put Bucket Lock Rules
+      tags:
+      - R2 Bucket
+  /accounts/{account_id}/r2/buckets/{bucket_name}/objects:
+    delete:
+      description: |
+        Deletes multiple objects from an R2 bucket. Two modes are supported:
+
+        1. **Delete by list** (default): Provide a JSON array of object keys in the request body.
+           All listed objects are deleted; per-key errors are reported in the response.
+        2. **Delete by prefix**: Provide the `prefix` query parameter (and an empty/no body)
+           to schedule deletion of every object whose key begins with the given prefix.
+           This kicks off an asynchronous prefix-delete job and returns the job descriptor.
+
+        For most workloads, we recommend using R2's [S3-compatible API](https://developers.cloudflare.com/r2/api/s3/api/) or a [Worker with an R2 binding](https://developers.cloudflare.com/r2/api/workers/workers-api-reference/) instead.
+      operationId: r2-delete-objects
+      parameters:
+      - in: path
+        name: account_id
+        required: true
+        schema:
+          $ref: '#/components/schemas/r2_account_identifier'
+      - in: path
+        name: bucket_name
+        required: true
+        schema:
+          $ref: '#/components/schemas/r2_bucket_name'
+      - in: header
+        name: cf-r2-jurisdiction
+        schema:
+          $ref: '#/components/schemas/r2_jurisdiction'
+      - in: query
+        name: prefix
+        schema:
+          description: |
+            When set, switches the operation to "delete by prefix" mode and asynchronously
+            deletes every object whose key begins with the given prefix. When omitted, the
+            request body is interpreted as a JSON array of object keys to delete.
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              example:
+              - path/to/object-a.txt
+              - path/to/object-b.txt
+              items:
+                type: string
+              type: array
+        description: |
+          Required for "delete by list" mode (when `prefix` query parameter is omitted).
+          A JSON array of object keys to delete. Ignored when `prefix` is provided.
+      responses:
+        4XX:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/r2_v4_response_failure'
+          description: Delete Objects response failure.
+        "200":
+          content:
+            application/json:
+              schema:
+                properties:
+                  errors:
+                    $ref: '#/components/schemas/r2_errors'
+                  messages:
+                    $ref: '#/components/schemas/r2_messages'
+                  result:
+                    oneOf:
+                    - description: Per-key delete results returned in "delete by list" mode.
+                      items:
+                        $ref: '#/components/schemas/r2_r2_delete_object_result'
+                      type: array
+                    - $ref: '#/components/schemas/r2_r2_delete_objects_by_prefix_result'
+                  success:
+                    description: Whether the API call was successful.
+                    enum:
+                    - true
+                    type: boolean
+                required:
+                - success
+                - errors
+                - messages
+                - result
+                type: object
+          description: |
+            Delete Objects response. Body shape depends on the operation mode:
+            - "delete by list" returns an array of `{ key }` entries for successfully deleted objects;
+            - "delete by prefix" returns the prefix-delete job descriptor.
+      security:
+      - api_token: []
+      summary: Delete Objects
+      tags:
+      - R2 Object
+      x-api-token-group:
+      - Workers R2 Storage Write
+    get:
+      description: |
+        Lists objects in an R2 bucket. Returns object metadata including key, size, etag, last modified date, HTTP metadata, and custom metadata.
+
+        For most workloads, we recommend using R2's [S3-compatible API](https://developers.cloudflare.com/r2/api/s3/api/) or a [Worker with an R2 binding](https://developers.cloudflare.com/r2/api/workers/workers-api-reference/) instead.
+      operationId: r2-list-objects
+      parameters:
+      - in: path
+        name: account_id
+        required: true
+        schema:
+          $ref: '#/components/schemas/r2_account_identifier'
+      - in: path
+        name: bucket_name
+        required: true
+        schema:
+          $ref: '#/components/schemas/r2_bucket_name'
+      - in: header
+        name: cf-r2-jurisdiction
+        schema:
+          $ref: '#/components/schemas/r2_jurisdiction'
+      - in: query
+        name: per_page
+        schema:
+          default: 20
+          description: Maximum number of objects to return per page.
+          maximum: 1000
+          minimum: 1
+          type: integer
+      - in: query
+        name: prefix
+        schema:
+          description: Restricts results to only those objects whose keys begin with the specified prefix.
+          type: string
+      - in: query
+        name: delimiter
+        schema:
+          description: A single character used to group keys. All keys that contain the delimiter between the prefix and the first occurrence of the delimiter after the prefix are grouped under a single result element.
+          type: string
+      - in: query
+        name: cursor
+        schema:
+          description: Pagination cursor received from a previous List Objects call. Used to retrieve the next page of results.
+          type: string
+      - in: query
+        name: start_after
+        schema:
+          description: Returns objects with keys that come after the specified key in lexicographic order.
+          type: string
+      responses:
+        4XX:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/r2_v4_response_failure'
+          description: List Objects response failure.
+        "200":
+          content:
+            application/json:
+              schema:
+                properties:
+                  errors:
+                    $ref: '#/components/schemas/r2_errors'
+                  messages:
+                    $ref: '#/components/schemas/r2_messages'
+                  result:
+                    items:
+                      $ref: '#/components/schemas/r2_r2_object'
+                    type: array
+                  result_info:
+                    $ref: '#/components/schemas/r2_r2_list_objects_result_info'
+                  success:
+                    description: Whether the API call was successful.
+                    enum:
+                    - true
+                    type: boolean
+                required:
+                - success
+                - errors
+                - messages
+                - result
+                type: object
+          description: List Objects response.
+      security:
+      - api_token: []
+      summary: List Objects
+      tags:
+      - R2 Object
+      x-cfPermissionsRequired:
+        enum:
+        - com.cloudflare.edge.r2.bucket.read
+  /accounts/{account_id}/r2/buckets/{bucket_name}/objects/{object_key}:
+    delete:
+      description: |
+        Deletes an object from an R2 bucket.
+
+        For most workloads, we recommend using R2's [S3-compatible API](https://developers.cloudflare.com/r2/api/s3/api/) or a [Worker with an R2 binding](https://developers.cloudflare.com/r2/api/workers/workers-api-reference/) instead.
+      operationId: r2-delete-object
+      parameters:
+      - in: path
+        name: account_id
+        required: true
+        schema:
+          $ref: '#/components/schemas/r2_account_identifier'
+      - in: path
+        name: bucket_name
+        required: true
+        schema:
+          $ref: '#/components/schemas/r2_bucket_name'
+      - allowReserved: true
+        example: path/to/my-object.txt
+        in: path
+        name: object_key
+        required: true
+        schema:
+          description: |
+            The key (name) of the object to delete. May contain slashes for path-like keys.
+            Slashes (`/`) within the key MUST be sent literally and MUST NOT be percent-encoded
+            (i.e. `%2F`); other reserved characters should be percent-encoded as usual.
+          type: string
+      - in: header
+        name: cf-r2-jurisdiction
+        schema:
+          $ref: '#/components/schemas/r2_jurisdiction'
+      responses:
+        4XX:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/r2_v4_response_failure'
+          description: Delete Object response failure.
+        "200":
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/r2_v4_response'
+                - properties:
+                    result:
+                      $ref: '#/components/schemas/r2_r2_delete_object_result'
+                  type: object
+          description: Delete Object response.
+      security:
+      - api_token: []
+      summary: Delete Object
+      tags:
+      - R2 Object
+      x-api-token-group:
+      - Workers R2 Storage Write
+    get:
+      description: |
+        Retrieves an object from an R2 bucket. Returns the object body along with metadata headers.
+
+        For most workloads, we recommend using R2's [S3-compatible API](https://developers.cloudflare.com/r2/api/s3/api/) or a [Worker with an R2 binding](https://developers.cloudflare.com/r2/api/workers/workers-api-reference/) instead.
+      operationId: r2-get-object
+      parameters:
+      - in: path
+        name: account_id
+        required: true
+        schema:
+          $ref: '#/components/schemas/r2_account_identifier'
+      - in: path
+        name: bucket_name
+        required: true
+        schema:
+          $ref: '#/components/schemas/r2_bucket_name'
+      - allowReserved: true
+        example: path/to/my-object.txt
+        in: path
+        name: object_key
+        required: true
+        schema:
+          description: |
+            The key (name) of the object to retrieve. May contain slashes for path-like keys.
+            Slashes (`/`) within the key MUST be sent literally and MUST NOT be percent-encoded
+            (i.e. `%2F`); other reserved characters should be percent-encoded as usual.
+          type: string
+      - in: header
+        name: cf-r2-jurisdiction
+        schema:
+          $ref: '#/components/schemas/r2_jurisdiction'
+      - in: header
+        name: If-None-Match
+        schema:
+          description: Returns the object only if its ETag does not match the given value.
+          type: string
+      - in: header
+        name: If-Modified-Since
+        schema:
+          description: |
+            Returns the object only if it has been modified since the specified time.
+            Must be formatted as an HTTP-date (RFC 7231), e.g. `Tue, 15 Jan 2024 10:30:00 GMT`.
+          type: string
+      responses:
+        4XX:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/r2_v4_response_failure'
+          description: Get Object response failure.
+        "200":
+          content:
+            application/octet-stream:
+              schema:
+                description: The object body.
+                format: binary
+                type: string
+          description: Get Object response. Returns the object body with metadata headers.
+          headers:
+            Content-Length:
+              description: The size of the object in bytes.
+              schema:
+                type: integer
+            Content-Type:
+              description: The MIME type of the object.
+              schema:
+                type: string
+            ETag:
+              description: |
+                The entity tag for the object, wrapped in double-quotes per RFC 7232,
+                e.g. `"d41d8cd98f00b204e9800998ecf8427e"`.
+              schema:
+                type: string
+            Last-Modified:
+              description: |
+                The date and time the object was last modified, formatted as an HTTP-date (RFC 7231),
+                e.g. `Tue, 15 Jan 2024 10:30:00 GMT`.
+              schema:
+                type: string
+            cf-r2-storage-class:
+              description: The storage class of the object.
+              schema:
+                $ref: '#/components/schemas/r2_storage_class'
+        "304":
+          description: Not Modified. Returned when conditional request headers indicate the object has not changed.
+      security:
+      - api_token: []
+      summary: Get Object
+      tags:
+      - R2 Object
+      x-cfPermissionsRequired:
+        enum:
+        - com.cloudflare.edge.r2.bucket.read
+    put:
+      description: |
+        Uploads an object to an R2 bucket. The object body is provided as the request body. Returns metadata about the uploaded object.
+
+        The maximum upload size for this endpoint is 300 MB. For most workloads, we recommend using R2's [S3-compatible API](https://developers.cloudflare.com/r2/api/s3/api/) or a [Worker with an R2 binding](https://developers.cloudflare.com/r2/api/workers/workers-api-reference/) instead.
+      operationId: r2-put-object
+      parameters:
+      - in: path
+        name: account_id
+        required: true
+        schema:
+          $ref: '#/components/schemas/r2_account_identifier'
+      - in: path
+        name: bucket_name
+        required: true
+        schema:
+          $ref: '#/components/schemas/r2_bucket_name'
+      - allowReserved: true
+        example: path/to/my-object.txt
+        in: path
+        name: object_key
+        required: true
+        schema:
+          description: |
+            The key (name) to assign to the object. May contain slashes for path-like keys.
+            Slashes (`/`) within the key MUST be sent literally and MUST NOT be percent-encoded
+            (i.e. `%2F`); other reserved characters should be percent-encoded as usual.
+          type: string
+      - in: header
+        name: cf-r2-jurisdiction
+        schema:
+          $ref: '#/components/schemas/r2_jurisdiction'
+      - in: header
+        name: Content-Type
+        schema:
+          description: The MIME type of the object being uploaded.
+          type: string
+      - in: header
+        name: Content-Length
+        schema:
+          description: The size of the object body in bytes.
+          type: integer
+      - description: Storage class for this object. Overrides the bucket default.
+        in: header
+        name: cf-r2-storage-class
+        schema:
+          $ref: '#/components/schemas/r2_storage_class'
+      requestBody:
+        content:
+          application/octet-stream:
+            schema:
+              description: The object body to upload.
+              format: binary
+              type: string
+        required: true
+      responses:
+        4XX:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/r2_v4_response_failure'
+          description: Upload Object response failure.
+        "200":
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/r2_v4_response'
+                - properties:
+                    result:
+                      $ref: '#/components/schemas/r2_r2_put_object_result'
+                  type: object
+          description: Upload Object response.
+      security:
+      - api_token: []
+      summary: Upload Object
+      tags:
+      - R2 Object
+      x-cfPermissionsRequired:
+        enum:
+        - com.cloudflare.edge.r2.bucket.write
+  /accounts/{account_id}/r2/buckets/{bucket_name}/sippy:
+    delete:
+      description: Disables Sippy on this bucket.
+      operationId: r2-delete-bucket-sippy-config
+      parameters:
+      - in: path
+        name: bucket_name
+        required: true
+        schema:
+          $ref: '#/components/schemas/r2_bucket_name'
+      - in: path
+        name: account_id
+        required: true
+        schema:
+          $ref: '#/components/schemas/r2_account_identifier'
+      - in: header
+        name: cf-r2-jurisdiction
+        schema:
+          $ref: '#/components/schemas/r2_jurisdiction'
+      responses:
+        4XX:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/r2_v4_response_failure'
+          description: Delete Sippy Configuration response failure.
+        "200":
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/r2_v4_response'
+                - properties:
+                    result:
+                      properties:
+                        enabled:
+                          enum:
+                          - false
+                          type: boolean
+                      type: object
+                  type: object
+          description: Delete Sippy Configuration response.
+      security:
+      - api_token: []
+      summary: Disable Sippy
+      tags:
+      - R2 Bucket
+      x-api-token-group:
+      - Workers R2 Storage Write
+    get:
+      description: Gets configuration for Sippy for an existing R2 bucket.
+      operationId: r2-get-bucket-sippy-config
+      parameters:
+      - in: path
+        name: account_id
+        required: true
+        schema:
+          $ref: '#/components/schemas/r2_account_identifier'
+      - in: path
+        name: bucket_name
+        required: true
+        schema:
+          $ref: '#/components/schemas/r2_bucket_name'
+      - in: header
+        name: cf-r2-jurisdiction
+        schema:
+          $ref: '#/components/schemas/r2_jurisdiction'
+      responses:
+        4XX:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/r2_v4_response_failure'
+          description: Get Sippy Configuration response failure.
+        "200":
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/r2_v4_response'
+                - properties:
+                    result:
+                      $ref: '#/components/schemas/r2_sippy'
+                  type: object
+          description: Get Sippy Configuration response.
+      security:
+      - api_token: []
+      summary: Get Sippy Configuration
+      tags:
+      - R2 Bucket
+      x-cfPermissionsRequired:
+        enum:
+        - com.cloudflare.edge.r2.bucket.read
+    put:
+      description: Sets configuration for Sippy for an existing R2 bucket.
+      operationId: r2-put-bucket-sippy-config
+      parameters:
+      - in: path
+        name: account_id
+        required: true
+        schema:
+          $ref: '#/components/schemas/r2_account_identifier'
+      - in: path
+        name: bucket_name
+        required: true
+        schema:
+          $ref: '#/components/schemas/r2_bucket_name'
+      - in: header
+        name: cf-r2-jurisdiction
+        schema:
+          $ref: '#/components/schemas/r2_jurisdiction'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              oneOf:
+              - $ref: '#/components/schemas/r2_enable_sippy_aws'
+              - $ref: '#/components/schemas/r2_enable_sippy_gcs'
+              - $ref: '#/components/schemas/r2_enable_sippy_s3'
+        required: true
+      responses:
+        4XX:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/r2_v4_response_failure'
+          description: Get Sippy Configuration response failure.
+        "200":
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/r2_v4_response'
+                - properties:
+                    result:
+                      $ref: '#/components/schemas/r2_sippy'
+                  type: object
+          description: Set Sippy Configuration response.
+      security:
+      - api_token: []
+      summary: Enable Sippy
+      tags:
+      - R2 Bucket
+      x-cfPermissionsRequired:
+        enum:
+        - com.cloudflare.edge.r2.bucket.write
+  /accounts/{account_id}/r2/metrics:
+    get:
+      description: Get Storage/Object Count Metrics across all buckets in your account. Note that Account-Level Metrics may not immediately reflect the latest data.
+      operationId: r2-get-account-level-metrics
+      parameters:
+      - in: path
+        name: account_id
+        required: true
+        schema:
+          $ref: '#/components/schemas/r2_account_identifier'
+      responses:
+        4XX:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/r2_v4_response_failure'
+          description: Get Account-Level Metrics response failure.
+        "200":
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/r2_v4_response'
+                - properties:
+                    result:
+                      $ref: '#/components/schemas/r2_account_level_metrics'
+                  type: object
+          description: Get Account-Level Metrics response.
+      security:
+      - api_token: []
+      summary: Get Account-Level Metrics
+      tags:
+      - R2 Account
+      x-cfPermissionsRequired:
+  /accounts/{account_id}/r2/temp-access-credentials:
+    post:
+      description: Creates temporary access credentials on a bucket that can be optionally scoped to prefixes or objects.
+      operationId: r2-create-temp-access-credentials
+      parameters:
+      - in: path
+        name: account_id
+        required: true
+        schema:
+          $ref: '#/components/schemas/r2_account_identifier'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/r2_temp_access_creds_request'
+        required: true
+      responses:
+        4XX:
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/r2_v4_response_failure'
+          description: Create temporary access credentials response failure.
+        "200":
+          content:
+            application/json:
+              schema:
+                allOf:
+                - $ref: '#/components/schemas/r2_v4_response'
+                - properties:
+                    result:
+                      $ref: '#/components/schemas/r2_temp_access_creds_response'
+                  type: object
+          description: Create temporary access credentials response.
+      security:
+      - api_token: []
+      summary: Create Temporary Access Credentials
+      tags:
+      - R2 Bucket
+components:
+  schemas:
+    r2_sippy:
+      properties:
+        destination:
+          description: Details about the configured destination bucket.
+          properties:
+            accessKeyId:
+              description: |
+                ID of the Cloudflare API token used when writing objects to this
+                bucket.
+              type: string
+            account:
+              type: string
+              x-auditable: true
+            bucket:
+              description: Name of the bucket on the provider.
+              type: string
+              x-auditable: true
+            provider:
+              enum:
+              - r2
+              type: string
+              x-auditable: true
+          type: object
+        enabled:
+          description: State of Sippy for this bucket.
+          type: boolean
+          x-auditable: true
+        source:
+          description: Details about the configured source bucket.
+          properties:
+            bucket:
+              description: Name of the bucket on the provider (AWS, GCS only).
+              nullable: true
+              type: string
+              x-auditable: true
+            bucketUrl:
+              description: S3-compatible URL (Generic S3-compatible providers only).
+              nullable: true
+              type: string
+              x-auditable: true
+            provider:
+              enum:
+              - aws
+              - gcs
+              - s3
+              type: string
+              x-auditable: true
+            region:
+              description: Region where the bucket resides (AWS only).
+              nullable: true
+              type: string
+              x-auditable: true
+          type: object
+      type: object
+    r2_bucket-lock-rule:
+      properties:
+        condition:
+          oneOf:
+          - $ref: '#/components/schemas/r2_lock-rule-age-condition'
+          - $ref: '#/components/schemas/r2_lock-rule-date-condition'
+          - $ref: '#/components/schemas/r2_lock-rule-indefinite-condition'
+        enabled:
+          description: Whether or not this rule is in effect.
+          type: boolean
+          x-auditable: true
+        id:
+          description: Unique identifier for this rule.
+          example: Lock all objects for 24 hours
+          type: string
+          x-auditable: true
+        prefix:
+          description: Rule will only apply to objects/uploads in the bucket that start with the given prefix, an empty prefix can be provided to scope rule to all objects/uploads.
+          type: string
+          x-auditable: true
+      required:
+      - id
+      - condition
+      - enabled
+      type: object
+    r2_lock-rule-date-condition:
+      description: Condition to apply a lock rule to an object until a specific date.
+      properties:
+        date:
+          format: date-time
+          type: string
+          x-auditable: true
+        type:
+          enum:
+          - Date
+          type: string
+          x-auditable: true
+      required:
+      - type
+      - date
+      type: object
+    r2_lock-rule-indefinite-condition:
+      description: Condition to apply a lock rule indefinitely.
+      properties:
+        type:
+          enum:
+          - Indefinite
+          type: string
+          x-auditable: true
+      required:
+      - type
+      type: object
+    r2_lock-rule-age-condition:
+      description: Condition to apply a lock rule to an object for how long in seconds.
+      properties:
+        maxAgeSeconds:
+          example: 100
+          type: integer
+          x-auditable: true
+        type:
+          enum:
+          - Age
+          type: string
+          x-auditable: true
+      required:
+      - type
+      - maxAgeSeconds
+      type: object
+    r2_edit_managed_domain_request:
+      example:
+        enabled: true
+      properties:
+        enabled:
+          description: Whether to enable public bucket access at the r2.dev domain.
+          type: boolean
+          x-auditable: true
+      required:
+      - enabled
+      type: object
+    r2_edit_custom_domain_request:
+      example:
+        enabled: true
+        minTLS: "1.2"
+      properties:
+        ciphers:
+          description: An allowlist of ciphers for TLS termination. These ciphers must be in the BoringSSL format.
+          items:
+            type: string
+          type: array
+          x-auditable: true
+        enabled:
+          description: Whether to enable public bucket access at the specified custom domain.
+          type: boolean
+          x-auditable: true
+        minTLS:
+          description: Minimum TLS Version the custom domain will accept for incoming connections. If not set, defaults to previous value.
+          enum:
+          - "1.0"
+          - "1.1"
+          - "1.2"
+          - "1.3"
+          type: string
+          x-auditable: true
+      type: object
+    r2_lifecycle-rule:
+      properties:
+        abortMultipartUploadsTransition:
+          description: Transition to abort ongoing multipart uploads.
+          properties:
+            condition:
+              allOf:
+              - $ref: '#/components/schemas/r2_lifecycle-age-condition'
+          type: object
+        conditions:
+          description: Conditions that apply to all transitions of this rule.
+          properties:
+            prefix:
+              description: Transitions will only apply to objects/uploads in the bucket that start with the given prefix, an empty prefix can be provided to scope rule to all objects/uploads.
+              type: string
+              x-auditable: true
+          required:
+          - prefix
+          type: object
+        deleteObjectsTransition:
+          description: Transition to delete objects.
+          properties:
+            condition:
+              oneOf:
+              - $ref: '#/components/schemas/r2_lifecycle-age-condition'
+              - $ref: '#/components/schemas/r2_lifecycle-date-condition'
+          type: object
+        enabled:
+          description: Whether or not this rule is in effect.
+          type: boolean
+          x-auditable: true
+        id:
+          description: Unique identifier for this rule.
+          example: Expire all objects older than 24 hours
+          type: string
+          x-auditable: true
+        storageClassTransitions:
+          description: Transitions to change the storage class of objects.
+          items:
+            allOf:
+            - $ref: '#/components/schemas/r2_lifecycle-storage-transition'
+          type: array
+      required:
+      - id
+      - conditions
+      - enabled
+      type: object
+    r2_lifecycle-age-condition:
+      description: Condition for lifecycle transitions to apply after an object reaches an age in seconds.
+      properties:
+        maxAge:
+          type: integer
+          x-auditable: true
+        type:
+          enum:
+          - Age
+          type: string
+          x-auditable: true
+      required:
+      - type
+      - maxAge
+      type: object
+    r2_lifecycle-storage-transition:
+      properties:
+        condition:
+          oneOf:
+          - $ref: '#/components/schemas/r2_lifecycle-age-condition'
+          - $ref: '#/components/schemas/r2_lifecycle-date-condition'
+        storageClass:
+          enum:
+          - InfrequentAccess
+          type: string
+          x-auditable: true
+      required:
+      - condition
+      - storageClass
+      type: object
+    r2_lifecycle-date-condition:
+      description: Condition for lifecycle transitions to apply on a specific date.
+      properties:
+        date:
+          format: date-time
+          type: string
+          x-auditable: true
+        type:
+          enum:
+          - Date
+          type: string
+          x-auditable: true
+      required:
+      - type
+      - date
+      type: object
+    r2_queue_identifier:
+      description: Queue ID.
+      example: 11111aa1-11aa-111a-a1a1-a1a111a11a11
+      maxLength: 32
+      type: string
+      x-auditable: true
+    r2_bucket_name:
+      description: Name of the bucket.
+      example: example-bucket
+      maxLength: 64
+      minLength: 3
+      pattern: ^[a-z0-9][a-z0-9-]*[a-z0-9]
+      type: string
+      x-auditable: true
+    r2_errors:
+      items:
+        properties:
+          code:
+            minimum: 1000
+            type: integer
+          message:
+            type: string
+        required:
+        - code
+        - message
+        type: object
+        uniqueItems: true
+      type: array
+    r2-data-catalog_catalog-activation-response:
+      description: Contains response from activating an R2 bucket as a catalog.
+      properties:
+        id:
+          description: Use this to uniquely identify the activated catalog.
+          example: 550e8400-e29b-41d4-a716-446655440000
+          format: uuid
+          type: string
+        name:
+          description: Specifies the name of the activated catalog.
+          example: account123_my-bucket
+          type: string
+      required:
+      - id
+      - name
+      type: object
+    r2_r2_list_objects_result_info:
+      description: Pagination information for list objects responses.
+      properties:
+        cursor:
+          description: Pagination cursor to use in the next List Objects call to retrieve the next page of results.
+          example: eyJrZXkiOiJwYXRoL3RvL215LW9iamVjdC50eHQifQ==
+          type: string
+        delimited:
+          description: |
+            Common prefixes found when a delimiter is specified. Each entry represents a group
+            of keys sharing a common prefix up to the delimiter. Equivalent to S3's `CommonPrefixes`
+            in `ListObjectsV2`; the field name differs because of the existing R2 API wire format.
+          example:
+          - path/to/
+          - another/path/
+          items:
+            type: string
+          type: array
+        is_truncated:
+          description: Whether the result was truncated. If true, use the cursor to retrieve the next page.
+          example: true
+          type: boolean
+        per_page:
+          description: The maximum number of objects returned per page.
+          example: 20
+          type: integer
+      type: object
+    r2_account_identifier:
+      description: Account ID.
+      example: 023e105f4ecef8ad9ca31a8372d0c353
+      maxLength: 32
+      type: string
+    r2_r2_delete_object_result:
+      description: Result of a successful object deletion.
+      properties:
+        key:
+          description: The key (name) of the deleted object.
+          example: path/to/my-object.txt
+          type: string
+      type: object
+    r2-data-catalog_table-maintenance-config:
+      description: Configures maintenance for the table.
+      properties:
+        compaction:
+          $ref: '#/components/schemas/r2-data-catalog_table-compaction-config'
+        snapshot_expiration:
+          $ref: '#/components/schemas/r2-data-catalog_snapshot-expiration-config'
+      type: object
+    r2-data-catalog_table-compaction-config:
+      description: Configures compaction settings for table optimization.
+      properties:
+        state:
+          $ref: '#/components/schemas/r2-data-catalog_catalog-maintenance-state'
+        target_size_mb:
+          $ref: '#/components/schemas/r2-data-catalog_catalog-target-file-size'
+      required:
+      - state
+      - target_size_mb
+      type: object
+    r2-data-catalog_catalog-maintenance-state:
+      description: Specifies the state of maintenance operations.
+      enum:
+      - enabled
+      - disabled
+      example: enabled
+      type: string
+    r2-data-catalog_catalog-target-file-size:
+      description: Sets the target file size for compaction in megabytes. Defaults to "128".
+      enum:
+      - "64"
+      - "128"
+      - "256"
+      - "512"
+      example: "128"
+      type: string
+    r2-data-catalog_snapshot-expiration-config:
+      description: Configures snapshot expiration settings.
+      properties:
+        max_snapshot_age:
+          description: |
+            Specifies the maximum age for snapshots. The system deletes snapshots older than this age.
+            Format: <number><unit> where unit is d (days), h (hours), m (minutes), or s (seconds).
+            Examples: "7d" (7 days), "48h" (48 hours), "2880m" (2,880 minutes).
+            Defaults to "7d".
+          example: 7d
+          pattern: ^\d+(d|h|m|s)$
+          type: string
+        min_snapshots_to_keep:
+          description: Specifies the minimum number of snapshots to retain. Defaults to 100.
+          example: 100
+          format: int64
+          minimum: 1
+          type: integer
+        state:
+          $ref: '#/components/schemas/r2-data-catalog_catalog-maintenance-state'
+      required:
+      - state
+      - min_snapshots_to_keep
+      - max_snapshot_age
+      type: object
+    r2_domain_name:
+      description: Name of the custom domain.
+      example: example-domain/custom-domain.com
+      type: string
+      x-auditable: true
+    r2-data-catalog_account-id:
+      description: Use this to identify the account.
+      example: 0123456789abcdef0123456789abcdef
+      pattern: ^[a-fA-F0-9]{32}$
+      type: string
+    r2-data-catalog_catalog:
+      description: Contains R2 Data Catalog information.
+      properties:
+        bucket:
+          description: Specifies the associated R2 bucket name.
+          example: my-data-bucket
+          type: string
+        credential_status:
+          allOf:
+          - $ref: '#/components/schemas/r2-data-catalog_credential-status'
+          description: Shows the credential configuration status.
+          nullable: true
+          type: string
+        id:
+          description: Use this to uniquely identify the catalog.
+          example: 550e8400-e29b-41d4-a716-446655440000
+          format: uuid
+          type: string
+        maintenance_config:
+          allOf:
+          - $ref: '#/components/schemas/r2-data-catalog_catalog-maintenance-config'
+          description: Configures maintenance for the catalog.
+          nullable: true
+          type: object
+        name:
+          description: Specifies the catalog name (generated from account and bucket name).
+          example: account123_my-bucket
+          type: string
+        status:
+          $ref: '#/components/schemas/r2-data-catalog_catalog-status'
+      required:
+      - id
+      - name
+      - bucket
+      - status
+      type: object
+    r2-data-catalog_credential-status:
+      description: Shows the credential configuration status.
+      enum:
+      - present
+      - absent
+      example: present
+      type: string
+    r2-data-catalog_catalog-status:
+      description: Indicates the status of the catalog.
+      enum:
+      - active
+      - inactive
+      example: active
+      type: string
+    r2-data-catalog_catalog-maintenance-config:
+      description: Configures maintenance for the catalog.
+      properties:
+        compaction:
+          $ref: '#/components/schemas/r2-data-catalog_catalog-compaction-config'
+        snapshot_expiration:
+          $ref: '#/components/schemas/r2-data-catalog_snapshot-expiration-config'
+      type: object
+    r2-data-catalog_catalog-compaction-config:
+      description: Configures compaction for catalog maintenance.
+      properties:
+        state:
+          $ref: '#/components/schemas/r2-data-catalog_catalog-maintenance-state'
+        target_size_mb:
+          $ref: '#/components/schemas/r2-data-catalog_catalog-target-file-size'
+      required:
+      - state
+      - target_size_mb
+      type: object
+    r2_bucket:
+      description: A single R2 bucket.
+      properties:
+        creation_date:
+          description: Creation timestamp.
+          type: string
+        jurisdiction:
+          $ref: '#/components/schemas/r2_jurisdiction'
+        location:
+          $ref: '#/components/schemas/r2_bucket_location'
+        name:
+          $ref: '#/components/schemas/r2_bucket_name'
+        storage_class:
+          $ref: '#/components/schemas/r2_storage_class'
+      type: object
+    r2_storage_class:
+      default: Standard
+      description: Storage class for newly uploaded objects, unless specified otherwise.
+      enum:
+      - Standard
+      - InfrequentAccess
+      type: string
+      x-auditable: true
+    r2_bucket_location:
+      description: Location of the bucket.
+      enum:
+      - apac
+      - eeur
+      - enam
+      - weur
+      - wnam
+      - oc
+      type: string
+      x-auditable: true
+      x-stainless-terraform-configurability: computed_optional
+    r2_jurisdiction:
+      default: default
+      description: Jurisdiction where objects in this bucket are guaranteed to be stored.
+      enum:
+      - default
+      - eu
+      - fedramp
+      type: string
+      x-auditable: true
+      x-stainless-param: jurisdiction
+    r2_rule:
+      properties:
+        actions:
+          description: Array of R2 object actions that will trigger notifications.
+          example:
+          - PutObject
+          - CopyObject
+          items:
+            $ref: '#/components/schemas/r2_r2-action'
+          type: array
+          uniqueItems: true
+        description:
+          description: A description that can be used to identify the event notification rule after creation.
+          example: Notifications from source bucket to queue
+          type: string
+          x-auditable: true
+        prefix:
+          description: Notifications will be sent only for objects with this prefix.
+          example: img/
+          type: string
+          x-auditable: true
+        suffix:
+          description: Notifications will be sent only for objects with this suffix.
+          example: .jpeg
+          type: string
+          x-auditable: true
+      required:
+      - actions
+      type: object
+    r2_r2-action:
+      enum:
+      - PutObject
+      - CopyObject
+      - DeleteObject
+      - CompleteMultipartUpload
+      - LifecycleDeletion
+      type: string
+      x-auditable: true
+    r2_add_custom_domain_response:
+      example:
+        domain: example-domain.com
+        enabled: true
+        zoneId: 36ca64a6d92827b8a6b90be344bb1bfd
+      properties:
+        ciphers:
+          description: An allowlist of ciphers for TLS termination. These ciphers must be in the BoringSSL format.
+          items:
+            type: string
+          type: array
+          x-auditable: true
+        domain:
+          description: Domain name of the affected custom domain.
+          type: string
+          x-auditable: true
+        enabled:
+          description: Whether this bucket is publicly accessible at the specified custom domain.
+          type: boolean
+        minTLS:
+          description: Minimum TLS Version the custom domain will accept for incoming connections. If not set, defaults to 1.0.
+          enum:
+          - "1.0"
+          - "1.1"
+          - "1.2"
+          - "1.3"
+          type: string
+          x-auditable: true
+        zoneId:
+          description: Zone ID of the custom domain.
+          type: string
+          x-auditable: true
+      required:
+      - domain
+      - enabled
+      - zoneId
+      type: object
+    r2_get_custom_domain_response:
+      example:
+        domain: prefix.example-domain.one.com
+        enabled: false
+        status:
+          ownership: deactivated
+          ssl: pending
+        zoneId: 36ca64a6d92827b8a6b90be344bb1bfd
+        zoneName: example-domain.one.com
+      properties:
+        ciphers:
+          description: An allowlist of ciphers for TLS termination. These ciphers must be in the BoringSSL format.
+          items:
+            type: string
+          type: array
+          x-auditable: true
+        domain:
+          description: Domain name of the custom domain to be added.
+          type: string
+          x-auditable: true
+        enabled:
+          description: Whether this bucket is publicly accessible at the specified custom domain.
+          type: boolean
+          x-auditable: true
+        minTLS:
+          description: Minimum TLS Version the custom domain will accept for incoming connections. If not set, defaults to 1.0.
+          enum:
+          - "1.0"
+          - "1.1"
+          - "1.2"
+          - "1.3"
+          type: string
+          x-auditable: true
+        status:
+          properties:
+            ownership:
+              description: Ownership status of the domain.
+              enum:
+              - pending
+              - active
+              - deactivated
+              - blocked
+              - error
+              - unknown
+              type: string
+              x-auditable: true
+            ssl:
+              description: SSL certificate status.
+              enum:
+              - initializing
+              - pending
+              - active
+              - deactivated
+              - error
+              - unknown
+              type: string
+              x-auditable: true
+          required:
+          - ssl
+          - ownership
+          type: object
+        zoneId:
+          description: Zone ID of the custom domain resides in.
+          type: string
+          x-auditable: true
+        zoneName:
+          description: Zone that the custom domain resides in.
+          type: string
+          x-auditable: true
+      required:
+      - domain
+      - status
+      - enabled
+      type: object
+    r2-data-catalog_catalog-maintenance-config-response:
+      description: Contains maintenance configuration and credential status.
+      properties:
+        credential_status:
+          $ref: '#/components/schemas/r2-data-catalog_credential-status'
+        maintenance_config:
+          $ref: '#/components/schemas/r2-data-catalog_catalog-maintenance-config'
+      required:
+      - maintenance_config
+      - credential_status
+      type: object
+    r2_enable_sippy_s3:
+      properties:
+        destination:
+          description: R2 bucket to copy objects to.
+          properties:
+            accessKeyId:
+              description: |
+                ID of a Cloudflare API token.
+                This is the value labelled "Access Key ID" when creating an API.
+                token from the [R2 dashboard](https://dash.cloudflare.com/?to=/:account/r2/api-tokens).
+
+                Sippy will use this token when writing objects to R2, so it is
+                best to scope this token to the bucket you're enabling Sippy for.
+              type: string
+            provider:
+              enum:
+              - r2
+              type: string
+              x-auditable: true
+            secretAccessKey:
+              description: |
+                Value of a Cloudflare API token.
+                This is the value labelled "Secret Access Key" when creating an API.
+                token from the [R2 dashboard](https://dash.cloudflare.com/?to=/:account/r2/api-tokens).
+
+                Sippy will use this token when writing objects to R2, so it is
+                best to scope this token to the bucket you're enabling Sippy for.
+              type: string
+              x-sensitive: true
+          type: object
+        source:
+          description: General S3-compatible provider to copy objects from.
+          properties:
+            accessKeyId:
+              description: Access Key ID of an IAM credential (ideally scoped to a single S3 bucket).
+              type: string
+            bucketUrl:
+              description: URL to the S3-compatible API of the bucket.
+              type: string
+              x-auditable: true
+            provider:
+              enum:
+              - s3
+              type: string
+              x-auditable: true
+            secretAccessKey:
+              description: Secret Access Key of an IAM credential (ideally scoped to a single S3 bucket).
+              type: string
+              x-sensitive: true
+          type: object
+    r2_managed_domain_response:
+      example:
+        bucketId: 0113a9e4549cf9b1ff1bf56e04da0cef
+        domain: pub-0113a9e4549cf9b1ff1bf56e04da0cef.r2.dev
+        enabled: true
+      properties:
+        bucketId:
+          description: Bucket ID.
+          maxLength: 32
+          type: string
+          x-auditable: true
+        domain:
+          description: Domain name of the bucket's r2.dev domain.
+          type: string
+          x-auditable: true
+        enabled:
+          description: Whether this bucket is publicly accessible at the r2.dev domain.
+          type: boolean
+          x-auditable: true
+      required:
+      - bucketId
+      - domain
+      - enabled
+      type: object
+    r2_edit_custom_domain_response:
+      example:
+        domain: example-domain.com
+        enabled: true
+      properties:
+        ciphers:
+          description: An allowlist of ciphers for TLS termination. These ciphers must be in the BoringSSL format.
+          items:
+            type: string
+          type: array
+          x-auditable: true
+        domain:
+          description: Domain name of the affected custom domain.
+          type: string
+          x-auditable: true
+        enabled:
+          description: Whether this bucket is publicly accessible at the specified custom domain.
+          type: boolean
+          x-auditable: true
+        minTLS:
+          description: Minimum TLS Version the custom domain will accept for incoming connections. If not set, defaults to 1.0.
+          enum:
+          - "1.0"
+          - "1.1"
+          - "1.2"
+          - "1.3"
+          type: string
+          x-auditable: true
+      required:
+      - domain
+      type: object
+    r2_messages:
+      items:
+        type: string
+      type: array
+    r2-data-catalog_table-maintenance-config-response:
+      description: Contains table maintenance configuration.
+      properties:
+        maintenance_config:
+          $ref: '#/components/schemas/r2-data-catalog_table-maintenance-config'
+      required:
+      - maintenance_config
+      type: object
+    r2_bucket-lock-rule-config:
+      properties:
+        rules:
+          items:
+            allOf:
+            - $ref: '#/components/schemas/r2_bucket-lock-rule'
+          type: array
+      type: object
+    r2_temp_access_creds_request:
+      example:
+        bucket: example-bucket
+        objects:
+        - example-object
+        parentAccessKeyId: example-access-key-id
+        permission: object-read-write
+        prefixes:
+        - example-prefix/
+        ttlSeconds: 3600
+      properties:
+        bucket:
+          description: Name of the R2 bucket.
+          type: string
+          x-auditable: true
+        objects:
+          description: Optional object paths to scope the credentials to.
+          items:
+            type: string
+            x-auditable: true
+          type: array
+        parentAccessKeyId:
+          description: The parent access key id to use for signing.
+          type: string
+        permission:
+          description: Permissions allowed on the credentials.
+          enum:
+          - admin-read-write
+          - admin-read-only
+          - object-read-write
+          - object-read-only
+          type: string
+          x-auditable: true
+        prefixes:
+          description: Optional prefix paths to scope the credentials to.
+          items:
+            type: string
+            x-auditable: true
+          type: array
+        ttlSeconds:
+          default: 900
+          description: How long the credentials will live for in seconds.
+          maximum: 604800
+          type: number
+          x-auditable: true
+      required:
+      - bucket
+      - permission
+      - ttlSeconds
+      - parentAccessKeyId
+      type: object
+    r2_remove_custom_domain_response:
+      example:
+        domain: example-domain/custom-domain.com
+      properties:
+        domain:
+          description: Name of the removed custom domain.
+          type: string
+          x-auditable: true
+      required:
+      - domain
+      type: object
+    r2_r2_object:
+      description: Metadata for an R2 object.
+      properties:
+        custom_metadata:
+          additionalProperties:
+            type: string
+          description: Custom metadata key-value pairs associated with the object.
+          example: {}
+          type: object
+        etag:
+          description: |
+            The entity tag for the object. In JSON list/get responses this is the raw
+            hex digest (without surrounding quotes). The HTTP `ETag` response header on
+            Get Object follows RFC 7232 and IS wrapped in surrounding double-quotes.
+          example: d41d8cd98f00b204e9800998ecf8427e
+          type: string
+        http_metadata:
+          $ref: '#/components/schemas/r2_r2_object_http_metadata'
+        key:
+          description: The object key (name).
+          example: path/to/my-object.txt
+          type: string
+        last_modified:
+          description: The date and time the object was last modified.
+          example: "2024-01-15T10:30:00Z"
+          format: date-time
+          type: string
+        size:
+          description: The size of the object in bytes.
+          example: 1.048576e+06
+          type: integer
+        ssec:
+          description: Whether the object is encrypted with a customer-supplied encryption key.
+          example: false
+          type: boolean
+        storage_class:
+          $ref: '#/components/schemas/r2_storage_class'
+      type: object
+    r2_r2_object_http_metadata:
+      description: HTTP metadata associated with an R2 object.
+      properties:
+        cacheControl:
+          description: Specifies caching behavior for the object.
+          example: max-age=3600
+          type: string
+        cacheExpiry:
+          description: The date and time at which the object's cache entry expires.
+          example: "2024-12-31T23:59:59Z"
+          format: date-time
+          type: string
+        contentDisposition:
+          description: Specifies presentational information for the object.
+          example: attachment; filename="example.jpg"
+          type: string
+        contentEncoding:
+          description: Specifies the content encoding applied to the object.
+          example: gzip
+          type: string
+        contentLanguage:
+          description: The language of the object content.
+          example: en-US
+          type: string
+        contentType:
+          description: The MIME type of the object.
+          example: image/jpeg
+          type: string
+      type: object
+    r2_lifecycle-config:
+      properties:
+        rules:
+          items:
+            allOf:
+            - $ref: '#/components/schemas/r2_lifecycle-rule'
+          type: array
+      type: object
+    r2_v4_response_list:
+      allOf:
+      - $ref: '#/components/schemas/r2_v4_response'
+      - properties:
+          result_info:
+            $ref: '#/components/schemas/r2_result_info'
+        type: object
+    r2_result_info:
+      properties:
+        cursor:
+          description: A continuation token that should be used to fetch the next page of results.
+          example: 1-JTdCJTIydiUyMiUzQTElMkMlMjJzdGFydEFmdGVyJTIyJTNBJTIyZGF2aWRwdWJsaWMlMjIlN0Q=
+          type: string
+        per_page:
+          description: Maximum number of results on this page.
+          example: 20
+          type: number
+      type: object
+    r2_v4_response:
+      properties:
+        errors:
+          $ref: '#/components/schemas/r2_errors'
+        messages:
+          $ref: '#/components/schemas/r2_messages'
+        result:
+          type: object
+        success:
+          description: Whether the API call was successful.
+          enum:
+          - true
+          type: boolean
+      required:
+      - success
+      - errors
+      - messages
+      - result
+      type: object
+    r2-data-catalog_api-response-single:
+      properties:
+        errors:
+          $ref: '#/components/schemas/r2-data-catalog_api-response-errors'
+        messages:
+          $ref: '#/components/schemas/r2-data-catalog_api-response-messages'
+        success:
+          $ref: '#/components/schemas/r2-data-catalog_api-response-success'
+      required:
+      - success
+      - errors
+      - messages
+      type: object
+    r2-data-catalog_api-response-success:
+      description: Indicates whether the API call was successful.
+      example: true
+      type: boolean
+    r2-data-catalog_api-response-messages:
+      description: Contains informational messages.
+      items:
+        properties:
+          code:
+            description: Specifies the message code.
+            type: integer
+          message:
+            description: Contains the message text.
+            type: string
+        required:
+        - code
+        - message
+        type: object
+      type: array
+    r2-data-catalog_api-response-errors:
+      description: Contains errors if the API call was unsuccessful.
+      items:
+        properties:
+          code:
+            description: Specifies the error code.
+            type: integer
+          message:
+            description: Describes the error.
+            type: string
+        required:
+        - code
+        - message
+        type: object
+      type: array
+    r2_cors-rule:
+      properties:
+        allowed:
+          description: Object specifying allowed origins, methods and headers for this CORS rule.
+          properties:
+            headers:
+              description: Specifies the value for the Access-Control-Allow-Headers header R2 sets when requesting objects in this bucket from a browser. Cross-origin requests that include custom headers (e.g. x-user-id) should specify these headers as AllowedHeaders.
+              items:
+                example: x-requested-by
+                type: string
+                x-auditable: true
+              type: array
+            methods:
+              description: Specifies the value for the Access-Control-Allow-Methods header R2 sets when requesting objects in a bucket from a browser.
+              items:
+                enum:
+                - GET
+                - PUT
+                - POST
+                - DELETE
+                - HEAD
+                type: string
+                x-auditable: true
+              type: array
+            origins:
+              description: Specifies the value for the Access-Control-Allow-Origin header R2 sets when requesting objects in a bucket from a browser.
+              items:
+                example: http://localhost:3000
+                type: string
+                x-auditable: true
+              type: array
+          required:
+          - methods
+          - origins
+          type: object
+        exposeHeaders:
+          description: Specifies the headers that can be exposed back, and accessed by, the JavaScript making the cross-origin request. If you need to access headers beyond the safelisted response headers, such as Content-Encoding or cf-cache-status, you must specify it here.
+          items:
+            example: Content-Encoding
+            type: string
+            x-auditable: true
+          type: array
+        id:
+          description: Identifier for this rule.
+          example: Allow Local Development
+          type: string
+          x-auditable: true
+        maxAgeSeconds:
+          description: Specifies the amount of time (in seconds) browsers are allowed to cache CORS preflight responses. Browsers may limit this to 2 hours or less, even if the maximum value (86400) is specified.
+          example: 3600
+          type: number
+          x-auditable: true
+      required:
+      - allowed
+      type: object
+    r2_list_custom_domains_response:
+      example:
+        domains:
+        - domain: prefix.example-domain.one.com
+          enabled: false
+          status:
+            ownership: deactivated
+            ssl: pending
+          zoneId: 36ca64a6d92827b8a6b90be344bb1bfd
+          zoneName: example-domain.one.com
+        - domain: prefix.example-domain.two.com
+          enabled: true
+          status:
+            ownership: active
+            ssl: active
+          zoneId: d9d28585d5f8f5b0f857b055bf574f19
+      properties:
+        domains:
+          items:
+            properties:
+              ciphers:
+                description: An allowlist of ciphers for TLS termination. These ciphers must be in the BoringSSL format.
+                items:
+                  type: string
+                type: array
+                x-auditable: true
+              domain:
+                description: Domain name of the custom domain to be added.
+                type: string
+                x-auditable: true
+              enabled:
+                description: Whether this bucket is publicly accessible at the specified custom domain.
+                type: boolean
+                x-auditable: true
+              minTLS:
+                description: Minimum TLS Version the custom domain will accept for incoming connections. If not set, defaults to 1.0.
+                enum:
+                - "1.0"
+                - "1.1"
+                - "1.2"
+                - "1.3"
+                type: string
+                x-auditable: true
+              status:
+                properties:
+                  ownership:
+                    description: Ownership status of the domain.
+                    enum:
+                    - pending
+                    - active
+                    - deactivated
+                    - blocked
+                    - error
+                    - unknown
+                    type: string
+                    x-auditable: true
+                  ssl:
+                    description: SSL certificate status.
+                    enum:
+                    - initializing
+                    - pending
+                    - active
+                    - deactivated
+                    - error
+                    - unknown
+                    type: string
+                    x-auditable: true
+                required:
+                - ssl
+                - ownership
+                type: object
+              zoneId:
+                description: Zone ID of the custom domain resides in.
+                type: string
+                x-auditable: true
+              zoneName:
+                description: Zone that the custom domain resides in.
+                type: string
+                x-auditable: true
+            required:
+            - domain
+            - status
+            - enabled
+            type: object
+          type: array
+      required:
+      - domains
+      type: object
+    r2_add_custom_domain_request:
+      example:
+        domain: prefix.example-domain.com
+        enabled: true
+        zoneId: 36ca64a6d92827b8a6b90be344bb1bfd
+      properties:
+        ciphers:
+          description: An allowlist of ciphers for TLS termination. These ciphers must be in the BoringSSL format.
+          items:
+            type: string
+          type: array
+          x-auditable: true
+        domain:
+          description: Name of the custom domain to be added.
+          type: string
+          x-auditable: true
+        enabled:
+          description: Whether to enable public bucket access at the custom domain. If undefined, the domain will be enabled.
+          type: boolean
+          x-auditable: true
+        minTLS:
+          description: Minimum TLS Version the custom domain will accept for incoming connections. If not set, defaults to 1.0.
+          enum:
+          - "1.0"
+          - "1.1"
+          - "1.2"
+          - "1.3"
+          type: string
+          x-auditable: true
+        zoneId:
+          description: Zone ID of the custom domain.
+          type: string
+          x-auditable: true
+      required:
+      - domain
+      - zoneId
+      - enabled
+      type: object
+    r2_bucket-config:
+      properties:
+        bucketName:
+          description: Name of the bucket.
+          type: string
+          x-auditable: true
+        queues:
+          description: List of queues associated with the bucket.
+          items:
+            $ref: '#/components/schemas/r2_queues-config'
+          type: array
+      type: object
+    r2_queues-config:
+      properties:
+        queueId:
+          description: Queue ID.
+          example: 11111aa1-11aa-111a-a1a1-a1a111a11a11
+          type: string
+          x-auditable: true
+        queueName:
+          description: Name of the queue.
+          example: first-queue
+          type: string
+          x-auditable: true
+        rules:
+          items:
+            allOf:
+            - $ref: '#/components/schemas/r2_rule'
+            - properties:
+                createdAt:
+                  description: Timestamp when the rule was created.
+                  example: "2024-09-19T21:54:48.405Z"
+                  type: string
+                  x-auditable: true
+                description:
+                  description: A description that can be used to identify the event notification rule after creation.
+                  example: Notifications from source bucket to queue
+                  type: string
+                  x-auditable: true
+                ruleId:
+                  description: Rule ID.
+                  example: 11111aa1-11aa-111a-a1a1-a1a111a11a11
+                  type: string
+                  x-auditable: true
+              type: object
+          type: array
+      type: object
+    r2-data-catalog_api-response-common-failure:
+      properties:
+        errors:
+          items:
+            properties:
+              code:
+                type: integer
+              message:
+                type: string
+            type: object
+          minItems: 1
+          type: array
+        messages:
+          items:
+            type: object
+          type: array
+        success:
+          enum:
+          - false
+          type: boolean
+      type: object
+    r2-data-catalog_catalog-maintenance-update-request:
+      allOf:
+      - $ref: '#/components/schemas/r2-data-catalog_maintenance-update-params'
+      description: Contains request to update catalog maintenance configuration.
+    r2-data-catalog_maintenance-update-params:
+      description: Contains maintenance update parameters.
+      properties:
+        compaction:
+          $ref: '#/components/schemas/r2-data-catalog_compaction-update-params'
+        snapshot_expiration:
+          $ref: '#/components/schemas/r2-data-catalog_snapshot-expiration-update-params'
+      type: object
+    r2-data-catalog_snapshot-expiration-update-params:
+      description: Updates snapshot expiration configuration (all fields optional).
+      properties:
+        max_snapshot_age:
+          description: Updates the maximum age for snapshots optionally.
+          pattern: ^\d+(d|h|m|s)$
+          type: string
+        min_snapshots_to_keep:
+          description: Updates the minimum number of snapshots to retain optionally.
+          format: int64
+          minimum: 1
+          type: integer
+        state:
+          allOf:
+          - $ref: '#/components/schemas/r2-data-catalog_catalog-maintenance-state'
+          description: Updates the state optionally.
+      type: object
+    r2-data-catalog_compaction-update-params:
+      description: Updates compaction configuration (all fields optional).
+      properties:
+        state:
+          allOf:
+          - $ref: '#/components/schemas/r2-data-catalog_catalog-maintenance-state'
+          description: Updates the state optionally.
+        target_size_mb:
+          allOf:
+          - $ref: '#/components/schemas/r2-data-catalog_catalog-target-file-size'
+          description: Updates the target file size optionally.
+      type: object
+    r2-data-catalog_bucket-name:
+      description: Specifies the R2 bucket name.
+      example: my-data-bucket
+      maxLength: 63
+      minLength: 3
+      pattern: ^[a-z0-9]([a-z0-9\-]*[a-z0-9])?$
+      type: string
+    r2-data-catalog_catalog-list:
+      description: Contains the list of catalogs.
+      properties:
+        warehouses:
+          description: Lists catalogs in the account.
+          items:
+            $ref: '#/components/schemas/r2-data-catalog_catalog'
+          type: array
+      required:
+      - warehouses
+      type: object
+    r2-data-catalog_namespace-list-response:
+      description: Contains the list of namespaces with optional pagination.
+      properties:
+        details:
+          description: |
+            Contains detailed metadata for each namespace when return_details is true.
+            Each object includes the namespace, UUID, and timestamps.
+          items:
+            $ref: '#/components/schemas/r2-data-catalog_namespace-details'
+          nullable: true
+          type: array
+        namespace_uuids:
+          description: |
+            Contains UUIDs for each namespace when return_uuids is true.
+            The order corresponds to the namespaces array.
+          example:
+          - 0199b999-6869-7383-bb1f-d30e059d5326
+          - 0199b99b-2c88-73b3-8dbb-421e0e8f2757
+          items:
+            format: uuid
+            type: string
+          nullable: true
+          type: array
+        namespaces:
+          description: Lists namespaces in the catalog.
+          items:
+            $ref: '#/components/schemas/r2-data-catalog_namespace-identifier'
+          type: array
+        next_page_token:
+          description: |
+            Use this opaque token to fetch the next page of results.
+            A null or absent value indicates the last page.
+          example: MSYxNzU5NzU1NTc4NTA0MTk0JjAxOTliOTliLTJjODgtNzNiMy04ZGJiLTQyMWUwZThmMjc1Nw
+          nullable: true
+          type: string
+      required:
+      - namespaces
+      type: object
+    r2-data-catalog_namespace-details:
+      description: Contains namespace with metadata details.
+      properties:
+        created_at:
+          description: Indicates the creation timestamp in ISO 8601 format.
+          format: date-time
+          nullable: true
+          type: string
+        namespace:
+          $ref: '#/components/schemas/r2-data-catalog_namespace-identifier'
+        namespace_uuid:
+          description: Contains the UUID that persists across renames.
+          format: uuid
+          type: string
+        updated_at:
+          description: Shows the last update timestamp in ISO 8601 format. Null if never updated.
+          format: date-time
+          nullable: true
+          type: string
+      required:
+      - namespace
+      - namespace_uuid
+      type: object
+    r2-data-catalog_namespace-identifier:
+      description: |
+        Specifies the hierarchical namespace parts as an array of strings.
+        For example, ["bronze", "analytics"] represents the namespace "bronze.analytics".
+      example:
+      - bronze
+      - analytics
+      items:
+        type: string
+      maxItems: 16
+      minItems: 1
+      type: array
+    r2-data-catalog_table-list-response:
+      description: Contains the list of tables with optional pagination.
+      properties:
+        details:
+          description: |
+            Contains detailed metadata for each table when return_details is true.
+            Each object includes identifier, UUID, timestamps, and locations.
+          items:
+            $ref: '#/components/schemas/r2-data-catalog_table-details'
+          nullable: true
+          type: array
+        identifiers:
+          description: Lists tables in the namespace.
+          items:
+            $ref: '#/components/schemas/r2-data-catalog_table-identifier'
+          type: array
+        next_page_token:
+          description: |
+            Use this opaque token to fetch the next page of results.
+            A null or absent value indicates the last page.
+          example: MSYxNzU5NzU2MTI4NTU2Njk2JjAxOTliOWEzLTkxMmUtN2ZhMS05YzllLTg5MTAxMGQzYTg0MQ
+          nullable: true
+          type: string
+        table_uuids:
+          description: |
+            Contains UUIDs for each table when return_uuids is true.
+            The order corresponds to the identifiers array.
+          example:
+          - 0199b9a1-28a0-71e0-a73e-b0fc32c8468e
+          - 0199b9a1-3c74-7731-bf53-d8c67ead079d
+          items:
+            format: uuid
+            type: string
+          nullable: true
+          type: array
+      required:
+      - identifiers
+      type: object
+    r2-data-catalog_table-identifier:
+      description: Specifies a unique table identifier within a catalog.
+      properties:
+        name:
+          description: Specifies the table name.
+          example: events
+          type: string
+        namespace:
+          $ref: '#/components/schemas/r2-data-catalog_namespace-identifier'
+      required:
+      - namespace
+      - name
+      type: object
+    r2-data-catalog_table-details:
+      description: Contains table with metadata.
+      properties:
+        created_at:
+          description: Indicates the creation timestamp in ISO 8601 format.
+          format: date-time
+          nullable: true
+          type: string
+        identifier:
+          $ref: '#/components/schemas/r2-data-catalog_table-identifier'
+        location:
+          description: Specifies the base S3 URI for table storage location.
+          nullable: true
+          type: string
+        metadata_location:
+          description: Contains the S3 URI to table metadata file. Null for staged tables.
+          nullable: true
+          type: string
+        table_uuid:
+          description: Contains the UUID that persists across renames.
+          format: uuid
+          type: string
+        updated_at:
+          description: Shows the last update timestamp in ISO 8601 format. Null if never updated.
+          format: date-time
+          nullable: true
+          type: string
+      required:
+      - identifier
+      - table_uuid
+      type: object
+    r2_r2_put_object_result:
+      description: Result of a successful object upload.
+      properties:
+        etag:
+          description: The entity tag for the uploaded object.
+          example: d41d8cd98f00b204e9800998ecf8427e
+          type: string
+        key:
+          description: The key (name) of the uploaded object.
+          example: path/to/my-object.txt
+          type: string
+        size:
+          description: The size of the uploaded object in bytes (as a string).
+          example: "1048576"
+          type: string
+        storage_class:
+          $ref: '#/components/schemas/r2_storage_class'
+        uploaded:
+          description: The date and time the object was uploaded.
+          example: "2024-01-15T10:30:00Z"
+          format: date-time
+          type: string
+        version:
+          description: The version UUID of the uploaded object.
+          example: 3fd5b4a8-1234-5678-abcd-ef0123456789
+          type: string
+      type: object
+    r2_r2_delete_objects_by_prefix_result:
+      description: |
+        Descriptor of an asynchronous prefix-delete job, returned when the bulk
+        delete-objects endpoint is invoked with a `prefix` query parameter.
+      properties:
+        endTime:
+          description: When the job finished, if it has finished.
+          format: date-time
+          type: string
+        id:
+          description: Unique identifier for the prefix-delete job.
+          type: string
+        jobType:
+          description: The job kind. Always `prefixDelete` for this endpoint.
+          enum:
+          - prefixDelete
+          type: string
+        prefixDelete:
+          description: Details specific to the prefix-delete job.
+          properties:
+            deletedObjects:
+              description: Number of objects deleted by the job so far.
+              example: 0
+              type: integer
+            isBucketClear:
+              description: |
+                True when the job was created to clear the entire bucket
+                (i.e. an empty prefix). Distinguishes bucket-level clear operations
+                from prefix-specific delete operations.
+              type: boolean
+            prefix:
+              description: The prefix matched against object keys for deletion.
+              example: path/to/
+              type: string
+          type: object
+        startTime:
+          description: When the job was created.
+          format: date-time
+          type: string
+        status:
+          description: Lifecycle status of the job.
+          enum:
+          - ENQUEUED
+          - RUNNING
+          - COMPLETED
+          - FAILED
+          - CANCELLED
+          type: string
+      type: object
+    r2-data-catalog_table-maintenance-update-request:
+      allOf:
+      - $ref: '#/components/schemas/r2-data-catalog_maintenance-update-params'
+      description: Contains request to update table maintenance configuration.
+    r2_temp_access_creds_response:
+      example:
+        accessKeyId: example-access-key-id
+        secretAccessKey: example-secret-key
+        sessionToken: example-session-token
+      properties:
+        accessKeyId:
+          description: ID for new access key.
+          type: string
+        secretAccessKey:
+          description: Secret access key.
+          type: string
+          x-sensitive: true
+        sessionToken:
+          description: Security token.
+          type: string
+          x-sensitive: true
+      type: object
+    r2_local_uploads_configuration:
+      description: Configuration for local uploads on a bucket.
+      properties:
+        enabled:
+          description: Whether local uploads is enabled for this bucket. When enabled, object's data is written to the nearest region first, then asynchronously replicated to the bucket's primary region.
+          type: boolean
+          x-auditable: true
+      type: object
+    r2_account_level_metrics:
+      description: Metrics based on the class they belong to.
+      properties:
+        infrequentAccess:
+          $ref: '#/components/schemas/r2_class_based_metrics'
+        standard:
+          $ref: '#/components/schemas/r2_class_based_metrics'
+      type: object
+    r2_class_based_metrics:
+      description: Metrics based on what state they are in(uploaded or published).
+      properties:
+        published:
+          $ref: '#/components/schemas/r2_object_size_metrics'
+        uploaded:
+          $ref: '#/components/schemas/r2_object_size_metrics'
+      type: object
+    r2_object_size_metrics:
+      description: Metrics on number of objects/amount of storage used.
+      properties:
+        metadataSize:
+          description: Amount of.
+          type: number
+        objects:
+          description: Number of objects stored.
+          type: number
+        payloadSize:
+          description: Amount of storage used by object data.
+          type: number
+      type: object
+    r2_enable_sippy_gcs:
+      properties:
+        destination:
+          description: R2 bucket to copy objects to.
+          properties:
+            accessKeyId:
+              description: |
+                ID of a Cloudflare API token.
+                This is the value labelled "Access Key ID" when creating an API.
+                token from the [R2 dashboard](https://dash.cloudflare.com/?to=/:account/r2/api-tokens).
+
+                Sippy will use this token when writing objects to R2, so it is
+                best to scope this token to the bucket you're enabling Sippy for.
+              type: string
+            provider:
+              enum:
+              - r2
+              type: string
+            secretAccessKey:
+              description: |
+                Value of a Cloudflare API token.
+                This is the value labelled "Secret Access Key" when creating an API.
+                token from the [R2 dashboard](https://dash.cloudflare.com/?to=/:account/r2/api-tokens).
+
+                Sippy will use this token when writing objects to R2, so it is
+                best to scope this token to the bucket you're enabling Sippy for.
+              type: string
+              x-sensitive: true
+          type: object
+        source:
+          description: GCS bucket to copy objects from.
+          properties:
+            bucket:
+              description: Name of the GCS bucket.
+              type: string
+              x-auditable: true
+            clientEmail:
+              description: Client email of an IAM credential (ideally scoped to a single GCS bucket).
+              type: string
+            privateKey:
+              description: Private Key of an IAM credential (ideally scoped to a single GCS bucket).
+              type: string
+              x-sensitive: true
+            provider:
+              enum:
+              - gcs
+              type: string
+          type: object
+    r2-data-catalog_catalog-credential-request:
+      description: Contains request to store catalog credentials.
+      properties:
+        token:
+          description: Provides the Cloudflare API token for accessing R2.
+          example: your-cloudflare-api-token-here
+          type: string
+      required:
+      - token
+      type: object
+    r2_v4_response_failure:
+      properties:
+        errors:
+          $ref: '#/components/schemas/r2_errors'
+        messages:
+          $ref: '#/components/schemas/r2_messages'
+        result:
+          enum:
+          - 
+          nullable: true
+          type: object
+        success:
+          description: Whether the API call was successful.
+          enum:
+          - false
+          example: false
+          type: boolean
+      required:
+      - success
+      - errors
+      - messages
+      - result
+      type: object
+    r2_enable_sippy_aws:
+      properties:
+        destination:
+          description: R2 bucket to copy objects to.
+          properties:
+            accessKeyId:
+              description: |
+                ID of a Cloudflare API token.
+                This is the value labelled "Access Key ID" when creating an API.
+                token from the [R2 dashboard](https://dash.cloudflare.com/?to=/:account/r2/api-tokens).
+
+                Sippy will use this token when writing objects to R2, so it is
+                best to scope this token to the bucket you're enabling Sippy for.
+              type: string
+            provider:
+              enum:
+              - r2
+              type: string
+              x-auditable: true
+            secretAccessKey:
+              description: |
+                Value of a Cloudflare API token.
+                This is the value labelled "Secret Access Key" when creating an API.
+                token from the [R2 dashboard](https://dash.cloudflare.com/?to=/:account/r2/api-tokens).
+
+                Sippy will use this token when writing objects to R2, so it is
+                best to scope this token to the bucket you're enabling Sippy for.
+              type: string
+              x-sensitive: true
+          type: object
+        source:
+          description: AWS S3 bucket to copy objects from.
+          properties:
+            accessKeyId:
+              description: Access Key ID of an IAM credential (ideally scoped to a single S3 bucket).
+              type: string
+            bucket:
+              description: Name of the AWS S3 bucket.
+              type: string
+              x-auditable: true
+            provider:
+              enum:
+              - aws
+              type: string
+              x-auditable: true
+            region:
+              description: Name of the AWS availability zone.
+              type: string
+              x-auditable: true
+            secretAccessKey:
+              description: Secret Access Key of an IAM credential (ideally scoped to a single S3 bucket).
+              type: string
+              x-sensitive: true
+          type: object
+  securitySchemes:
+    api_email:
+      in: header
+      name: X-Auth-Email
+      type: apiKey
+    api_key:
+      in: header
+      name: X-Auth-Key
+      type: apiKey
+    api_token:
+      scheme: bearer
+      type: http
+    user_service_key:
+      in: header
+      name: X-Auth-User-Service-Key
+      type: apiKey
