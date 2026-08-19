@@ -1,0 +1,252 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Cloudflare R2 Cloudflare Buckets R2 Object API",
+    "version": "4.0.0"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "R2 Object",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List Objects",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.cloudflare.com/client/v4/accounts/:account_id/r2/buckets/:bucket_name/objects",
+            "headers": [
+              {
+                "name": "cf-r2-jurisdiction",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "account_id",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "bucket_name",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "per_page",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "prefix",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "delimiter",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "cursor",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "start_after",
+                "value": "",
+                "type": "query"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Lists objects in an R2 bucket. Returns object metadata including key, size, etag, last modified date, HTTP metadata, and custom metadata.\n\nFor most workloads, we recommend using R2's [S3-compatible API](https://developers.cloudflare.com/r2/api/s3/api/) or a [Worker with an R2 binding](https://developers.cloudflare.com/r2/api/workers/workers-api-reference/) instead.\n"
+        },
+        {
+          "info": {
+            "name": "Delete Objects",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://api.cloudflare.com/client/v4/accounts/:account_id/r2/buckets/:bucket_name/objects",
+            "headers": [
+              {
+                "name": "cf-r2-jurisdiction",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "account_id",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "bucket_name",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "prefix",
+                "value": "",
+                "type": "query"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Deletes multiple objects from an R2 bucket. Two modes are supported:\n\n1. **Delete by list** (default): Provide a JSON array of object keys in the request body.\n   All listed objects are deleted; per-key errors are reported in the response.\n2. **Delete by prefix**: Provide the `prefix` query parameter (and an empty/no body)\n   to schedule deletion of every object whose key begins with the given prefix.\n   This kicks off an asynchronous prefix-delete job and returns the job descriptor.\n\nFor most w"
+        },
+        {
+          "info": {
+            "name": "Get Object",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.cloudflare.com/client/v4/accounts/:account_id/r2/buckets/:bucket_name/objects/:object_key",
+            "headers": [
+              {
+                "name": "cf-r2-jurisdiction",
+                "value": ""
+              },
+              {
+                "name": "If-None-Match",
+                "value": ""
+              },
+              {
+                "name": "If-Modified-Since",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "account_id",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "bucket_name",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "object_key",
+                "value": "path/to/my-object.txt",
+                "type": "path"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Retrieves an object from an R2 bucket. Returns the object body along with metadata headers.\n\nFor most workloads, we recommend using R2's [S3-compatible API](https://developers.cloudflare.com/r2/api/s3/api/) or a [Worker with an R2 binding](https://developers.cloudflare.com/r2/api/workers/workers-api-reference/) instead.\n"
+        },
+        {
+          "info": {
+            "name": "Upload Object",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "https://api.cloudflare.com/client/v4/accounts/:account_id/r2/buckets/:bucket_name/objects/:object_key",
+            "headers": [
+              {
+                "name": "cf-r2-jurisdiction",
+                "value": ""
+              },
+              {
+                "name": "Content-Type",
+                "value": ""
+              },
+              {
+                "name": "Content-Length",
+                "value": ""
+              },
+              {
+                "name": "cf-r2-storage-class",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "account_id",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "bucket_name",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "object_key",
+                "value": "path/to/my-object.txt",
+                "type": "path"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Uploads an object to an R2 bucket. The object body is provided as the request body. Returns metadata about the uploaded object.\n\nThe maximum upload size for this endpoint is 300 MB. For most workloads, we recommend using R2's [S3-compatible API](https://developers.cloudflare.com/r2/api/s3/api/) or a [Worker with an R2 binding](https://developers.cloudflare.com/r2/api/workers/workers-api-reference/) instead.\n"
+        },
+        {
+          "info": {
+            "name": "Delete Object",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://api.cloudflare.com/client/v4/accounts/:account_id/r2/buckets/:bucket_name/objects/:object_key",
+            "headers": [
+              {
+                "name": "cf-r2-jurisdiction",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "account_id",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "bucket_name",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "object_key",
+                "value": "path/to/my-object.txt",
+                "type": "path"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Deletes an object from an R2 bucket.\n\nFor most workloads, we recommend using R2's [S3-compatible API](https://developers.cloudflare.com/r2/api/s3/api/) or a [Worker with an R2 binding](https://developers.cloudflare.com/r2/api/workers/workers-api-reference/) instead.\n"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

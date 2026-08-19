@@ -1,0 +1,285 @@
+{
+  "item": [
+    {
+      "id": "7f8d221a-c206-4fa7-abce-0e1635f04a37",
+      "name": "Lifecycle",
+      "description": {
+        "content": "",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "1ddf80fb-c98a-419f-966b-f087bb29da4a",
+          "name": "Get Bucket Lifecycle Configuration",
+          "request": {
+            "name": "Get Bucket Lifecycle Configuration",
+            "description": {
+              "content": "Returns the lifecycle configuration for the bucket.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "{{bucket}}"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "key": "lifecycle",
+                  "value": "null"
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/xml"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "be61eb3d-52e8-4692-8878-6127fa4da3f3",
+              "name": "Lifecycle configuration",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "{{bucket}}"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/xml"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/xml"
+                }
+              ],
+              "body": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<LifecycleConfiguration>\n  <Rule>\n    <ID>(string)</ID>\n    <Status>(string)</Status>\n    <Filter>\n      <Prefix>(string)</Prefix>\n    </Filter>\n    <Expiration>\n      <Days>(integer)</Days>\n      <Date>(string)</Date>\n    </Expiration>\n    <NoncurrentVersionExpiration>\n      <NoncurrentDays>(integer)</NoncurrentDays>\n    </NoncurrentVersionExpiration>\n    <AbortIncompleteMultipartUpload>\n      <DaysAfterInitiation>(integer)</DaysAfterInitiation>\n    </AbortIncompleteMultipartUpload>\n  </Rule>\n  <Rule>\n    <ID>(string)</ID>\n    <Status>(string)</Status>\n    <Filter>\n      <Prefix>(string)</Prefix>\n    </Filter>\n    <Expiration>\n      <Days>(integer)</Days>\n      <Date>(string)</Date>\n    </Expiration>\n    <NoncurrentVersionExpiration>\n      <NoncurrentDays>(integer)</NoncurrentDays>\n    </NoncurrentVersionExpiration>\n    <AbortIncompleteMultipartUpload>\n      <DaysAfterInitiation>(integer)</DaysAfterInitiation>\n    </AbortIncompleteMultipartUpload>\n  </Rule>\n</LifecycleConfiguration>",
+              "cookie": [],
+              "_postman_previewlanguage": "xml"
+            },
+            {
+              "id": "181d8b52-1ede-4a7d-abf7-a0a28f774dbf",
+              "name": "Error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "{{bucket}}"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/xml"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/xml"
+                }
+              ],
+              "body": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<Error>\n  <Code>(string)</Code>\n  <Message>(string)</Message>\n  <Resource>(string)</Resource>\n  <RequestId>(string)</RequestId>\n</Error>",
+              "cookie": [],
+              "_postman_previewlanguage": "xml"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "af2a1c77-fb9c-4cd6-b82f-1178beb5c03f",
+          "name": "Put Bucket Lifecycle Configuration",
+          "request": {
+            "name": "Put Bucket Lifecycle Configuration",
+            "description": {
+              "content": "Sets the lifecycle configuration for the bucket.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "{{bucket}}"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "key": "lifecycle",
+                  "value": "null"
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/xml"
+              },
+              {
+                "key": "Accept",
+                "value": "application/xml"
+              }
+            ],
+            "method": "PUT",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<LifecycleConfiguration>\n  <Rule>\n    <ID>(string)</ID>\n    <Status>(string)</Status>\n    <Filter>\n      <Prefix>(string)</Prefix>\n    </Filter>\n    <Expiration>\n      <Days>(integer)</Days>\n      <Date>(string)</Date>\n    </Expiration>\n    <NoncurrentVersionExpiration>\n      <NoncurrentDays>(integer)</NoncurrentDays>\n    </NoncurrentVersionExpiration>\n    <AbortIncompleteMultipartUpload>\n      <DaysAfterInitiation>(integer)</DaysAfterInitiation>\n    </AbortIncompleteMultipartUpload>\n  </Rule>\n  <Rule>\n    <ID>(string)</ID>\n    <Status>(string)</Status>\n    <Filter>\n      <Prefix>(string)</Prefix>\n    </Filter>\n    <Expiration>\n      <Days>(integer)</Days>\n      <Date>(string)</Date>\n    </Expiration>\n    <NoncurrentVersionExpiration>\n      <NoncurrentDays>(integer)</NoncurrentDays>\n    </NoncurrentVersionExpiration>\n    <AbortIncompleteMultipartUpload>\n      <DaysAfterInitiation>(integer)</DaysAfterInitiation>\n    </AbortIncompleteMultipartUpload>\n  </Rule>\n</LifecycleConfiguration>",
+              "options": {
+                "raw": {
+                  "language": "xml"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "56b6b96a-30ec-446d-873f-d9e03539c8c9",
+              "name": "Lifecycle configuration set",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "{{bucket}}"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "method": "PUT",
+                "body": {
+                  "mode": "raw",
+                  "raw": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<LifecycleConfiguration>\n  <Rule>\n    <ID>(string)</ID>\n    <Status>(string)</Status>\n    <Filter>\n      <Prefix>(string)</Prefix>\n    </Filter>\n    <Expiration>\n      <Days>(integer)</Days>\n      <Date>(string)</Date>\n    </Expiration>\n    <NoncurrentVersionExpiration>\n      <NoncurrentDays>(integer)</NoncurrentDays>\n    </NoncurrentVersionExpiration>\n    <AbortIncompleteMultipartUpload>\n      <DaysAfterInitiation>(integer)</DaysAfterInitiation>\n    </AbortIncompleteMultipartUpload>\n  </Rule>\n  <Rule>\n    <ID>(string)</ID>\n    <Status>(string)</Status>\n    <Filter>\n      <Prefix>(string)</Prefix>\n    </Filter>\n    <Expiration>\n      <Days>(integer)</Days>\n      <Date>(string)</Date>\n    </Expiration>\n    <NoncurrentVersionExpiration>\n      <NoncurrentDays>(integer)</NoncurrentDays>\n    </NoncurrentVersionExpiration>\n    <AbortIncompleteMultipartUpload>\n      <DaysAfterInitiation>(integer)</DaysAfterInitiation>\n    </AbortIncompleteMultipartUpload>\n  </Rule>\n</LifecycleConfiguration>",
+                  "options": {
+                    "raw": {
+                      "language": "xml"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "ab3839d9-6a8f-4f59-9fb0-d2a6bac080f6",
+              "name": "Error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "{{bucket}}"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/xml"
+                  }
+                ],
+                "method": "PUT",
+                "body": {
+                  "mode": "raw",
+                  "raw": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<LifecycleConfiguration>\n  <Rule>\n    <ID>(string)</ID>\n    <Status>(string)</Status>\n    <Filter>\n      <Prefix>(string)</Prefix>\n    </Filter>\n    <Expiration>\n      <Days>(integer)</Days>\n      <Date>(string)</Date>\n    </Expiration>\n    <NoncurrentVersionExpiration>\n      <NoncurrentDays>(integer)</NoncurrentDays>\n    </NoncurrentVersionExpiration>\n    <AbortIncompleteMultipartUpload>\n      <DaysAfterInitiation>(integer)</DaysAfterInitiation>\n    </AbortIncompleteMultipartUpload>\n  </Rule>\n  <Rule>\n    <ID>(string)</ID>\n    <Status>(string)</Status>\n    <Filter>\n      <Prefix>(string)</Prefix>\n    </Filter>\n    <Expiration>\n      <Days>(integer)</Days>\n      <Date>(string)</Date>\n    </Expiration>\n    <NoncurrentVersionExpiration>\n      <NoncurrentDays>(integer)</NoncurrentDays>\n    </NoncurrentVersionExpiration>\n    <AbortIncompleteMultipartUpload>\n      <DaysAfterInitiation>(integer)</DaysAfterInitiation>\n    </AbortIncompleteMultipartUpload>\n  </Rule>\n</LifecycleConfiguration>",
+                  "options": {
+                    "raw": {
+                      "language": "xml"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/xml"
+                }
+              ],
+              "body": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<Error>\n  <Code>(string)</Code>\n  <Message>(string)</Message>\n  <Resource>(string)</Resource>\n  <RequestId>(string)</RequestId>\n</Error>",
+              "cookie": [],
+              "_postman_previewlanguage": "xml"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://api.cloudflare.com/client/v4",
+      "key": "baseUrl"
+    },
+    {
+      "disabled": false,
+      "description": {
+        "content": "(Required) ",
+        "type": "text/plain"
+      },
+      "type": "any",
+      "value": "<string>",
+      "key": "bucket"
+    }
+  ],
+  "info": {
+    "_postman_id": "52aaddff-1d6e-4364-80b9-21f6cb837bda",
+    "name": "Cloudflare R2 Cloudflare Buckets Lifecycle API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "Cloudflare API endpoints for managing R2 object storage buckets, objects, CORS, lifecycle policies, custom domains, event notifications, data catalog, and temporary credentials.\n\nContact Support:\n Name: Cloudflare Developer Docs",
+      "type": "text/plain"
+    }
+  }
+}

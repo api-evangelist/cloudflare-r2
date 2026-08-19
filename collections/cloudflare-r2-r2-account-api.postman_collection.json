@@ -1,0 +1,194 @@
+{
+  "item": [
+    {
+      "id": "5729db1d-2937-4f25-a568-5d4de6bf3548",
+      "name": "R2 Account",
+      "description": {
+        "content": "",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "2fc91cf5-e12e-4ae0-9591-b325009fbd29",
+          "name": "Get Account-Level Metrics",
+          "request": {
+            "name": "Get Account-Level Metrics",
+            "description": {
+              "content": "Get Storage/Object Count Metrics across all buckets in your account. Note that Account-Level Metrics may not immediately reflect the latest data.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "accounts",
+                ":account_id",
+                "r2",
+                "metrics"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "account_id",
+                  "description": "(Required) "
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/json"
+              }
+            ],
+            "method": "GET",
+            "auth": {
+              "type": "bearer",
+              "bearer": [
+                {
+                  "key": "token",
+                  "value": "{{bearerToken}}"
+                }
+              ]
+            }
+          },
+          "response": [
+            {
+              "id": "d09de6fe-fc6a-4829-a806-c5b4a8e39a2a",
+              "name": "Get Account-Level Metrics response.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "accounts",
+                    ":account_id",
+                    "r2",
+                    "metrics"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "account_id",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": true,\n  \"errors\": [\n    {\n      \"code\": 2811,\n      \"message\": \"string\"\n    },\n    {\n      \"code\": 4657,\n      \"message\": \"string\"\n    }\n  ],\n  \"messages\": [\n    \"string\",\n    \"string\"\n  ],\n  \"result\": {\n    \"infrequentAccess\": {\n      \"published\": {\n        \"metadataSize\": 5500.2035568073225,\n        \"objects\": 8953.518357519153,\n        \"payloadSize\": 5895.255091354979\n      },\n      \"uploaded\": {\n        \"metadataSize\": 7470.9603145185,\n        \"objects\": 6382.136707871282,\n        \"payloadSize\": 4991.705773757447\n      }\n    },\n    \"standard\": {\n      \"published\": {\n        \"metadataSize\": 1540.9210774294013,\n        \"objects\": 1848.9625131163234,\n        \"payloadSize\": 4086.308496121469\n      },\n      \"uploaded\": {\n        \"metadataSize\": 2637.736780817228,\n        \"objects\": 9311.728195766776,\n        \"payloadSize\": 7117.874909080369\n      }\n    }\n  }\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            },
+            {
+              "id": "b1bdfd8e-e19b-42da-a08e-3688d37de4b6",
+              "name": "Get Account-Level Metrics response failure.",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "accounts",
+                    ":account_id",
+                    "r2",
+                    "metrics"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "account_id",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "description": {
+                      "content": "Added as a part of security scheme: bearer",
+                      "type": "text/plain"
+                    },
+                    "key": "Authorization",
+                    "value": "Bearer <token>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/json"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/json"
+                }
+              ],
+              "body": "{\n  \"success\": false,\n  \"errors\": [\n    {\n      \"code\": 8836,\n      \"message\": \"string\"\n    },\n    {\n      \"code\": 3644,\n      \"message\": \"string\"\n    }\n  ],\n  \"messages\": [\n    \"string\",\n    \"string\"\n  ],\n  \"result\": null\n}",
+              "cookie": [],
+              "_postman_previewlanguage": "json"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://api.cloudflare.com/client/v4",
+      "key": "baseUrl"
+    }
+  ],
+  "info": {
+    "_postman_id": "fd6b1fda-f354-4e1f-a58e-3f0cacd40e66",
+    "name": "Cloudflare R2 Cloudflare Buckets R2 Account API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "Cloudflare API endpoints for managing R2 object storage buckets, objects, CORS, lifecycle policies, custom domains, event notifications, data catalog, and temporary credentials.\n\nContact Support:\n Name: Cloudflare Developer Docs",
+      "type": "text/plain"
+    }
+  }
+}

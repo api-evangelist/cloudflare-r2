@@ -1,0 +1,1054 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Cloudflare R2 Cloudflare Buckets R2 Bucket API",
+    "version": "4.0.0"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "R2 Bucket",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List Event Notification Rules",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.cloudflare.com/client/v4/accounts/:account_id/event_notifications/r2/:bucket_name/configuration",
+            "headers": [
+              {
+                "name": "cf-r2-jurisdiction",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "bucket_name",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "account_id",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "List all event notification rules for a bucket."
+        },
+        {
+          "info": {
+            "name": "Get Event Notification Rule",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.cloudflare.com/client/v4/accounts/:account_id/event_notifications/r2/:bucket_name/configuration/queues/:queue_id",
+            "headers": [
+              {
+                "name": "cf-r2-jurisdiction",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "queue_id",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "bucket_name",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "account_id",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Get a single event notification rule."
+        },
+        {
+          "info": {
+            "name": "Create Event Notification Rule",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "https://api.cloudflare.com/client/v4/accounts/:account_id/event_notifications/r2/:bucket_name/configuration/queues/:queue_id",
+            "headers": [
+              {
+                "name": "cf-r2-jurisdiction",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "queue_id",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "bucket_name",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "account_id",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Create event notification rule."
+        },
+        {
+          "info": {
+            "name": "Delete Event Notification Rules",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://api.cloudflare.com/client/v4/accounts/:account_id/event_notifications/r2/:bucket_name/configuration/queues/:queue_id",
+            "headers": [
+              {
+                "name": "cf-r2-jurisdiction",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "queue_id",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "bucket_name",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "account_id",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Delete an event notification rule. **If no body is provided, all rules for specified queue will be deleted**."
+        },
+        {
+          "info": {
+            "name": "List Buckets",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.cloudflare.com/client/v4/accounts/:account_id/r2/buckets",
+            "headers": [
+              {
+                "name": "cf-r2-jurisdiction",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "account_id",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "name_contains",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "start_after",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "per_page",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "order",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "direction",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "cursor",
+                "value": "",
+                "type": "query"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Lists all R2 buckets on your account."
+        },
+        {
+          "info": {
+            "name": "Create Bucket",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.cloudflare.com/client/v4/accounts/:account_id/r2/buckets",
+            "headers": [
+              {
+                "name": "cf-r2-jurisdiction",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "account_id",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Creates a new R2 bucket."
+        },
+        {
+          "info": {
+            "name": "Get Bucket",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.cloudflare.com/client/v4/accounts/:account_id/r2/buckets/:bucket_name",
+            "headers": [
+              {
+                "name": "cf-r2-jurisdiction",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "account_id",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "bucket_name",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Gets properties of an existing R2 bucket."
+        },
+        {
+          "info": {
+            "name": "Patch Bucket",
+            "type": "http"
+          },
+          "http": {
+            "method": "PATCH",
+            "url": "https://api.cloudflare.com/client/v4/accounts/:account_id/r2/buckets/:bucket_name",
+            "headers": [
+              {
+                "name": "cf-r2-jurisdiction",
+                "value": ""
+              },
+              {
+                "name": "cf-r2-storage-class",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "account_id",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "bucket_name",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Updates properties of an existing R2 bucket."
+        },
+        {
+          "info": {
+            "name": "Delete Bucket",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://api.cloudflare.com/client/v4/accounts/:account_id/r2/buckets/:bucket_name",
+            "headers": [
+              {
+                "name": "cf-r2-jurisdiction",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "bucket_name",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "account_id",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Deletes an existing R2 bucket."
+        },
+        {
+          "info": {
+            "name": "Get Bucket CORS Policy",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.cloudflare.com/client/v4/accounts/:account_id/r2/buckets/:bucket_name/cors",
+            "headers": [
+              {
+                "name": "cf-r2-jurisdiction",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "bucket_name",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "account_id",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Get the CORS policy for a bucket."
+        },
+        {
+          "info": {
+            "name": "Put Bucket CORS Policy",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "https://api.cloudflare.com/client/v4/accounts/:account_id/r2/buckets/:bucket_name/cors",
+            "headers": [
+              {
+                "name": "cf-r2-jurisdiction",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "bucket_name",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "account_id",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Set the CORS policy for a bucket."
+        },
+        {
+          "info": {
+            "name": "Delete Bucket CORS Policy",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://api.cloudflare.com/client/v4/accounts/:account_id/r2/buckets/:bucket_name/cors",
+            "headers": [
+              {
+                "name": "cf-r2-jurisdiction",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "bucket_name",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "account_id",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Delete the CORS policy for a bucket."
+        },
+        {
+          "info": {
+            "name": "List Custom Domains of Bucket",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.cloudflare.com/client/v4/accounts/:account_id/r2/buckets/:bucket_name/domains/custom",
+            "headers": [
+              {
+                "name": "cf-r2-jurisdiction",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "account_id",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "bucket_name",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Gets a list of all custom domains registered with an existing R2 bucket."
+        },
+        {
+          "info": {
+            "name": "Attach Custom Domain To Bucket",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.cloudflare.com/client/v4/accounts/:account_id/r2/buckets/:bucket_name/domains/custom",
+            "headers": [
+              {
+                "name": "cf-r2-jurisdiction",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "account_id",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "bucket_name",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Register a new custom domain for an existing R2 bucket."
+        },
+        {
+          "info": {
+            "name": "Get Custom Domain Settings",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.cloudflare.com/client/v4/accounts/:account_id/r2/buckets/:bucket_name/domains/custom/:domain",
+            "headers": [
+              {
+                "name": "cf-r2-jurisdiction",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "account_id",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "bucket_name",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "domain",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Get the configuration for a custom domain on an existing R2 bucket."
+        },
+        {
+          "info": {
+            "name": "Configure Custom Domain Settings",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "https://api.cloudflare.com/client/v4/accounts/:account_id/r2/buckets/:bucket_name/domains/custom/:domain",
+            "headers": [
+              {
+                "name": "cf-r2-jurisdiction",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "account_id",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "bucket_name",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "domain",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Edit the configuration for a custom domain on an existing R2 bucket."
+        },
+        {
+          "info": {
+            "name": "Remove Custom Domain From Bucket",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://api.cloudflare.com/client/v4/accounts/:account_id/r2/buckets/:bucket_name/domains/custom/:domain",
+            "headers": [
+              {
+                "name": "cf-r2-jurisdiction",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "bucket_name",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "account_id",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "domain",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Remove custom domain registration from an existing R2 bucket."
+        },
+        {
+          "info": {
+            "name": "Get r2.dev Domain of Bucket",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.cloudflare.com/client/v4/accounts/:account_id/r2/buckets/:bucket_name/domains/managed",
+            "headers": [
+              {
+                "name": "cf-r2-jurisdiction",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "account_id",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "bucket_name",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Gets state of public access over the bucket's R2-managed (r2.dev) domain."
+        },
+        {
+          "info": {
+            "name": "Update r2.dev Domain of Bucket",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "https://api.cloudflare.com/client/v4/accounts/:account_id/r2/buckets/:bucket_name/domains/managed",
+            "headers": [
+              {
+                "name": "cf-r2-jurisdiction",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "account_id",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "bucket_name",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Updates state of public access over the bucket's R2-managed (r2.dev) domain."
+        },
+        {
+          "info": {
+            "name": "Get Object Lifecycle Rules",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.cloudflare.com/client/v4/accounts/:account_id/r2/buckets/:bucket_name/lifecycle",
+            "headers": [
+              {
+                "name": "cf-r2-jurisdiction",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "bucket_name",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "account_id",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Get object lifecycle rules for a bucket."
+        },
+        {
+          "info": {
+            "name": "Put Object Lifecycle Rules",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "https://api.cloudflare.com/client/v4/accounts/:account_id/r2/buckets/:bucket_name/lifecycle",
+            "headers": [
+              {
+                "name": "cf-r2-jurisdiction",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "bucket_name",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "account_id",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Set the object lifecycle rules for a bucket."
+        },
+        {
+          "info": {
+            "name": "Get Local Uploads Configuration",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.cloudflare.com/client/v4/accounts/:account_id/r2/buckets/:bucket_name/local-uploads",
+            "params": [
+              {
+                "name": "bucket_name",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "account_id",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Get the local uploads configuration for a bucket. When enabled, object's data is written to the nearest region first, then asynchronously replicated to the bucket's primary region."
+        },
+        {
+          "info": {
+            "name": "Put Local Uploads Configuration",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "https://api.cloudflare.com/client/v4/accounts/:account_id/r2/buckets/:bucket_name/local-uploads",
+            "params": [
+              {
+                "name": "bucket_name",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "account_id",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Set the local uploads configuration for a bucket. When enabled, object's data is written to the nearest region first, then asynchronously replicated to the bucket's primary region."
+        },
+        {
+          "info": {
+            "name": "Get Bucket Lock Rules",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.cloudflare.com/client/v4/accounts/:account_id/r2/buckets/:bucket_name/lock",
+            "headers": [
+              {
+                "name": "cf-r2-jurisdiction",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "bucket_name",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "account_id",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Get lock rules for a bucket."
+        },
+        {
+          "info": {
+            "name": "Put Bucket Lock Rules",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "https://api.cloudflare.com/client/v4/accounts/:account_id/r2/buckets/:bucket_name/lock",
+            "headers": [
+              {
+                "name": "cf-r2-jurisdiction",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "bucket_name",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "account_id",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Set lock rules for a bucket."
+        },
+        {
+          "info": {
+            "name": "Get Sippy Configuration",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.cloudflare.com/client/v4/accounts/:account_id/r2/buckets/:bucket_name/sippy",
+            "headers": [
+              {
+                "name": "cf-r2-jurisdiction",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "account_id",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "bucket_name",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Gets configuration for Sippy for an existing R2 bucket."
+        },
+        {
+          "info": {
+            "name": "Enable Sippy",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "https://api.cloudflare.com/client/v4/accounts/:account_id/r2/buckets/:bucket_name/sippy",
+            "headers": [
+              {
+                "name": "cf-r2-jurisdiction",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "account_id",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "bucket_name",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Sets configuration for Sippy for an existing R2 bucket."
+        },
+        {
+          "info": {
+            "name": "Disable Sippy",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://api.cloudflare.com/client/v4/accounts/:account_id/r2/buckets/:bucket_name/sippy",
+            "headers": [
+              {
+                "name": "cf-r2-jurisdiction",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "bucket_name",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "account_id",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Disables Sippy on this bucket."
+        },
+        {
+          "info": {
+            "name": "Create Temporary Access Credentials",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.cloudflare.com/client/v4/accounts/:account_id/r2/temp-access-credentials",
+            "params": [
+              {
+                "name": "account_id",
+                "value": "",
+                "type": "path"
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Creates temporary access credentials on a bucket that can be optionally scoped to prefixes or objects."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

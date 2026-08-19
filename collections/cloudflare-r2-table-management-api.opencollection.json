@@ -1,0 +1,77 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Cloudflare R2 Cloudflare Buckets Table Management API",
+    "version": "4.0.0"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Table Management",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List tables in namespace",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.cloudflare.com/client/v4/accounts/:account_id/r2-catalog/:bucket_name/namespaces/:namespace/tables",
+            "params": [
+              {
+                "name": "account_id",
+                "value": "",
+                "type": "path",
+                "description": "Identifies the account."
+              },
+              {
+                "name": "bucket_name",
+                "value": "",
+                "type": "path",
+                "description": "Specifies the R2 bucket name."
+              },
+              {
+                "name": "namespace",
+                "value": "bronze",
+                "type": "path",
+                "description": "The namespace identifier.\nFor nested namespaces, use %1F as separator (e.g., \"bronze%1Fanalytics\").\n"
+              },
+              {
+                "name": "page_token",
+                "value": "MSYxNzU5NzU2MTI4NTU2Njk2JjAxOTliOWEzLTkxMmUtN2ZhMS05YzllLTg5MTAxMGQzYTg0MQ",
+                "type": "query",
+                "description": "Opaque pagination token from a previous response.\nUse this to fetch the next page of results.\n"
+              },
+              {
+                "name": "page_size",
+                "value": "100",
+                "type": "query",
+                "description": "Maximum number of tables to return per page.\nDefaults to 100, maximum 1000.\n"
+              },
+              {
+                "name": "return_uuids",
+                "value": "true",
+                "type": "query",
+                "description": "Whether to include table UUIDs in the response.\nSet to true to receive the table_uuids array.\n"
+              },
+              {
+                "name": "return_details",
+                "value": "true",
+                "type": "query",
+                "description": "Whether to include additional metadata (timestamps, locations).\nWhen true, response includes created_at, updated_at, metadata_locations, and locations arrays.\n"
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Returns a list of tables in the specified namespace within an R2 catalog.\nSupports pagination for efficient traversal of large table collections.\n"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

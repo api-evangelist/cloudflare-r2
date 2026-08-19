@@ -1,0 +1,1551 @@
+{
+  "item": [
+    {
+      "id": "b628d148-d735-4300-9087-764752fb2479",
+      "name": "Objects",
+      "description": {
+        "content": "",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "d1c29875-6794-4ddd-a0e9-2cb53d9c14db",
+          "name": "List Objects V2",
+          "request": {
+            "name": "List Objects V2",
+            "description": {
+              "content": "Returns some or all (up to 1,000) of the objects in a bucket. ListObjectsV2 is preferred over ListObjects.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                ":bucket"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "list-type",
+                  "value": "<integer>",
+                  "description": "Set to 2 to use ListObjectsV2"
+                },
+                {
+                  "disabled": false,
+                  "key": "prefix",
+                  "value": "<string>",
+                  "description": "Limits the response to keys that begin with the specified prefix"
+                },
+                {
+                  "disabled": false,
+                  "key": "delimiter",
+                  "value": "<string>",
+                  "description": "A delimiter is a character you use to group keys"
+                },
+                {
+                  "disabled": false,
+                  "key": "max-keys",
+                  "value": "1000",
+                  "description": "Maximum number of keys to return"
+                },
+                {
+                  "disabled": false,
+                  "key": "continuation-token",
+                  "value": "<string>",
+                  "description": "Token from previous response to get next page"
+                },
+                {
+                  "disabled": false,
+                  "key": "start-after",
+                  "value": "<string>",
+                  "description": "Start listing after this key"
+                },
+                {
+                  "disabled": false,
+                  "key": "marker",
+                  "value": "<string>",
+                  "description": "(V1) Where to begin listing. The response starts listing after this marker"
+                },
+                {
+                  "disabled": false,
+                  "key": "uploads",
+                  "value": "<boolean>",
+                  "description": "List in-progress multipart uploads when present"
+                },
+                {
+                  "disabled": false,
+                  "key": "location",
+                  "value": "<boolean>",
+                  "description": "Return bucket location when present"
+                },
+                {
+                  "disabled": false,
+                  "key": "cors",
+                  "value": "<boolean>",
+                  "description": "Return CORS configuration when present"
+                },
+                {
+                  "disabled": false,
+                  "key": "lifecycle",
+                  "value": "<boolean>",
+                  "description": "Return lifecycle configuration when present"
+                },
+                {
+                  "disabled": false,
+                  "key": "encryption",
+                  "value": "<boolean>",
+                  "description": "Return encryption configuration when present"
+                }
+              ],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "bucket",
+                  "description": "(Required) Name of the bucket"
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/xml"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "fc8ab899-3672-4c2c-be33-ff4aea571d27",
+              "name": "Success",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    ":bucket"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "list-type",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "prefix",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "delimiter",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "max-keys",
+                      "value": "1000"
+                    },
+                    {
+                      "key": "continuation-token",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "start-after",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "marker",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "uploads",
+                      "value": "<boolean>"
+                    },
+                    {
+                      "key": "location",
+                      "value": "<boolean>"
+                    },
+                    {
+                      "key": "cors",
+                      "value": "<boolean>"
+                    },
+                    {
+                      "key": "lifecycle",
+                      "value": "<boolean>"
+                    },
+                    {
+                      "key": "encryption",
+                      "value": "<boolean>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "bucket",
+                      "description": "(Required) Name of the bucket"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/xml"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/xml"
+                }
+              ],
+              "body": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<ListBucketResult>\n  <Name>(string)</Name>\n  <Prefix>(string)</Prefix>\n  <Delimiter>(string)</Delimiter>\n  <MaxKeys>(integer)</MaxKeys>\n  <IsTruncated>(boolean)</IsTruncated>\n  <NextContinuationToken>(string)</NextContinuationToken>\n  <NextMarker>(string)</NextMarker>\n  <KeyCount>(integer)</KeyCount>\n  <Contents>\n    <Key>(string)</Key>\n    <LastModified>(string)</LastModified>\n    <ETag>(string)</ETag>\n    <Size>(integer)</Size>\n    <StorageClass>(string)</StorageClass>\n  </Contents>\n  <Contents>\n    <Key>(string)</Key>\n    <LastModified>(string)</LastModified>\n    <ETag>(string)</ETag>\n    <Size>(integer)</Size>\n    <StorageClass>(string)</StorageClass>\n  </Contents>\n  <CommonPrefixes>\n    <Prefix>(string)</Prefix>\n  </CommonPrefixes>\n  <CommonPrefixes>\n    <Prefix>(string)</Prefix>\n  </CommonPrefixes>\n</ListBucketResult>",
+              "cookie": [],
+              "_postman_previewlanguage": "xml"
+            },
+            {
+              "id": "238fcfcb-eeb5-49af-96b0-f105c8027388",
+              "name": "Error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    ":bucket"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "list-type",
+                      "value": "<integer>"
+                    },
+                    {
+                      "key": "prefix",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "delimiter",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "max-keys",
+                      "value": "1000"
+                    },
+                    {
+                      "key": "continuation-token",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "start-after",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "marker",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "uploads",
+                      "value": "<boolean>"
+                    },
+                    {
+                      "key": "location",
+                      "value": "<boolean>"
+                    },
+                    {
+                      "key": "cors",
+                      "value": "<boolean>"
+                    },
+                    {
+                      "key": "lifecycle",
+                      "value": "<boolean>"
+                    },
+                    {
+                      "key": "encryption",
+                      "value": "<boolean>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "bucket",
+                      "description": "(Required) Name of the bucket"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/xml"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/xml"
+                }
+              ],
+              "body": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<Error>\n  <Code>(string)</Code>\n  <Message>(string)</Message>\n  <Resource>(string)</Resource>\n  <RequestId>(string)</RequestId>\n</Error>",
+              "cookie": [],
+              "_postman_previewlanguage": "xml"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "22630e1b-5086-499e-9fae-078fce317de3",
+          "name": "Head Object",
+          "request": {
+            "name": "Head Object",
+            "description": {
+              "content": "Retrieves metadata from an object without returning the object itself.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                ":bucket",
+                ":key"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "bucket",
+                  "description": "(Required) "
+                },
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "key",
+                  "description": "(Required) Object key"
+                }
+              ]
+            },
+            "header": [
+              {
+                "disabled": false,
+                "description": "HTTP Range header for partial content",
+                "key": "Range",
+                "value": "<string>"
+              },
+              {
+                "disabled": false,
+                "key": "If-Match",
+                "value": "<string>",
+                "description": ""
+              },
+              {
+                "disabled": false,
+                "key": "If-None-Match",
+                "value": "<string>",
+                "description": ""
+              },
+              {
+                "disabled": false,
+                "key": "If-Modified-Since",
+                "value": "<dateTime>",
+                "description": ""
+              },
+              {
+                "disabled": false,
+                "key": "If-Unmodified-Since",
+                "value": "<dateTime>",
+                "description": ""
+              },
+              {
+                "key": "Accept",
+                "value": "application/xml"
+              }
+            ],
+            "method": "HEAD",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "9781a1e3-32be-49b2-8eb3-9ae858de2ad5",
+              "name": "Object metadata",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    ":bucket",
+                    ":key"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "bucket",
+                      "description": "(Required) "
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "key",
+                      "description": "(Required) Object key"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "disabled": false,
+                    "description": "HTTP Range header for partial content",
+                    "key": "Range",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "key": "If-Match",
+                    "value": "<string>",
+                    "description": ""
+                  },
+                  {
+                    "disabled": false,
+                    "key": "If-None-Match",
+                    "value": "<string>",
+                    "description": ""
+                  },
+                  {
+                    "disabled": false,
+                    "key": "If-Modified-Since",
+                    "value": "<dateTime>",
+                    "description": ""
+                  },
+                  {
+                    "disabled": false,
+                    "key": "If-Unmodified-Since",
+                    "value": "<dateTime>",
+                    "description": ""
+                  }
+                ],
+                "method": "HEAD",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "disabled": false,
+                  "key": "Content-Length",
+                  "value": "6129",
+                  "description": ""
+                },
+                {
+                  "disabled": false,
+                  "key": "ETag",
+                  "value": "string",
+                  "description": ""
+                },
+                {
+                  "disabled": false,
+                  "key": "Last-Modified",
+                  "value": "string",
+                  "description": ""
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "8591a121-0f06-4fe2-ac17-52824f542bb4",
+              "name": "Error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    ":bucket",
+                    ":key"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "bucket",
+                      "description": "(Required) "
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "key",
+                      "description": "(Required) Object key"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "disabled": false,
+                    "description": "HTTP Range header for partial content",
+                    "key": "Range",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "key": "If-Match",
+                    "value": "<string>",
+                    "description": ""
+                  },
+                  {
+                    "disabled": false,
+                    "key": "If-None-Match",
+                    "value": "<string>",
+                    "description": ""
+                  },
+                  {
+                    "disabled": false,
+                    "key": "If-Modified-Since",
+                    "value": "<dateTime>",
+                    "description": ""
+                  },
+                  {
+                    "disabled": false,
+                    "key": "If-Unmodified-Since",
+                    "value": "<dateTime>",
+                    "description": ""
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/xml"
+                  }
+                ],
+                "method": "HEAD",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/xml"
+                }
+              ],
+              "body": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<Error>\n  <Code>(string)</Code>\n  <Message>(string)</Message>\n  <Resource>(string)</Resource>\n  <RequestId>(string)</RequestId>\n</Error>",
+              "cookie": [],
+              "_postman_previewlanguage": "xml"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "bdd9a280-6abf-45f7-be77-aa0f2af33b48",
+          "name": "Get Object",
+          "request": {
+            "name": "Get Object",
+            "description": {
+              "content": "Retrieves an object from a bucket.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                ":bucket",
+                ":key"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "disabled": false,
+                  "key": "response-content-type",
+                  "value": "<string>"
+                },
+                {
+                  "disabled": false,
+                  "key": "response-content-disposition",
+                  "value": "<string>"
+                }
+              ],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "bucket",
+                  "description": "(Required) "
+                },
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "key",
+                  "description": "(Required) Object key"
+                }
+              ]
+            },
+            "header": [
+              {
+                "disabled": false,
+                "description": "HTTP Range header for partial content retrieval",
+                "key": "Range",
+                "value": "<string>"
+              },
+              {
+                "disabled": false,
+                "key": "If-Match",
+                "value": "<string>",
+                "description": ""
+              },
+              {
+                "disabled": false,
+                "key": "If-None-Match",
+                "value": "<string>",
+                "description": ""
+              },
+              {
+                "disabled": false,
+                "key": "If-Modified-Since",
+                "value": "<dateTime>",
+                "description": ""
+              },
+              {
+                "disabled": false,
+                "key": "If-Unmodified-Since",
+                "value": "<dateTime>",
+                "description": ""
+              },
+              {
+                "key": "Accept",
+                "value": "application/octet-stream"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "c10fc0fd-bd84-4e04-9fb6-e1a46a9e7d70",
+              "name": "Object data",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    ":bucket",
+                    ":key"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "response-content-type",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "response-content-disposition",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "bucket",
+                      "description": "(Required) "
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "key",
+                      "description": "(Required) Object key"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "disabled": false,
+                    "description": "HTTP Range header for partial content retrieval",
+                    "key": "Range",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "key": "If-Match",
+                    "value": "<string>",
+                    "description": ""
+                  },
+                  {
+                    "disabled": false,
+                    "key": "If-None-Match",
+                    "value": "<string>",
+                    "description": ""
+                  },
+                  {
+                    "disabled": false,
+                    "key": "If-Modified-Since",
+                    "value": "<dateTime>",
+                    "description": ""
+                  },
+                  {
+                    "disabled": false,
+                    "key": "If-Unmodified-Since",
+                    "value": "<dateTime>",
+                    "description": ""
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/octet-stream"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/octet-stream"
+                }
+              ],
+              "body": "string",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "079947b9-f398-4c6e-8c32-3fd034010c8a",
+              "name": "Partial content",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    ":bucket",
+                    ":key"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "response-content-type",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "response-content-disposition",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "bucket",
+                      "description": "(Required) "
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "key",
+                      "description": "(Required) Object key"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "disabled": false,
+                    "description": "HTTP Range header for partial content retrieval",
+                    "key": "Range",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "key": "If-Match",
+                    "value": "<string>",
+                    "description": ""
+                  },
+                  {
+                    "disabled": false,
+                    "key": "If-None-Match",
+                    "value": "<string>",
+                    "description": ""
+                  },
+                  {
+                    "disabled": false,
+                    "key": "If-Modified-Since",
+                    "value": "<dateTime>",
+                    "description": ""
+                  },
+                  {
+                    "disabled": false,
+                    "key": "If-Unmodified-Since",
+                    "value": "<dateTime>",
+                    "description": ""
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/octet-stream"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Partial Content",
+              "code": 206,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/octet-stream"
+                }
+              ],
+              "body": "string",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "7ce1f200-ddff-4020-aada-e2ee356af38c",
+              "name": "Error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    ":bucket",
+                    ":key"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [
+                    {
+                      "key": "response-content-type",
+                      "value": "<string>"
+                    },
+                    {
+                      "key": "response-content-disposition",
+                      "value": "<string>"
+                    }
+                  ],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "bucket",
+                      "description": "(Required) "
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "key",
+                      "description": "(Required) Object key"
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "disabled": false,
+                    "description": "HTTP Range header for partial content retrieval",
+                    "key": "Range",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "key": "If-Match",
+                    "value": "<string>",
+                    "description": ""
+                  },
+                  {
+                    "disabled": false,
+                    "key": "If-None-Match",
+                    "value": "<string>",
+                    "description": ""
+                  },
+                  {
+                    "disabled": false,
+                    "key": "If-Modified-Since",
+                    "value": "<dateTime>",
+                    "description": ""
+                  },
+                  {
+                    "disabled": false,
+                    "key": "If-Unmodified-Since",
+                    "value": "<dateTime>",
+                    "description": ""
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/xml"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/xml"
+                }
+              ],
+              "body": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<Error>\n  <Code>(string)</Code>\n  <Message>(string)</Message>\n  <Resource>(string)</Resource>\n  <RequestId>(string)</RequestId>\n</Error>",
+              "cookie": [],
+              "_postman_previewlanguage": "xml"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "2a284593-4faf-4818-a789-63fe2859559a",
+          "name": "Put Object",
+          "request": {
+            "name": "Put Object",
+            "description": {
+              "content": "Adds an object to a bucket.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                ":bucket",
+                ":key"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "bucket",
+                  "description": "(Required) "
+                },
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "key",
+                  "description": "(Required) "
+                }
+              ]
+            },
+            "header": [
+              {
+                "disabled": false,
+                "key": "Content-MD5",
+                "value": "<string>",
+                "description": ""
+              },
+              {
+                "disabled": false,
+                "key": "Content-Length",
+                "value": "<integer>",
+                "description": ""
+              },
+              {
+                "disabled": false,
+                "key": "Cache-Control",
+                "value": "<string>",
+                "description": ""
+              },
+              {
+                "disabled": false,
+                "key": "Content-Disposition",
+                "value": "<string>",
+                "description": ""
+              },
+              {
+                "disabled": false,
+                "key": "Content-Encoding",
+                "value": "<string>",
+                "description": ""
+              },
+              {
+                "disabled": false,
+                "description": "User-defined metadata headers",
+                "key": "x-amz-meta-*",
+                "value": "<string>"
+              },
+              {
+                "disabled": false,
+                "description": "Source for server-side copy",
+                "key": "x-amz-copy-source",
+                "value": "<string>"
+              },
+              {
+                "key": "Content-Type",
+                "value": "application/octet-stream"
+              },
+              {
+                "key": "Accept",
+                "value": "application/xml"
+              }
+            ],
+            "method": "PUT",
+            "auth": null,
+            "body": {
+              "mode": "file"
+            }
+          },
+          "response": [
+            {
+              "id": "ece289f9-cdc5-4002-83b5-1f434b2638b2",
+              "name": "Object stored",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    ":bucket",
+                    ":key"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "bucket",
+                      "description": "(Required) "
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "key",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "disabled": false,
+                    "key": "Content-Type",
+                    "value": "string",
+                    "description": ""
+                  },
+                  {
+                    "disabled": false,
+                    "key": "Content-MD5",
+                    "value": "<string>",
+                    "description": ""
+                  },
+                  {
+                    "disabled": false,
+                    "key": "Content-Length",
+                    "value": "<integer>",
+                    "description": ""
+                  },
+                  {
+                    "disabled": false,
+                    "key": "Cache-Control",
+                    "value": "<string>",
+                    "description": ""
+                  },
+                  {
+                    "disabled": false,
+                    "key": "Content-Disposition",
+                    "value": "<string>",
+                    "description": ""
+                  },
+                  {
+                    "disabled": false,
+                    "key": "Content-Encoding",
+                    "value": "<string>",
+                    "description": ""
+                  },
+                  {
+                    "disabled": false,
+                    "description": "User-defined metadata headers",
+                    "key": "x-amz-meta-*",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Source for server-side copy",
+                    "key": "x-amz-copy-source",
+                    "value": "<string>"
+                  }
+                ],
+                "method": "PUT",
+                "body": {
+                  "mode": "file"
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "disabled": false,
+                  "key": "ETag",
+                  "value": "string",
+                  "description": ""
+                },
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "da956e8b-9e45-4ab7-889d-42f5f082d755",
+              "name": "Error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    ":bucket",
+                    ":key"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "bucket",
+                      "description": "(Required) "
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "key",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "disabled": false,
+                    "key": "Content-Type",
+                    "value": "string",
+                    "description": ""
+                  },
+                  {
+                    "disabled": false,
+                    "key": "Content-MD5",
+                    "value": "<string>",
+                    "description": ""
+                  },
+                  {
+                    "disabled": false,
+                    "key": "Content-Length",
+                    "value": "<integer>",
+                    "description": ""
+                  },
+                  {
+                    "disabled": false,
+                    "key": "Cache-Control",
+                    "value": "<string>",
+                    "description": ""
+                  },
+                  {
+                    "disabled": false,
+                    "key": "Content-Disposition",
+                    "value": "<string>",
+                    "description": ""
+                  },
+                  {
+                    "disabled": false,
+                    "key": "Content-Encoding",
+                    "value": "<string>",
+                    "description": ""
+                  },
+                  {
+                    "disabled": false,
+                    "description": "User-defined metadata headers",
+                    "key": "x-amz-meta-*",
+                    "value": "<string>"
+                  },
+                  {
+                    "disabled": false,
+                    "description": "Source for server-side copy",
+                    "key": "x-amz-copy-source",
+                    "value": "<string>"
+                  },
+                  {
+                    "key": "Accept",
+                    "value": "application/xml"
+                  }
+                ],
+                "method": "PUT",
+                "body": {
+                  "mode": "file"
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/xml"
+                }
+              ],
+              "body": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<Error>\n  <Code>(string)</Code>\n  <Message>(string)</Message>\n  <Resource>(string)</Resource>\n  <RequestId>(string)</RequestId>\n</Error>",
+              "cookie": [],
+              "_postman_previewlanguage": "xml"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "9999f5c2-fb4e-4713-8ab6-61b12dfdc277",
+          "name": "Delete Object",
+          "request": {
+            "name": "Delete Object",
+            "description": {
+              "content": "Removes an object from a bucket.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                ":bucket",
+                ":key"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [],
+              "variable": [
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "bucket",
+                  "description": "(Required) "
+                },
+                {
+                  "disabled": false,
+                  "type": "any",
+                  "value": "<string>",
+                  "key": "key",
+                  "description": "(Required) "
+                }
+              ]
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/xml"
+              }
+            ],
+            "method": "DELETE",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "64fad1a0-0b08-46dc-9d86-3cfa007a5f33",
+              "name": "Object deleted",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    ":bucket",
+                    ":key"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "bucket",
+                      "description": "(Required) "
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "key",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "No Content",
+              "code": 204,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "ef086aa4-4966-4c25-b825-279f4aece386",
+              "name": "Error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    ":bucket",
+                    ":key"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": [
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "bucket",
+                      "description": "(Required) "
+                    },
+                    {
+                      "disabled": false,
+                      "type": "any",
+                      "value": "<string>",
+                      "key": "key",
+                      "description": "(Required) "
+                    }
+                  ]
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/xml"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/xml"
+                }
+              ],
+              "body": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<Error>\n  <Code>(string)</Code>\n  <Message>(string)</Message>\n  <Resource>(string)</Resource>\n  <RequestId>(string)</RequestId>\n</Error>",
+              "cookie": [],
+              "_postman_previewlanguage": "xml"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "5dc0f888-023f-4443-845c-53614e666f21",
+          "name": "Delete Multiple Objects",
+          "request": {
+            "name": "Delete Multiple Objects",
+            "description": {
+              "content": "Removes multiple objects from a bucket in a single request. Up to 1000 objects can be deleted per request.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "{{bucket}}"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "key": "delete",
+                  "value": "null"
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/xml"
+              },
+              {
+                "key": "Accept",
+                "value": "application/xml"
+              }
+            ],
+            "method": "POST",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<Delete>\n  <Object>\n    <Key>(string)</Key>\n    <VersionId>(string)</VersionId>\n  </Object>\n  <Object>\n    <Key>(string)</Key>\n    <VersionId>(string)</VersionId>\n  </Object>\n  <Quiet>(boolean)</Quiet>\n</Delete>",
+              "options": {
+                "raw": {
+                  "language": "xml"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "faab32f2-5fcc-4e55-b030-ac5ff9d459b6",
+              "name": "Delete results",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "{{bucket}}"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/xml"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<Delete>\n  <Object>\n    <Key>(string)</Key>\n    <VersionId>(string)</VersionId>\n  </Object>\n  <Object>\n    <Key>(string)</Key>\n    <VersionId>(string)</VersionId>\n  </Object>\n  <Quiet>(boolean)</Quiet>\n</Delete>",
+                  "options": {
+                    "raw": {
+                      "language": "xml"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/xml"
+                }
+              ],
+              "body": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<DeleteResult>\n  <Deleted>\n    <Key>(string)</Key>\n  </Deleted>\n  <Deleted>\n    <Key>(string)</Key>\n  </Deleted>\n  <Error>\n    <Key>(string)</Key>\n    <Code>(string)</Code>\n    <Message>(string)</Message>\n  </Error>\n  <Error>\n    <Key>(string)</Key>\n    <Code>(string)</Code>\n    <Message>(string)</Message>\n  </Error>\n</DeleteResult>",
+              "cookie": [],
+              "_postman_previewlanguage": "xml"
+            },
+            {
+              "id": "548982e8-a0a3-4b14-9b51-b71bace5f0d4",
+              "name": "Error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "{{bucket}}"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/xml"
+                  }
+                ],
+                "method": "POST",
+                "body": {
+                  "mode": "raw",
+                  "raw": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<Delete>\n  <Object>\n    <Key>(string)</Key>\n    <VersionId>(string)</VersionId>\n  </Object>\n  <Object>\n    <Key>(string)</Key>\n    <VersionId>(string)</VersionId>\n  </Object>\n  <Quiet>(boolean)</Quiet>\n</Delete>",
+                  "options": {
+                    "raw": {
+                      "language": "xml"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/xml"
+                }
+              ],
+              "body": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<Error>\n  <Code>(string)</Code>\n  <Message>(string)</Message>\n  <Resource>(string)</Resource>\n  <RequestId>(string)</RequestId>\n</Error>",
+              "cookie": [],
+              "_postman_previewlanguage": "xml"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://api.cloudflare.com/client/v4",
+      "key": "baseUrl"
+    },
+    {
+      "disabled": false,
+      "description": {
+        "content": "(Required) ",
+        "type": "text/plain"
+      },
+      "type": "any",
+      "value": "<string>",
+      "key": "bucket"
+    }
+  ],
+  "info": {
+    "_postman_id": "7ffc81b7-03d0-42b7-b04e-fdfc38dbeb55",
+    "name": "Cloudflare R2 Cloudflare Buckets Objects API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "Cloudflare API endpoints for managing R2 object storage buckets, objects, CORS, lifecycle policies, custom domains, event notifications, data catalog, and temporary credentials.\n\nContact Support:\n Name: Cloudflare Developer Docs",
+      "type": "text/plain"
+    }
+  }
+}

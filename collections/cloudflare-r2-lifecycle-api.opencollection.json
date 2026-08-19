@@ -1,0 +1,54 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Cloudflare R2 Cloudflare Buckets Lifecycle API",
+    "version": "4.0.0"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Lifecycle",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get Bucket Lifecycle Configuration",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.cloudflare.com/client/v4/:bucket?lifecycle",
+            "params": [
+              {
+                "name": "bucket",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "Returns the lifecycle configuration for the bucket."
+        },
+        {
+          "info": {
+            "name": "Put Bucket Lifecycle Configuration",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "https://api.cloudflare.com/client/v4/:bucket?lifecycle",
+            "params": [
+              {
+                "name": "bucket",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "Sets the lifecycle configuration for the bucket."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

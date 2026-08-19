@@ -1,0 +1,389 @@
+{
+  "item": [
+    {
+      "id": "61ecd81c-0914-446d-b7cd-69f2075c1c0a",
+      "name": "CORS",
+      "description": {
+        "content": "",
+        "type": "text/plain"
+      },
+      "item": [
+        {
+          "id": "dd606f30-48f7-4d44-9a06-ebfe78fd0e22",
+          "name": "Get Bucket CORS",
+          "request": {
+            "name": "Get Bucket CORS",
+            "description": {
+              "content": "Returns the CORS configuration for the bucket.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "{{bucket}}"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "key": "cors",
+                  "value": "null"
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/xml"
+              }
+            ],
+            "method": "GET",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "6ff7b42a-04ee-4520-b8b4-cc91cda4978f",
+              "name": "CORS configuration",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "{{bucket}}"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/xml"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/xml"
+                }
+              ],
+              "body": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CORSConfiguration>\n  <CORSRule>\n    <AllowedHeader>(string)</AllowedHeader>\n    <AllowedHeader>(string)</AllowedHeader>\n    <AllowedMethod>(string)</AllowedMethod>\n    <AllowedMethod>(string)</AllowedMethod>\n    <AllowedOrigin>(string)</AllowedOrigin>\n    <AllowedOrigin>(string)</AllowedOrigin>\n    <ExposeHeader>(string)</ExposeHeader>\n    <ExposeHeader>(string)</ExposeHeader>\n    <MaxAgeSeconds>(integer)</MaxAgeSeconds>\n  </CORSRule>\n  <CORSRule>\n    <AllowedHeader>(string)</AllowedHeader>\n    <AllowedHeader>(string)</AllowedHeader>\n    <AllowedMethod>(string)</AllowedMethod>\n    <AllowedMethod>(string)</AllowedMethod>\n    <AllowedOrigin>(string)</AllowedOrigin>\n    <AllowedOrigin>(string)</AllowedOrigin>\n    <ExposeHeader>(string)</ExposeHeader>\n    <ExposeHeader>(string)</ExposeHeader>\n    <MaxAgeSeconds>(integer)</MaxAgeSeconds>\n  </CORSRule>\n</CORSConfiguration>",
+              "cookie": [],
+              "_postman_previewlanguage": "xml"
+            },
+            {
+              "id": "bae59661-d518-4e0e-9423-10d63d8fed64",
+              "name": "Error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "{{bucket}}"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/xml"
+                  }
+                ],
+                "method": "GET",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/xml"
+                }
+              ],
+              "body": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<Error>\n  <Code>(string)</Code>\n  <Message>(string)</Message>\n  <Resource>(string)</Resource>\n  <RequestId>(string)</RequestId>\n</Error>",
+              "cookie": [],
+              "_postman_previewlanguage": "xml"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "a9bb3e8d-e43f-477e-a8f7-afacf6197ede",
+          "name": "Put Bucket CORS",
+          "request": {
+            "name": "Put Bucket CORS",
+            "description": {
+              "content": "Sets the CORS configuration for the bucket.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "{{bucket}}"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "key": "cors",
+                  "value": "null"
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/xml"
+              },
+              {
+                "key": "Accept",
+                "value": "application/xml"
+              }
+            ],
+            "method": "PUT",
+            "auth": null,
+            "body": {
+              "mode": "raw",
+              "raw": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CORSConfiguration>\n  <CORSRule>\n    <AllowedHeader>(string)</AllowedHeader>\n    <AllowedHeader>(string)</AllowedHeader>\n    <AllowedMethod>(string)</AllowedMethod>\n    <AllowedMethod>(string)</AllowedMethod>\n    <AllowedOrigin>(string)</AllowedOrigin>\n    <AllowedOrigin>(string)</AllowedOrigin>\n    <ExposeHeader>(string)</ExposeHeader>\n    <ExposeHeader>(string)</ExposeHeader>\n    <MaxAgeSeconds>(integer)</MaxAgeSeconds>\n  </CORSRule>\n  <CORSRule>\n    <AllowedHeader>(string)</AllowedHeader>\n    <AllowedHeader>(string)</AllowedHeader>\n    <AllowedMethod>(string)</AllowedMethod>\n    <AllowedMethod>(string)</AllowedMethod>\n    <AllowedOrigin>(string)</AllowedOrigin>\n    <AllowedOrigin>(string)</AllowedOrigin>\n    <ExposeHeader>(string)</ExposeHeader>\n    <ExposeHeader>(string)</ExposeHeader>\n    <MaxAgeSeconds>(integer)</MaxAgeSeconds>\n  </CORSRule>\n</CORSConfiguration>",
+              "options": {
+                "raw": {
+                  "language": "xml"
+                }
+              }
+            }
+          },
+          "response": [
+            {
+              "id": "2eb2cd60-a4aa-4212-a646-516c80b1515d",
+              "name": "CORS configuration set",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "{{bucket}}"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "method": "PUT",
+                "body": {
+                  "mode": "raw",
+                  "raw": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CORSConfiguration>\n  <CORSRule>\n    <AllowedHeader>(string)</AllowedHeader>\n    <AllowedHeader>(string)</AllowedHeader>\n    <AllowedMethod>(string)</AllowedMethod>\n    <AllowedMethod>(string)</AllowedMethod>\n    <AllowedOrigin>(string)</AllowedOrigin>\n    <AllowedOrigin>(string)</AllowedOrigin>\n    <ExposeHeader>(string)</ExposeHeader>\n    <ExposeHeader>(string)</ExposeHeader>\n    <MaxAgeSeconds>(integer)</MaxAgeSeconds>\n  </CORSRule>\n  <CORSRule>\n    <AllowedHeader>(string)</AllowedHeader>\n    <AllowedHeader>(string)</AllowedHeader>\n    <AllowedMethod>(string)</AllowedMethod>\n    <AllowedMethod>(string)</AllowedMethod>\n    <AllowedOrigin>(string)</AllowedOrigin>\n    <AllowedOrigin>(string)</AllowedOrigin>\n    <ExposeHeader>(string)</ExposeHeader>\n    <ExposeHeader>(string)</ExposeHeader>\n    <MaxAgeSeconds>(integer)</MaxAgeSeconds>\n  </CORSRule>\n</CORSConfiguration>",
+                  "options": {
+                    "raw": {
+                      "language": "xml"
+                    }
+                  }
+                }
+              },
+              "status": "OK",
+              "code": 200,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "8d5c8356-ce97-441a-86f2-78ef0513ad2f",
+              "name": "Error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "{{bucket}}"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/xml"
+                  }
+                ],
+                "method": "PUT",
+                "body": {
+                  "mode": "raw",
+                  "raw": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<CORSConfiguration>\n  <CORSRule>\n    <AllowedHeader>(string)</AllowedHeader>\n    <AllowedHeader>(string)</AllowedHeader>\n    <AllowedMethod>(string)</AllowedMethod>\n    <AllowedMethod>(string)</AllowedMethod>\n    <AllowedOrigin>(string)</AllowedOrigin>\n    <AllowedOrigin>(string)</AllowedOrigin>\n    <ExposeHeader>(string)</ExposeHeader>\n    <ExposeHeader>(string)</ExposeHeader>\n    <MaxAgeSeconds>(integer)</MaxAgeSeconds>\n  </CORSRule>\n  <CORSRule>\n    <AllowedHeader>(string)</AllowedHeader>\n    <AllowedHeader>(string)</AllowedHeader>\n    <AllowedMethod>(string)</AllowedMethod>\n    <AllowedMethod>(string)</AllowedMethod>\n    <AllowedOrigin>(string)</AllowedOrigin>\n    <AllowedOrigin>(string)</AllowedOrigin>\n    <ExposeHeader>(string)</ExposeHeader>\n    <ExposeHeader>(string)</ExposeHeader>\n    <MaxAgeSeconds>(integer)</MaxAgeSeconds>\n  </CORSRule>\n</CORSConfiguration>",
+                  "options": {
+                    "raw": {
+                      "language": "xml"
+                    }
+                  }
+                }
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/xml"
+                }
+              ],
+              "body": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<Error>\n  <Code>(string)</Code>\n  <Message>(string)</Message>\n  <Resource>(string)</Resource>\n  <RequestId>(string)</RequestId>\n</Error>",
+              "cookie": [],
+              "_postman_previewlanguage": "xml"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        },
+        {
+          "id": "2ef2ab93-b356-4454-abc9-01ee33d9c5fb",
+          "name": "Delete Bucket CORS",
+          "request": {
+            "name": "Delete Bucket CORS",
+            "description": {
+              "content": "Removes the CORS configuration from the bucket.",
+              "type": "text/plain"
+            },
+            "url": {
+              "path": [
+                "{{bucket}}"
+              ],
+              "host": [
+                "{{baseUrl}}"
+              ],
+              "query": [
+                {
+                  "key": "cors",
+                  "value": "null"
+                }
+              ],
+              "variable": []
+            },
+            "header": [
+              {
+                "key": "Accept",
+                "value": "application/xml"
+              }
+            ],
+            "method": "DELETE",
+            "auth": null
+          },
+          "response": [
+            {
+              "id": "9632200a-c73b-46a7-b597-65f54dbb177e",
+              "name": "CORS configuration deleted",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "{{bucket}}"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "No Content",
+              "code": 204,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "text/plain"
+                }
+              ],
+              "body": "",
+              "cookie": [],
+              "_postman_previewlanguage": "text"
+            },
+            {
+              "id": "d6e9ab4b-7077-4561-928e-b9326f37a3e4",
+              "name": "Error",
+              "originalRequest": {
+                "url": {
+                  "path": [
+                    "{{bucket}}"
+                  ],
+                  "host": [
+                    "{{baseUrl}}"
+                  ],
+                  "query": [],
+                  "variable": []
+                },
+                "header": [
+                  {
+                    "key": "Accept",
+                    "value": "application/xml"
+                  }
+                ],
+                "method": "DELETE",
+                "body": {}
+              },
+              "status": "Bad Request",
+              "code": 400,
+              "header": [
+                {
+                  "key": "Content-Type",
+                  "value": "application/xml"
+                }
+              ],
+              "body": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<Error>\n  <Code>(string)</Code>\n  <Message>(string)</Message>\n  <Resource>(string)</Resource>\n  <RequestId>(string)</RequestId>\n</Error>",
+              "cookie": [],
+              "_postman_previewlanguage": "xml"
+            }
+          ],
+          "event": [],
+          "protocolProfileBehavior": {
+            "disableBodyPruning": true
+          }
+        }
+      ],
+      "event": []
+    }
+  ],
+  "event": [],
+  "variable": [
+    {
+      "type": "string",
+      "value": "https://api.cloudflare.com/client/v4",
+      "key": "baseUrl"
+    },
+    {
+      "disabled": false,
+      "description": {
+        "content": "(Required) ",
+        "type": "text/plain"
+      },
+      "type": "any",
+      "value": "<string>",
+      "key": "bucket"
+    }
+  ],
+  "info": {
+    "_postman_id": "add86c39-3de5-4335-83e1-4ba4a97f7627",
+    "name": "Cloudflare R2 Cloudflare Buckets CORS API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": {
+      "content": "Cloudflare API endpoints for managing R2 object storage buckets, objects, CORS, lifecycle policies, custom domains, event notifications, data catalog, and temporary credentials.\n\nContact Support:\n Name: Cloudflare Developer Docs",
+      "type": "text/plain"
+    }
+  }
+}

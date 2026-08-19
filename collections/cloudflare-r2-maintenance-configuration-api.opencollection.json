@@ -1,0 +1,80 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Cloudflare R2 Cloudflare Buckets Maintenance Configuration API",
+    "version": "4.0.0"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Maintenance Configuration",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get catalog maintenance configuration",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.cloudflare.com/client/v4/accounts/:account_id/r2-catalog/:bucket_name/maintenance-configs",
+            "params": [
+              {
+                "name": "account_id",
+                "value": "",
+                "type": "path",
+                "description": "Identifies the account."
+              },
+              {
+                "name": "bucket_name",
+                "value": "",
+                "type": "path",
+                "description": "Specifies the R2 bucket name."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Retrieve the maintenance configuration for a specific catalog,\nincluding compaction settings and credential status.\n"
+        },
+        {
+          "info": {
+            "name": "Update catalog maintenance configuration",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.cloudflare.com/client/v4/accounts/:account_id/r2-catalog/:bucket_name/maintenance-configs",
+            "params": [
+              {
+                "name": "account_id",
+                "value": "",
+                "type": "path",
+                "description": "Identifies the account."
+              },
+              {
+                "name": "bucket_name",
+                "value": "",
+                "type": "path",
+                "description": "Specifies the R2 bucket name."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Update the maintenance configuration for a catalog. This allows you to\nenable or disable compaction and adjust target file sizes for optimization.\n"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

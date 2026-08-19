@@ -1,0 +1,235 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Cloudflare R2 Cloudflare Buckets Multipart Upload API",
+    "version": "4.0.0"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Multipart Upload",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Create Multipart Upload",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.cloudflare.com/client/v4/:bucket/:key?uploads",
+            "headers": [
+              {
+                "name": "Content-Type",
+                "value": ""
+              },
+              {
+                "name": "x-amz-meta-*",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "bucket",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "key",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "Initiates a multipart upload and returns an upload ID."
+        },
+        {
+          "info": {
+            "name": "Upload Part",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "https://api.cloudflare.com/client/v4/:bucket/:key?partNumber=:partNumber&uploadId=:uploadId",
+            "headers": [
+              {
+                "name": "x-amz-copy-source",
+                "value": ""
+              },
+              {
+                "name": "x-amz-copy-source-range",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "bucket",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "key",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "partNumber",
+                "value": "",
+                "type": "path",
+                "description": "Part number (1 to 10000)"
+              },
+              {
+                "name": "uploadId",
+                "value": "",
+                "type": "path",
+                "description": "Upload ID from CreateMultipartUpload"
+              }
+            ]
+          },
+          "docs": "Uploads a part in a multipart upload."
+        },
+        {
+          "info": {
+            "name": "List Parts",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.cloudflare.com/client/v4/:bucket/:key?uploadId=:uploadId",
+            "params": [
+              {
+                "name": "bucket",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "key",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "uploadId",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "max-parts",
+                "value": "",
+                "type": "query",
+                "description": "Maximum number of parts to return"
+              },
+              {
+                "name": "part-number-marker",
+                "value": "",
+                "type": "query",
+                "description": "Part number after which listing begins"
+              }
+            ]
+          },
+          "docs": "Lists the parts that have been uploaded for a specific multipart upload."
+        },
+        {
+          "info": {
+            "name": "Complete Multipart Upload",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.cloudflare.com/client/v4/:bucket/:key?uploadId=:uploadId",
+            "params": [
+              {
+                "name": "bucket",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "key",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "uploadId",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "Completes a multipart upload by assembling previously uploaded parts."
+        },
+        {
+          "info": {
+            "name": "Abort Multipart Upload",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://api.cloudflare.com/client/v4/:bucket/:key?uploadId=:uploadId",
+            "params": [
+              {
+                "name": "bucket",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "key",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "uploadId",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "Aborts a multipart upload and frees any storage consumed by the upload."
+        },
+        {
+          "info": {
+            "name": "List Multipart Uploads",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.cloudflare.com/client/v4/:bucket?uploads",
+            "params": [
+              {
+                "name": "bucket",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "prefix",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "delimiter",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "max-uploads",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "key-marker",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "upload-id-marker",
+                "value": "",
+                "type": "query"
+              }
+            ]
+          },
+          "docs": "Lists in-progress multipart uploads in a bucket."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

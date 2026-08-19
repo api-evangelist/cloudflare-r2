@@ -1,0 +1,309 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Cloudflare R2 Cloudflare Buckets Objects API",
+    "version": "4.0.0"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Objects",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List Objects V2",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.cloudflare.com/client/v4/:bucket",
+            "params": [
+              {
+                "name": "bucket",
+                "value": "",
+                "type": "path",
+                "description": "Name of the bucket"
+              },
+              {
+                "name": "list-type",
+                "value": "",
+                "type": "query",
+                "description": "Set to 2 to use ListObjectsV2"
+              },
+              {
+                "name": "prefix",
+                "value": "",
+                "type": "query",
+                "description": "Limits the response to keys that begin with the specified prefix"
+              },
+              {
+                "name": "delimiter",
+                "value": "",
+                "type": "query",
+                "description": "A delimiter is a character you use to group keys"
+              },
+              {
+                "name": "max-keys",
+                "value": "",
+                "type": "query",
+                "description": "Maximum number of keys to return"
+              },
+              {
+                "name": "continuation-token",
+                "value": "",
+                "type": "query",
+                "description": "Token from previous response to get next page"
+              },
+              {
+                "name": "start-after",
+                "value": "",
+                "type": "query",
+                "description": "Start listing after this key"
+              },
+              {
+                "name": "marker",
+                "value": "",
+                "type": "query",
+                "description": "(V1) Where to begin listing. The response starts listing after this marker"
+              },
+              {
+                "name": "uploads",
+                "value": "",
+                "type": "query",
+                "description": "List in-progress multipart uploads when present"
+              },
+              {
+                "name": "location",
+                "value": "",
+                "type": "query",
+                "description": "Return bucket location when present"
+              },
+              {
+                "name": "cors",
+                "value": "",
+                "type": "query",
+                "description": "Return CORS configuration when present"
+              },
+              {
+                "name": "lifecycle",
+                "value": "",
+                "type": "query",
+                "description": "Return lifecycle configuration when present"
+              },
+              {
+                "name": "encryption",
+                "value": "",
+                "type": "query",
+                "description": "Return encryption configuration when present"
+              }
+            ]
+          },
+          "docs": "Returns some or all (up to 1,000) of the objects in a bucket. ListObjectsV2 is preferred over ListObjects."
+        },
+        {
+          "info": {
+            "name": "Get Object",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.cloudflare.com/client/v4/:bucket/:key",
+            "headers": [
+              {
+                "name": "Range",
+                "value": ""
+              },
+              {
+                "name": "If-Match",
+                "value": ""
+              },
+              {
+                "name": "If-None-Match",
+                "value": ""
+              },
+              {
+                "name": "If-Modified-Since",
+                "value": ""
+              },
+              {
+                "name": "If-Unmodified-Since",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "bucket",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "key",
+                "value": "",
+                "type": "path",
+                "description": "Object key"
+              },
+              {
+                "name": "response-content-type",
+                "value": "",
+                "type": "query"
+              },
+              {
+                "name": "response-content-disposition",
+                "value": "",
+                "type": "query"
+              }
+            ]
+          },
+          "docs": "Retrieves an object from a bucket."
+        },
+        {
+          "info": {
+            "name": "Put Object",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "https://api.cloudflare.com/client/v4/:bucket/:key",
+            "headers": [
+              {
+                "name": "Content-Type",
+                "value": ""
+              },
+              {
+                "name": "Content-MD5",
+                "value": ""
+              },
+              {
+                "name": "Content-Length",
+                "value": ""
+              },
+              {
+                "name": "Cache-Control",
+                "value": ""
+              },
+              {
+                "name": "Content-Disposition",
+                "value": ""
+              },
+              {
+                "name": "Content-Encoding",
+                "value": ""
+              },
+              {
+                "name": "x-amz-meta-*",
+                "value": ""
+              },
+              {
+                "name": "x-amz-copy-source",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "bucket",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "key",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "Adds an object to a bucket."
+        },
+        {
+          "info": {
+            "name": "Delete Object",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://api.cloudflare.com/client/v4/:bucket/:key",
+            "params": [
+              {
+                "name": "bucket",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "key",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "Removes an object from a bucket."
+        },
+        {
+          "info": {
+            "name": "Head Object",
+            "type": "http"
+          },
+          "http": {
+            "method": "HEAD",
+            "url": "https://api.cloudflare.com/client/v4/:bucket/:key",
+            "headers": [
+              {
+                "name": "Range",
+                "value": ""
+              },
+              {
+                "name": "If-Match",
+                "value": ""
+              },
+              {
+                "name": "If-None-Match",
+                "value": ""
+              },
+              {
+                "name": "If-Modified-Since",
+                "value": ""
+              },
+              {
+                "name": "If-Unmodified-Since",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "bucket",
+                "value": "",
+                "type": "path"
+              },
+              {
+                "name": "key",
+                "value": "",
+                "type": "path",
+                "description": "Object key"
+              }
+            ]
+          },
+          "docs": "Retrieves metadata from an object without returning the object itself."
+        },
+        {
+          "info": {
+            "name": "Delete Multiple Objects",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.cloudflare.com/client/v4/:bucket?delete",
+            "params": [
+              {
+                "name": "bucket",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "Removes multiple objects from a bucket in a single request. Up to 1000 objects can be deleted per request."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

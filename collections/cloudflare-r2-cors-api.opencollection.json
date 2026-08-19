@@ -1,0 +1,72 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Cloudflare R2 Cloudflare Buckets CORS API",
+    "version": "4.0.0"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "CORS",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get Bucket CORS",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.cloudflare.com/client/v4/:bucket?cors",
+            "params": [
+              {
+                "name": "bucket",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "Returns the CORS configuration for the bucket."
+        },
+        {
+          "info": {
+            "name": "Put Bucket CORS",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "https://api.cloudflare.com/client/v4/:bucket?cors",
+            "params": [
+              {
+                "name": "bucket",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "Sets the CORS configuration for the bucket."
+        },
+        {
+          "info": {
+            "name": "Delete Bucket CORS",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://api.cloudflare.com/client/v4/:bucket?cors",
+            "params": [
+              {
+                "name": "bucket",
+                "value": "",
+                "type": "path"
+              }
+            ]
+          },
+          "docs": "Removes the CORS configuration from the bucket."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

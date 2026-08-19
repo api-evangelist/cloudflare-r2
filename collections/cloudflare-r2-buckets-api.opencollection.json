@@ -1,0 +1,92 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Cloudflare R2 Cloudflare Buckets API",
+    "version": "4.0.0"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Buckets",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "List Buckets",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.cloudflare.com/client/v4/"
+          },
+          "docs": "Returns a list of all buckets owned by the authenticated user."
+        },
+        {
+          "info": {
+            "name": "Create Bucket",
+            "type": "http"
+          },
+          "http": {
+            "method": "PUT",
+            "url": "https://api.cloudflare.com/client/v4/:bucket",
+            "headers": [
+              {
+                "name": "cf-r2-jurisdiction",
+                "value": ""
+              }
+            ],
+            "params": [
+              {
+                "name": "bucket",
+                "value": "",
+                "type": "path",
+                "description": "Name of the bucket to create"
+              }
+            ]
+          },
+          "docs": "Creates a new R2 bucket. The region is always 'auto' for R2."
+        },
+        {
+          "info": {
+            "name": "Delete Bucket",
+            "type": "http"
+          },
+          "http": {
+            "method": "DELETE",
+            "url": "https://api.cloudflare.com/client/v4/:bucket",
+            "params": [
+              {
+                "name": "bucket",
+                "value": "",
+                "type": "path",
+                "description": "Name of the bucket to delete"
+              }
+            ]
+          },
+          "docs": "Deletes an empty R2 bucket."
+        },
+        {
+          "info": {
+            "name": "Head Bucket",
+            "type": "http"
+          },
+          "http": {
+            "method": "HEAD",
+            "url": "https://api.cloudflare.com/client/v4/:bucket",
+            "params": [
+              {
+                "name": "bucket",
+                "value": "",
+                "type": "path",
+                "description": "Name of the bucket"
+              }
+            ]
+          },
+          "docs": "Checks if a bucket exists and if you have access to it."
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}

@@ -1,0 +1,104 @@
+{
+  "opencollection": "1.0.0",
+  "info": {
+    "name": "Cloudflare R2 Cloudflare Buckets Table Maintenance Configuration API",
+    "version": "4.0.0"
+  },
+  "items": [
+    {
+      "info": {
+        "name": "Table Maintenance Configuration",
+        "type": "folder"
+      },
+      "items": [
+        {
+          "info": {
+            "name": "Get table maintenance configuration",
+            "type": "http"
+          },
+          "http": {
+            "method": "GET",
+            "url": "https://api.cloudflare.com/client/v4/accounts/:account_id/r2-catalog/:bucket_name/namespaces/:namespace/tables/:table_name/maintenance-configs",
+            "params": [
+              {
+                "name": "account_id",
+                "value": "",
+                "type": "path",
+                "description": "Identifies the account."
+              },
+              {
+                "name": "bucket_name",
+                "value": "",
+                "type": "path",
+                "description": "Specifies the R2 bucket name."
+              },
+              {
+                "name": "namespace",
+                "value": "my_namespace%1Fsub_namespace",
+                "type": "path",
+                "description": "The namespace identifier (use %1F as separator for nested namespaces)."
+              },
+              {
+                "name": "table_name",
+                "value": "my_table",
+                "type": "path",
+                "description": "The table name."
+              }
+            ],
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Retrieve the maintenance configuration for a specific table,\nincluding compaction settings.\n"
+        },
+        {
+          "info": {
+            "name": "Update table maintenance configuration",
+            "type": "http"
+          },
+          "http": {
+            "method": "POST",
+            "url": "https://api.cloudflare.com/client/v4/accounts/:account_id/r2-catalog/:bucket_name/namespaces/:namespace/tables/:table_name/maintenance-configs",
+            "params": [
+              {
+                "name": "account_id",
+                "value": "",
+                "type": "path",
+                "description": "Identifies the account."
+              },
+              {
+                "name": "bucket_name",
+                "value": "",
+                "type": "path",
+                "description": "Specifies the R2 bucket name."
+              },
+              {
+                "name": "namespace",
+                "value": "my_namespace%1Fsub_namespace",
+                "type": "path",
+                "description": "The namespace identifier (use %1F as separator for nested namespaces)."
+              },
+              {
+                "name": "table_name",
+                "value": "my_table",
+                "type": "path",
+                "description": "The table name."
+              }
+            ],
+            "body": {
+              "type": "json",
+              "data": "{}"
+            },
+            "auth": {
+              "type": "bearer",
+              "token": "{{bearerToken}}"
+            }
+          },
+          "docs": "Update the maintenance configuration for a specific table. This allows you to\nenable or disable compaction and adjust target file sizes for optimization.\n"
+        }
+      ]
+    }
+  ],
+  "bundled": true
+}
