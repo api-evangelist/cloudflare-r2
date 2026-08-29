@@ -1,6 +1,6 @@
-openapi: 3.0.3
+openapi: 3.2.0
 info:
-  title: Cloudflare R2 Cloudflare Buckets R2 Catalog Management API
+  title: Cloudflare R2 Cloudflare R2 Catalog Management API
   description: Cloudflare API endpoints for managing R2 object storage buckets, objects, CORS, lifecycle policies, custom domains, event notifications, data catalog, and temporary credentials.
   version: 4.0.0
   termsOfService: https://www.cloudflare.com/website-terms/
@@ -351,71 +351,30 @@ paths:
       - Workers R2 Data Catalog Write
 components:
   schemas:
-    r2-data-catalog_catalog-list:
-      description: Contains the list of catalogs.
+    r2-data-catalog_api-response-single:
       properties:
-        warehouses:
-          description: Lists catalogs in the account.
-          items:
-            $ref: '#/components/schemas/r2-data-catalog_catalog'
-          type: array
+        errors:
+          $ref: '#/components/schemas/r2-data-catalog_api-response-errors'
+        messages:
+          $ref: '#/components/schemas/r2-data-catalog_api-response-messages'
+        success:
+          $ref: '#/components/schemas/r2-data-catalog_api-response-success'
       required:
-      - warehouses
+      - success
+      - errors
+      - messages
       type: object
-    r2-data-catalog_catalog-compaction-config:
-      description: Configures compaction for catalog maintenance.
-      properties:
-        state:
-          $ref: '#/components/schemas/r2-data-catalog_catalog-maintenance-state'
-        target_size_mb:
-          $ref: '#/components/schemas/r2-data-catalog_catalog-target-file-size'
-      required:
-      - state
-      - target_size_mb
-      type: object
-    r2-data-catalog_credential-status:
-      description: Shows the credential configuration status.
+    r2-data-catalog_catalog-maintenance-state:
+      description: Specifies the state of maintenance operations.
       enum:
-      - present
-      - absent
-      example: present
+      - enabled
+      - disabled
+      example: enabled
       type: string
-    r2-data-catalog_catalog:
-      description: Contains R2 Data Catalog information.
-      properties:
-        bucket:
-          description: Specifies the associated R2 bucket name.
-          example: my-data-bucket
-          type: string
-        credential_status:
-          allOf:
-          - $ref: '#/components/schemas/r2-data-catalog_credential-status'
-          description: Shows the credential configuration status.
-          nullable: true
-          type: string
-        id:
-          description: Use this to uniquely identify the catalog.
-          example: 550e8400-e29b-41d4-a716-446655440000
-          format: uuid
-          type: string
-        maintenance_config:
-          allOf:
-          - $ref: '#/components/schemas/r2-data-catalog_catalog-maintenance-config'
-          description: Configures maintenance for the catalog.
-          nullable: true
-          type: object
-        name:
-          description: Specifies the catalog name (generated from account and bucket name).
-          example: account123_my-bucket
-          type: string
-        status:
-          $ref: '#/components/schemas/r2-data-catalog_catalog-status'
-      required:
-      - id
-      - name
-      - bucket
-      - status
-      type: object
+    r2-data-catalog_api-response-success:
+      description: Indicates whether the API call was successful.
+      example: true
+      type: boolean
     r2-data-catalog_api-response-errors:
       description: Contains errors if the API call was unsuccessful.
       items:
@@ -431,41 +390,6 @@ components:
         - message
         type: object
       type: array
-    r2-data-catalog_catalog-target-file-size:
-      description: Sets the target file size for compaction in megabytes. Defaults to "128".
-      enum:
-      - '64'
-      - '128'
-      - '256'
-      - '512'
-      example: '128'
-      type: string
-    r2-data-catalog_api-response-success:
-      description: Indicates whether the API call was successful.
-      example: true
-      type: boolean
-    r2-data-catalog_api-response-messages:
-      description: Contains informational messages.
-      items:
-        properties:
-          code:
-            description: Specifies the message code.
-            type: integer
-          message:
-            description: Contains the message text.
-            type: string
-        required:
-        - code
-        - message
-        type: object
-      type: array
-    r2-data-catalog_catalog-maintenance-state:
-      description: Specifies the state of maintenance operations.
-      enum:
-      - enabled
-      - disabled
-      example: enabled
-      type: string
     r2-data-catalog_api-response-common-failure:
       properties:
         errors:
@@ -487,61 +411,10 @@ components:
           - false
           type: boolean
       type: object
-    r2-data-catalog_bucket-name:
-      description: Specifies the R2 bucket name.
-      example: my-data-bucket
-      maxLength: 63
-      minLength: 3
-      pattern: ^[a-z0-9]([a-z0-9\-]*[a-z0-9])?$
-      type: string
     r2-data-catalog_account-id:
       description: Use this to identify the account.
       example: 0123456789abcdef0123456789abcdef
       pattern: ^[a-fA-F0-9]{32}$
-      type: string
-    r2-data-catalog_api-response-single:
-      properties:
-        errors:
-          $ref: '#/components/schemas/r2-data-catalog_api-response-errors'
-        messages:
-          $ref: '#/components/schemas/r2-data-catalog_api-response-messages'
-        success:
-          $ref: '#/components/schemas/r2-data-catalog_api-response-success'
-      required:
-      - success
-      - errors
-      - messages
-      type: object
-    r2-data-catalog_catalog-activation-response:
-      description: Contains response from activating an R2 bucket as a catalog.
-      properties:
-        id:
-          description: Use this to uniquely identify the activated catalog.
-          example: 550e8400-e29b-41d4-a716-446655440000
-          format: uuid
-          type: string
-        name:
-          description: Specifies the name of the activated catalog.
-          example: account123_my-bucket
-          type: string
-      required:
-      - id
-      - name
-      type: object
-    r2-data-catalog_catalog-maintenance-config:
-      description: Configures maintenance for the catalog.
-      properties:
-        compaction:
-          $ref: '#/components/schemas/r2-data-catalog_catalog-compaction-config'
-        snapshot_expiration:
-          $ref: '#/components/schemas/r2-data-catalog_snapshot-expiration-config'
-      type: object
-    r2-data-catalog_catalog-status:
-      description: Indicates the status of the catalog.
-      enum:
-      - active
-      - inactive
-      example: active
       type: string
     r2-data-catalog_snapshot-expiration-config:
       description: Configures snapshot expiration settings.
@@ -572,6 +445,135 @@ components:
       - min_snapshots_to_keep
       - max_snapshot_age
       type: object
+    r2-data-catalog_catalog:
+      description: Contains R2 Data Catalog information.
+      properties:
+        bucket:
+          description: Specifies the associated R2 bucket name.
+          example: my-data-bucket
+          type: string
+        credential_status:
+          allOf:
+          - $ref: '#/components/schemas/r2-data-catalog_credential-status'
+          description: Shows the credential configuration status.
+          type:
+          - string
+          - 'null'
+        id:
+          description: Use this to uniquely identify the catalog.
+          example: 550e8400-e29b-41d4-a716-446655440000
+          format: uuid
+          type: string
+        maintenance_config:
+          allOf:
+          - $ref: '#/components/schemas/r2-data-catalog_catalog-maintenance-config'
+          description: Configures maintenance for the catalog.
+          type:
+          - object
+          - 'null'
+        name:
+          description: Specifies the catalog name (generated from account and bucket name).
+          example: account123_my-bucket
+          type: string
+        status:
+          $ref: '#/components/schemas/r2-data-catalog_catalog-status'
+      required:
+      - id
+      - name
+      - bucket
+      - status
+      type: object
+    r2-data-catalog_catalog-maintenance-config:
+      description: Configures maintenance for the catalog.
+      properties:
+        compaction:
+          $ref: '#/components/schemas/r2-data-catalog_catalog-compaction-config'
+        snapshot_expiration:
+          $ref: '#/components/schemas/r2-data-catalog_snapshot-expiration-config'
+      type: object
+    r2-data-catalog_catalog-list:
+      description: Contains the list of catalogs.
+      properties:
+        warehouses:
+          description: Lists catalogs in the account.
+          items:
+            $ref: '#/components/schemas/r2-data-catalog_catalog'
+          type: array
+      required:
+      - warehouses
+      type: object
+    r2-data-catalog_catalog-compaction-config:
+      description: Configures compaction for catalog maintenance.
+      properties:
+        state:
+          $ref: '#/components/schemas/r2-data-catalog_catalog-maintenance-state'
+        target_size_mb:
+          $ref: '#/components/schemas/r2-data-catalog_catalog-target-file-size'
+      required:
+      - state
+      - target_size_mb
+      type: object
+    r2-data-catalog_api-response-messages:
+      description: Contains informational messages.
+      items:
+        properties:
+          code:
+            description: Specifies the message code.
+            type: integer
+          message:
+            description: Contains the message text.
+            type: string
+        required:
+        - code
+        - message
+        type: object
+      type: array
+    r2-data-catalog_credential-status:
+      description: Shows the credential configuration status.
+      enum:
+      - present
+      - absent
+      example: present
+      type: string
+    r2-data-catalog_catalog-status:
+      description: Indicates the status of the catalog.
+      enum:
+      - active
+      - inactive
+      example: active
+      type: string
+    r2-data-catalog_catalog-activation-response:
+      description: Contains response from activating an R2 bucket as a catalog.
+      properties:
+        id:
+          description: Use this to uniquely identify the activated catalog.
+          example: 550e8400-e29b-41d4-a716-446655440000
+          format: uuid
+          type: string
+        name:
+          description: Specifies the name of the activated catalog.
+          example: account123_my-bucket
+          type: string
+      required:
+      - id
+      - name
+      type: object
+    r2-data-catalog_bucket-name:
+      description: Specifies the R2 bucket name.
+      example: my-data-bucket
+      maxLength: 63
+      minLength: 3
+      pattern: ^[a-z0-9]([a-z0-9\-]*[a-z0-9])?$
+      type: string
+    r2-data-catalog_catalog-target-file-size:
+      description: Sets the target file size for compaction in megabytes. Defaults to "128".
+      enum:
+      - '64'
+      - '128'
+      - '256'
+      - '512'
+      example: '128'
+      type: string
   securitySchemes:
     api_email:
       in: header

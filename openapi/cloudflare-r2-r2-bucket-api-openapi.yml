@@ -1,6 +1,6 @@
-openapi: 3.0.3
+openapi: 3.2.0
 info:
-  title: Cloudflare R2 Cloudflare Buckets R2 Bucket API
+  title: Cloudflare R2 Cloudflare R2 Bucket API
   description: Cloudflare API endpoints for managing R2 object storage buckets, objects, CORS, lifecycle policies, custom domains, event notifications, data catalog, and temporary credentials.
   version: 4.0.0
   termsOfService: https://www.cloudflare.com/website-terms/
@@ -1471,255 +1471,25 @@ paths:
       - R2 Bucket
 components:
   schemas:
-    r2_bucket:
-      description: A single R2 bucket.
+    r2_lifecycle-config:
       properties:
-        creation_date:
-          description: Creation timestamp.
-          type: string
-        jurisdiction:
-          $ref: '#/components/schemas/r2_jurisdiction'
-        location:
-          $ref: '#/components/schemas/r2_bucket_location'
-        name:
-          $ref: '#/components/schemas/r2_bucket_name'
-        storage_class:
-          $ref: '#/components/schemas/r2_storage_class'
-      type: object
-    r2_bucket_name:
-      description: Name of the bucket.
-      example: example-bucket
-      maxLength: 64
-      minLength: 3
-      pattern: ^[a-z0-9][a-z0-9-]*[a-z0-9]
-      type: string
-      x-auditable: true
-    r2_lifecycle-age-condition:
-      description: Condition for lifecycle transitions to apply after an object reaches an age in seconds.
-      properties:
-        maxAge:
-          type: integer
-          x-auditable: true
-        type:
-          enum:
-          - Age
-          type: string
-          x-auditable: true
-      required:
-      - type
-      - maxAge
-      type: object
-    r2_add_custom_domain_request:
-      example:
-        domain: prefix.example-domain.com
-        enabled: true
-        zoneId: 36ca64a6d92827b8a6b90be344bb1bfd
-      properties:
-        ciphers:
-          description: An allowlist of ciphers for TLS termination. These ciphers must be in the BoringSSL format.
+        rules:
           items:
-            type: string
+            allOf:
+            - $ref: '#/components/schemas/r2_lifecycle-rule'
           type: array
-          x-auditable: true
-        domain:
-          description: Name of the custom domain to be added.
-          type: string
-          x-auditable: true
-        enabled:
-          description: Whether to enable public bucket access at the custom domain. If undefined, the domain will be enabled.
-          type: boolean
-          x-auditable: true
-        minTLS:
-          description: Minimum TLS Version the custom domain will accept for incoming connections. If not set, defaults to 1.0.
-          enum:
-          - '1.0'
-          - '1.1'
-          - '1.2'
-          - '1.3'
-          type: string
-          x-auditable: true
-        zoneId:
-          description: Zone ID of the custom domain.
-          type: string
-          x-auditable: true
-      required:
-      - domain
-      - zoneId
-      - enabled
       type: object
-    r2_queue_identifier:
-      description: Queue ID.
-      example: 11111aa1-11aa-111a-a1a1-a1a111a11a11
-      maxLength: 32
-      type: string
-      x-auditable: true
-    r2_v4_response_failure:
-      properties:
-        errors:
-          $ref: '#/components/schemas/r2_errors'
-        messages:
-          $ref: '#/components/schemas/r2_messages'
-        result:
-          enum:
-          - null
-          nullable: true
-          type: object
-        success:
-          description: Whether the API call was successful.
-          enum:
-          - false
-          example: false
-          type: boolean
-      required:
-      - success
-      - errors
-      - messages
-      - result
-      type: object
-    r2_account_identifier:
-      description: Account ID.
-      example: 023e105f4ecef8ad9ca31a8372d0c353
-      maxLength: 32
-      type: string
-    r2_lifecycle-date-condition:
-      description: Condition for lifecycle transitions to apply on a specific date.
-      properties:
-        date:
-          format: date-time
-          type: string
-          x-auditable: true
-        type:
-          enum:
-          - Date
-          type: string
-          x-auditable: true
-      required:
-      - type
-      - date
-      type: object
-    r2_enable_sippy_s3:
-      properties:
-        destination:
-          description: R2 bucket to copy objects to.
-          properties:
-            accessKeyId:
-              description: 'ID of a Cloudflare API token.
-
-                This is the value labelled "Access Key ID" when creating an API.
-
-                token from the [R2 dashboard](https://dash.cloudflare.com/?to=/:account/r2/api-tokens).
-
-
-                Sippy will use this token when writing objects to R2, so it is
-
-                best to scope this token to the bucket you''re enabling Sippy for.
-
-                '
-              type: string
-            provider:
-              enum:
-              - r2
-              type: string
-              x-auditable: true
-            secretAccessKey:
-              description: 'Value of a Cloudflare API token.
-
-                This is the value labelled "Secret Access Key" when creating an API.
-
-                token from the [R2 dashboard](https://dash.cloudflare.com/?to=/:account/r2/api-tokens).
-
-
-                Sippy will use this token when writing objects to R2, so it is
-
-                best to scope this token to the bucket you''re enabling Sippy for.
-
-                '
-              type: string
-              x-sensitive: true
-          type: object
-        source:
-          description: General S3-compatible provider to copy objects from.
-          properties:
-            accessKeyId:
-              description: Access Key ID of an IAM credential (ideally scoped to a single S3 bucket).
-              type: string
-            bucketUrl:
-              description: URL to the S3-compatible API of the bucket.
-              type: string
-              x-auditable: true
-            provider:
-              enum:
-              - s3
-              type: string
-              x-auditable: true
-            secretAccessKey:
-              description: Secret Access Key of an IAM credential (ideally scoped to a single S3 bucket).
-              type: string
-              x-sensitive: true
-          type: object
-    r2_storage_class:
-      default: Standard
-      description: Storage class for newly uploaded objects, unless specified otherwise.
-      enum:
-      - Standard
-      - InfrequentAccess
-      type: string
-      x-auditable: true
-    r2_cors-rule:
-      properties:
-        allowed:
-          description: Object specifying allowed origins, methods and headers for this CORS rule.
-          properties:
-            headers:
-              description: Specifies the value for the Access-Control-Allow-Headers header R2 sets when requesting objects in this bucket from a browser. Cross-origin requests that include custom headers (e.g. x-user-id) should specify these headers as AllowedHeaders.
-              items:
-                example: x-requested-by
-                type: string
-                x-auditable: true
-              type: array
-            methods:
-              description: Specifies the value for the Access-Control-Allow-Methods header R2 sets when requesting objects in a bucket from a browser.
-              items:
-                enum:
-                - GET
-                - PUT
-                - POST
-                - DELETE
-                - HEAD
-                type: string
-                x-auditable: true
-              type: array
-            origins:
-              description: Specifies the value for the Access-Control-Allow-Origin header R2 sets when requesting objects in a bucket from a browser.
-              items:
-                example: http://localhost:3000
-                type: string
-                x-auditable: true
-              type: array
-          required:
-          - methods
-          - origins
-          type: object
-        exposeHeaders:
-          description: Specifies the headers that can be exposed back, and accessed by, the JavaScript making the cross-origin request. If you need to access headers beyond the safelisted response headers, such as Content-Encoding or cf-cache-status, you must specify it here.
-          items:
-            example: Content-Encoding
-            type: string
-            x-auditable: true
-          type: array
-        id:
-          description: Identifier for this rule.
-          example: Allow Local Development
-          type: string
-          x-auditable: true
-        maxAgeSeconds:
-          description: Specifies the amount of time (in seconds) browsers are allowed to cache CORS preflight responses. Browsers may limit this to 2 hours or less, even if the maximum value (86400) is specified.
-          example: 3600
-          type: number
-          x-auditable: true
-      required:
-      - allowed
-      type: object
+    r2_v4_response_list:
+      allOf:
+      - $ref: '#/components/schemas/r2_v4_response'
+      - properties:
+          result_info:
+            $ref: '#/components/schemas/r2_result_info'
+        type: object
+    r2_messages:
+      items:
+        type: string
+      type: array
     r2_sippy:
       properties:
         destination:
@@ -1754,13 +1524,15 @@ components:
           properties:
             bucket:
               description: Name of the bucket on the provider (AWS, GCS only).
-              nullable: true
-              type: string
+              type:
+              - string
+              - 'null'
               x-auditable: true
             bucketUrl:
               description: S3-compatible URL (Generic S3-compatible providers only).
-              nullable: true
-              type: string
+              type:
+              - string
+              - 'null'
               x-auditable: true
             provider:
               enum:
@@ -1771,122 +1543,11 @@ components:
               x-auditable: true
             region:
               description: Region where the bucket resides (AWS only).
-              nullable: true
-              type: string
+              type:
+              - string
+              - 'null'
               x-auditable: true
           type: object
-      type: object
-    r2_remove_custom_domain_response:
-      example:
-        domain: example-domain/custom-domain.com
-      properties:
-        domain:
-          description: Name of the removed custom domain.
-          type: string
-          x-auditable: true
-      required:
-      - domain
-      type: object
-    r2_local_uploads_configuration:
-      description: Configuration for local uploads on a bucket.
-      properties:
-        enabled:
-          description: Whether local uploads is enabled for this bucket. When enabled, object's data is written to the nearest region first, then asynchronously replicated to the bucket's primary region.
-          type: boolean
-          x-auditable: true
-      type: object
-    r2_lock-rule-indefinite-condition:
-      description: Condition to apply a lock rule indefinitely.
-      properties:
-        type:
-          enum:
-          - Indefinite
-          type: string
-          x-auditable: true
-      required:
-      - type
-      type: object
-    r2_bucket-lock-rule-config:
-      properties:
-        rules:
-          items:
-            allOf:
-            - $ref: '#/components/schemas/r2_bucket-lock-rule'
-          type: array
-      type: object
-    r2_get_custom_domain_response:
-      example:
-        domain: prefix.example-domain.one.com
-        enabled: false
-        status:
-          ownership: deactivated
-          ssl: pending
-        zoneId: 36ca64a6d92827b8a6b90be344bb1bfd
-        zoneName: example-domain.one.com
-      properties:
-        ciphers:
-          description: An allowlist of ciphers for TLS termination. These ciphers must be in the BoringSSL format.
-          items:
-            type: string
-          type: array
-          x-auditable: true
-        domain:
-          description: Domain name of the custom domain to be added.
-          type: string
-          x-auditable: true
-        enabled:
-          description: Whether this bucket is publicly accessible at the specified custom domain.
-          type: boolean
-          x-auditable: true
-        minTLS:
-          description: Minimum TLS Version the custom domain will accept for incoming connections. If not set, defaults to 1.0.
-          enum:
-          - '1.0'
-          - '1.1'
-          - '1.2'
-          - '1.3'
-          type: string
-          x-auditable: true
-        status:
-          properties:
-            ownership:
-              description: Ownership status of the domain.
-              enum:
-              - pending
-              - active
-              - deactivated
-              - blocked
-              - error
-              - unknown
-              type: string
-              x-auditable: true
-            ssl:
-              description: SSL certificate status.
-              enum:
-              - initializing
-              - pending
-              - active
-              - deactivated
-              - error
-              - unknown
-              type: string
-              x-auditable: true
-          required:
-          - ssl
-          - ownership
-          type: object
-        zoneId:
-          description: Zone ID of the custom domain resides in.
-          type: string
-          x-auditable: true
-        zoneName:
-          description: Zone that the custom domain resides in.
-          type: string
-          x-auditable: true
-      required:
-      - domain
-      - status
-      - enabled
       type: object
     r2_list_custom_domains_response:
       example:
@@ -1976,6 +1637,110 @@ components:
       required:
       - domains
       type: object
+    r2_lifecycle-age-condition:
+      description: Condition for lifecycle transitions to apply after an object reaches an age in seconds.
+      properties:
+        maxAge:
+          type: integer
+          x-auditable: true
+        type:
+          enum:
+          - Age
+          type: string
+          x-auditable: true
+      required:
+      - type
+      - maxAge
+      type: object
+    r2_temp_access_creds_response:
+      example:
+        accessKeyId: example-access-key-id
+        secretAccessKey: example-secret-key
+        sessionToken: example-session-token
+      properties:
+        accessKeyId:
+          description: ID for new access key.
+          type: string
+        secretAccessKey:
+          description: Secret access key.
+          type: string
+          x-sensitive: true
+        sessionToken:
+          description: Security token.
+          type: string
+          x-sensitive: true
+      type: object
+    r2_v4_response_failure:
+      properties:
+        errors:
+          $ref: '#/components/schemas/r2_errors'
+        messages:
+          $ref: '#/components/schemas/r2_messages'
+        result:
+          enum:
+          - null
+          type:
+          - object
+          - 'null'
+        success:
+          description: Whether the API call was successful.
+          enum:
+          - false
+          example: false
+          type: boolean
+      required:
+      - success
+      - errors
+      - messages
+      - result
+      type: object
+    r2_managed_domain_response:
+      example:
+        bucketId: 0113a9e4549cf9b1ff1bf56e04da0cef
+        domain: pub-0113a9e4549cf9b1ff1bf56e04da0cef.r2.dev
+        enabled: true
+      properties:
+        bucketId:
+          description: Bucket ID.
+          maxLength: 32
+          type: string
+          x-auditable: true
+        domain:
+          description: Domain name of the bucket's r2.dev domain.
+          type: string
+          x-auditable: true
+        enabled:
+          description: Whether this bucket is publicly accessible at the r2.dev domain.
+          type: boolean
+          x-auditable: true
+      required:
+      - bucketId
+      - domain
+      - enabled
+      type: object
+    r2_lifecycle-storage-transition:
+      properties:
+        condition:
+          oneOf:
+          - $ref: '#/components/schemas/r2_lifecycle-age-condition'
+          - $ref: '#/components/schemas/r2_lifecycle-date-condition'
+        storageClass:
+          enum:
+          - InfrequentAccess
+          type: string
+          x-auditable: true
+      required:
+      - condition
+      - storageClass
+      type: object
+    r2_storage_class:
+      default: Standard
+      description: Storage class for newly uploaded objects, unless specified otherwise.
+      enum:
+      - Standard
+      - InfrequentAccess
+      type: string
+      x-auditable: true
     r2_rule:
       properties:
         actions:
@@ -2005,7 +1770,387 @@ components:
       required:
       - actions
       type: object
-    r2_enable_sippy_gcs:
+    r2_bucket_name:
+      description: Name of the bucket.
+      example: example-bucket
+      maxLength: 64
+      minLength: 3
+      pattern: ^[a-z0-9][a-z0-9-]*[a-z0-9]
+      type: string
+      x-auditable: true
+    r2_v4_response:
+      properties:
+        errors:
+          $ref: '#/components/schemas/r2_errors'
+        messages:
+          $ref: '#/components/schemas/r2_messages'
+        result:
+          type: object
+        success:
+          description: Whether the API call was successful.
+          enum:
+          - true
+          type: boolean
+      required:
+      - success
+      - errors
+      - messages
+      - result
+      type: object
+    r2_lock-rule-indefinite-condition:
+      description: Condition to apply a lock rule indefinitely.
+      properties:
+        type:
+          enum:
+          - Indefinite
+          type: string
+          x-auditable: true
+      required:
+      - type
+      type: object
+    r2_bucket-lock-rule-config:
+      properties:
+        rules:
+          items:
+            allOf:
+            - $ref: '#/components/schemas/r2_bucket-lock-rule'
+          type: array
+      type: object
+    r2_local_uploads_configuration:
+      description: Configuration for local uploads on a bucket.
+      properties:
+        enabled:
+          description: Whether local uploads is enabled for this bucket. When enabled, object's data is written to the nearest region first, then asynchronously replicated to the bucket's primary region.
+          type: boolean
+          x-auditable: true
+      type: object
+    r2_lifecycle-rule:
+      properties:
+        abortMultipartUploadsTransition:
+          description: Transition to abort ongoing multipart uploads.
+          properties:
+            condition:
+              allOf:
+              - $ref: '#/components/schemas/r2_lifecycle-age-condition'
+          type: object
+        conditions:
+          description: Conditions that apply to all transitions of this rule.
+          properties:
+            prefix:
+              description: Transitions will only apply to objects/uploads in the bucket that start with the given prefix, an empty prefix can be provided to scope rule to all objects/uploads.
+              type: string
+              x-auditable: true
+          required:
+          - prefix
+          type: object
+        deleteObjectsTransition:
+          description: Transition to delete objects.
+          properties:
+            condition:
+              oneOf:
+              - $ref: '#/components/schemas/r2_lifecycle-age-condition'
+              - $ref: '#/components/schemas/r2_lifecycle-date-condition'
+          type: object
+        enabled:
+          description: Whether or not this rule is in effect.
+          type: boolean
+          x-auditable: true
+        id:
+          description: Unique identifier for this rule.
+          example: Expire all objects older than 24 hours
+          type: string
+          x-auditable: true
+        storageClassTransitions:
+          description: Transitions to change the storage class of objects.
+          items:
+            allOf:
+            - $ref: '#/components/schemas/r2_lifecycle-storage-transition'
+          type: array
+      required:
+      - id
+      - conditions
+      - enabled
+      type: object
+    r2_errors:
+      items:
+        properties:
+          code:
+            minimum: 1000
+            type: integer
+          message:
+            type: string
+        required:
+        - code
+        - message
+        type: object
+        uniqueItems: true
+      type: array
+    r2_lock-rule-age-condition:
+      description: Condition to apply a lock rule to an object for how long in seconds.
+      properties:
+        maxAgeSeconds:
+          example: 100
+          type: integer
+          x-auditable: true
+        type:
+          enum:
+          - Age
+          type: string
+          x-auditable: true
+      required:
+      - type
+      - maxAgeSeconds
+      type: object
+    r2_result_info:
+      properties:
+        cursor:
+          description: A continuation token that should be used to fetch the next page of results.
+          example: 1-JTdCJTIydiUyMiUzQTElMkMlMjJzdGFydEFmdGVyJTIyJTNBJTIyZGF2aWRwdWJsaWMlMjIlN0Q=
+          type: string
+        per_page:
+          description: Maximum number of results on this page.
+          example: 20
+          type: number
+      type: object
+    r2_edit_managed_domain_request:
+      example:
+        enabled: true
+      properties:
+        enabled:
+          description: Whether to enable public bucket access at the r2.dev domain.
+          type: boolean
+          x-auditable: true
+      required:
+      - enabled
+      type: object
+    r2_bucket-config:
+      properties:
+        bucketName:
+          description: Name of the bucket.
+          type: string
+          x-auditable: true
+        queues:
+          description: List of queues associated with the bucket.
+          items:
+            $ref: '#/components/schemas/r2_queues-config'
+          type: array
+      type: object
+    r2_r2-action:
+      enum:
+      - PutObject
+      - CopyObject
+      - DeleteObject
+      - CompleteMultipartUpload
+      - LifecycleDeletion
+      type: string
+      x-auditable: true
+    r2_get_custom_domain_response:
+      example:
+        domain: prefix.example-domain.one.com
+        enabled: false
+        status:
+          ownership: deactivated
+          ssl: pending
+        zoneId: 36ca64a6d92827b8a6b90be344bb1bfd
+        zoneName: example-domain.one.com
+      properties:
+        ciphers:
+          description: An allowlist of ciphers for TLS termination. These ciphers must be in the BoringSSL format.
+          items:
+            type: string
+          type: array
+          x-auditable: true
+        domain:
+          description: Domain name of the custom domain to be added.
+          type: string
+          x-auditable: true
+        enabled:
+          description: Whether this bucket is publicly accessible at the specified custom domain.
+          type: boolean
+          x-auditable: true
+        minTLS:
+          description: Minimum TLS Version the custom domain will accept for incoming connections. If not set, defaults to 1.0.
+          enum:
+          - '1.0'
+          - '1.1'
+          - '1.2'
+          - '1.3'
+          type: string
+          x-auditable: true
+        status:
+          properties:
+            ownership:
+              description: Ownership status of the domain.
+              enum:
+              - pending
+              - active
+              - deactivated
+              - blocked
+              - error
+              - unknown
+              type: string
+              x-auditable: true
+            ssl:
+              description: SSL certificate status.
+              enum:
+              - initializing
+              - pending
+              - active
+              - deactivated
+              - error
+              - unknown
+              type: string
+              x-auditable: true
+          required:
+          - ssl
+          - ownership
+          type: object
+        zoneId:
+          description: Zone ID of the custom domain resides in.
+          type: string
+          x-auditable: true
+        zoneName:
+          description: Zone that the custom domain resides in.
+          type: string
+          x-auditable: true
+      required:
+      - domain
+      - status
+      - enabled
+      type: object
+    r2_add_custom_domain_request:
+      example:
+        domain: prefix.example-domain.com
+        enabled: true
+        zoneId: 36ca64a6d92827b8a6b90be344bb1bfd
+      properties:
+        ciphers:
+          description: An allowlist of ciphers for TLS termination. These ciphers must be in the BoringSSL format.
+          items:
+            type: string
+          type: array
+          x-auditable: true
+        domain:
+          description: Name of the custom domain to be added.
+          type: string
+          x-auditable: true
+        enabled:
+          description: Whether to enable public bucket access at the custom domain. If undefined, the domain will be enabled.
+          type: boolean
+          x-auditable: true
+        minTLS:
+          description: Minimum TLS Version the custom domain will accept for incoming connections. If not set, defaults to 1.0.
+          enum:
+          - '1.0'
+          - '1.1'
+          - '1.2'
+          - '1.3'
+          type: string
+          x-auditable: true
+        zoneId:
+          description: Zone ID of the custom domain.
+          type: string
+          x-auditable: true
+      required:
+      - domain
+      - zoneId
+      - enabled
+      type: object
+    r2_account_identifier:
+      description: Account ID.
+      example: 023e105f4ecef8ad9ca31a8372d0c353
+      maxLength: 32
+      type: string
+    r2_lifecycle-date-condition:
+      description: Condition for lifecycle transitions to apply on a specific date.
+      properties:
+        date:
+          format: date-time
+          type: string
+          x-auditable: true
+        type:
+          enum:
+          - Date
+          type: string
+          x-auditable: true
+      required:
+      - type
+      - date
+      type: object
+    r2_bucket_location:
+      description: Location of the bucket.
+      enum:
+      - apac
+      - eeur
+      - enam
+      - weur
+      - wnam
+      - oc
+      type: string
+      x-auditable: true
+      x-stainless-terraform-configurability: computed_optional
+    r2_queue_identifier:
+      description: Queue ID.
+      example: 11111aa1-11aa-111a-a1a1-a1a111a11a11
+      maxLength: 32
+      type: string
+      x-auditable: true
+    r2_cors-rule:
+      properties:
+        allowed:
+          description: Object specifying allowed origins, methods and headers for this CORS rule.
+          properties:
+            headers:
+              description: Specifies the value for the Access-Control-Allow-Headers header R2 sets when requesting objects in this bucket from a browser. Cross-origin requests that include custom headers (e.g. x-user-id) should specify these headers as AllowedHeaders.
+              items:
+                example: x-requested-by
+                type: string
+                x-auditable: true
+              type: array
+            methods:
+              description: Specifies the value for the Access-Control-Allow-Methods header R2 sets when requesting objects in a bucket from a browser.
+              items:
+                enum:
+                - GET
+                - PUT
+                - POST
+                - DELETE
+                - HEAD
+                type: string
+                x-auditable: true
+              type: array
+            origins:
+              description: Specifies the value for the Access-Control-Allow-Origin header R2 sets when requesting objects in a bucket from a browser.
+              items:
+                example: http://localhost:3000
+                type: string
+                x-auditable: true
+              type: array
+          required:
+          - methods
+          - origins
+          type: object
+        exposeHeaders:
+          description: Specifies the headers that can be exposed back, and accessed by, the JavaScript making the cross-origin request. If you need to access headers beyond the safelisted response headers, such as Content-Encoding or cf-cache-status, you must specify it here.
+          items:
+            example: Content-Encoding
+            type: string
+            x-auditable: true
+          type: array
+        id:
+          description: Identifier for this rule.
+          example: Allow Local Development
+          type: string
+          x-auditable: true
+        maxAgeSeconds:
+          description: Specifies the amount of time (in seconds) browsers are allowed to cache CORS preflight responses. Browsers may limit this to 2 hours or less, even if the maximum value (86400) is specified.
+          example: 3600
+          type: number
+          x-auditable: true
+      required:
+      - allowed
+      type: object
+    r2_enable_sippy_s3:
       properties:
         destination:
           description: R2 bucket to copy objects to.
@@ -2028,6 +2173,7 @@ components:
               enum:
               - r2
               type: string
+              x-auditable: true
             secretAccessKey:
               description: 'Value of a Cloudflare API token.
 
@@ -2045,312 +2191,39 @@ components:
               x-sensitive: true
           type: object
         source:
-          description: GCS bucket to copy objects from.
+          description: General S3-compatible provider to copy objects from.
           properties:
-            bucket:
-              description: Name of the GCS bucket.
+            accessKeyId:
+              description: Access Key ID of an IAM credential (ideally scoped to a single S3 bucket).
+              type: string
+            bucketUrl:
+              description: URL to the S3-compatible API of the bucket.
               type: string
               x-auditable: true
-            clientEmail:
-              description: Client email of an IAM credential (ideally scoped to a single GCS bucket).
-              type: string
-            privateKey:
-              description: Private Key of an IAM credential (ideally scoped to a single GCS bucket).
-              type: string
-              x-sensitive: true
             provider:
               enum:
-              - gcs
+              - s3
               type: string
+              x-auditable: true
+            secretAccessKey:
+              description: Secret Access Key of an IAM credential (ideally scoped to a single S3 bucket).
+              type: string
+              x-sensitive: true
           type: object
-    r2_add_custom_domain_response:
-      example:
-        domain: example-domain.com
-        enabled: true
-        zoneId: 36ca64a6d92827b8a6b90be344bb1bfd
+    r2_bucket:
+      description: A single R2 bucket.
       properties:
-        ciphers:
-          description: An allowlist of ciphers for TLS termination. These ciphers must be in the BoringSSL format.
-          items:
-            type: string
-          type: array
-          x-auditable: true
-        domain:
-          description: Domain name of the affected custom domain.
+        creation_date:
+          description: Creation timestamp.
           type: string
-          x-auditable: true
-        enabled:
-          description: Whether this bucket is publicly accessible at the specified custom domain.
-          type: boolean
-        minTLS:
-          description: Minimum TLS Version the custom domain will accept for incoming connections. If not set, defaults to 1.0.
-          enum:
-          - '1.0'
-          - '1.1'
-          - '1.2'
-          - '1.3'
-          type: string
-          x-auditable: true
-        zoneId:
-          description: Zone ID of the custom domain.
-          type: string
-          x-auditable: true
-      required:
-      - domain
-      - enabled
-      - zoneId
-      type: object
-    r2_lock-rule-age-condition:
-      description: Condition to apply a lock rule to an object for how long in seconds.
-      properties:
-        maxAgeSeconds:
-          example: 100
-          type: integer
-          x-auditable: true
-        type:
-          enum:
-          - Age
-          type: string
-          x-auditable: true
-      required:
-      - type
-      - maxAgeSeconds
-      type: object
-    r2_temp_access_creds_response:
-      example:
-        accessKeyId: example-access-key-id
-        secretAccessKey: example-secret-key
-        sessionToken: example-session-token
-      properties:
-        accessKeyId:
-          description: ID for new access key.
-          type: string
-        secretAccessKey:
-          description: Secret access key.
-          type: string
-          x-sensitive: true
-        sessionToken:
-          description: Security token.
-          type: string
-          x-sensitive: true
-      type: object
-    r2_domain_name:
-      description: Name of the custom domain.
-      example: example-domain/custom-domain.com
-      type: string
-      x-auditable: true
-    r2_edit_custom_domain_response:
-      example:
-        domain: example-domain.com
-        enabled: true
-      properties:
-        ciphers:
-          description: An allowlist of ciphers for TLS termination. These ciphers must be in the BoringSSL format.
-          items:
-            type: string
-          type: array
-          x-auditable: true
-        domain:
-          description: Domain name of the affected custom domain.
-          type: string
-          x-auditable: true
-        enabled:
-          description: Whether this bucket is publicly accessible at the specified custom domain.
-          type: boolean
-          x-auditable: true
-        minTLS:
-          description: Minimum TLS Version the custom domain will accept for incoming connections. If not set, defaults to 1.0.
-          enum:
-          - '1.0'
-          - '1.1'
-          - '1.2'
-          - '1.3'
-          type: string
-          x-auditable: true
-      required:
-      - domain
-      type: object
-    r2_lifecycle-config:
-      properties:
-        rules:
-          items:
-            allOf:
-            - $ref: '#/components/schemas/r2_lifecycle-rule'
-          type: array
-      type: object
-    r2_lock-rule-date-condition:
-      description: Condition to apply a lock rule to an object until a specific date.
-      properties:
-        date:
-          format: date-time
-          type: string
-          x-auditable: true
-        type:
-          enum:
-          - Date
-          type: string
-          x-auditable: true
-      required:
-      - type
-      - date
-      type: object
-    r2_edit_managed_domain_request:
-      example:
-        enabled: true
-      properties:
-        enabled:
-          description: Whether to enable public bucket access at the r2.dev domain.
-          type: boolean
-          x-auditable: true
-      required:
-      - enabled
-      type: object
-    r2_jurisdiction:
-      default: default
-      description: Jurisdiction where objects in this bucket are guaranteed to be stored.
-      enum:
-      - default
-      - eu
-      - fedramp
-      type: string
-      x-auditable: true
-      x-stainless-param: jurisdiction
-    r2_temp_access_creds_request:
-      example:
-        bucket: example-bucket
-        objects:
-        - example-object
-        parentAccessKeyId: example-access-key-id
-        permission: object-read-write
-        prefixes:
-        - example-prefix/
-        ttlSeconds: 3600
-      properties:
-        bucket:
-          description: Name of the R2 bucket.
-          type: string
-          x-auditable: true
-        objects:
-          description: Optional object paths to scope the credentials to.
-          items:
-            type: string
-            x-auditable: true
-          type: array
-        parentAccessKeyId:
-          description: The parent access key id to use for signing.
-          type: string
-        permission:
-          description: Permissions allowed on the credentials.
-          enum:
-          - admin-read-write
-          - admin-read-only
-          - object-read-write
-          - object-read-only
-          type: string
-          x-auditable: true
-        prefixes:
-          description: Optional prefix paths to scope the credentials to.
-          items:
-            type: string
-            x-auditable: true
-          type: array
-        ttlSeconds:
-          default: 900
-          description: How long the credentials will live for in seconds.
-          maximum: 604800
-          type: number
-          x-auditable: true
-      required:
-      - bucket
-      - permission
-      - ttlSeconds
-      - parentAccessKeyId
-      type: object
-    r2_queues-config:
-      properties:
-        queueId:
-          description: Queue ID.
-          example: 11111aa1-11aa-111a-a1a1-a1a111a11a11
-          type: string
-          x-auditable: true
-        queueName:
-          description: Name of the queue.
-          example: first-queue
-          type: string
-          x-auditable: true
-        rules:
-          items:
-            allOf:
-            - $ref: '#/components/schemas/r2_rule'
-            - properties:
-                createdAt:
-                  description: Timestamp when the rule was created.
-                  example: '2024-09-19T21:54:48.405Z'
-                  type: string
-                  x-auditable: true
-                description:
-                  description: A description that can be used to identify the event notification rule after creation.
-                  example: Notifications from source bucket to queue
-                  type: string
-                  x-auditable: true
-                ruleId:
-                  description: Rule ID.
-                  example: 11111aa1-11aa-111a-a1a1-a1a111a11a11
-                  type: string
-                  x-auditable: true
-              type: object
-          type: array
-      type: object
-    r2_v4_response:
-      properties:
-        errors:
-          $ref: '#/components/schemas/r2_errors'
-        messages:
-          $ref: '#/components/schemas/r2_messages'
-        result:
-          type: object
-        success:
-          description: Whether the API call was successful.
-          enum:
-          - true
-          type: boolean
-      required:
-      - success
-      - errors
-      - messages
-      - result
-      type: object
-    r2_v4_response_list:
-      allOf:
-      - $ref: '#/components/schemas/r2_v4_response'
-      - properties:
-          result_info:
-            $ref: '#/components/schemas/r2_result_info'
-        type: object
-    r2_edit_custom_domain_request:
-      example:
-        enabled: true
-        minTLS: '1.2'
-      properties:
-        ciphers:
-          description: An allowlist of ciphers for TLS termination. These ciphers must be in the BoringSSL format.
-          items:
-            type: string
-          type: array
-          x-auditable: true
-        enabled:
-          description: Whether to enable public bucket access at the specified custom domain.
-          type: boolean
-          x-auditable: true
-        minTLS:
-          description: Minimum TLS Version the custom domain will accept for incoming connections. If not set, defaults to previous value.
-          enum:
-          - '1.0'
-          - '1.1'
-          - '1.2'
-          - '1.3'
-          type: string
-          x-auditable: true
+        jurisdiction:
+          $ref: '#/components/schemas/r2_jurisdiction'
+        location:
+          $ref: '#/components/schemas/r2_bucket_location'
+        name:
+          $ref: '#/components/schemas/r2_bucket_name'
+        storage_class:
+          $ref: '#/components/schemas/r2_storage_class'
       type: object
     r2_enable_sippy_aws:
       properties:
@@ -2416,45 +2289,11 @@ components:
               type: string
               x-sensitive: true
           type: object
-    r2_messages:
-      items:
-        type: string
-      type: array
-    r2_result_info:
-      properties:
-        cursor:
-          description: A continuation token that should be used to fetch the next page of results.
-          example: 1-JTdCJTIydiUyMiUzQTElMkMlMjJzdGFydEFmdGVyJTIyJTNBJTIyZGF2aWRwdWJsaWMlMjIlN0Q=
-          type: string
-        per_page:
-          description: Maximum number of results on this page.
-          example: 20
-          type: number
-      type: object
-    r2_managed_domain_response:
-      example:
-        bucketId: 0113a9e4549cf9b1ff1bf56e04da0cef
-        domain: pub-0113a9e4549cf9b1ff1bf56e04da0cef.r2.dev
-        enabled: true
-      properties:
-        bucketId:
-          description: Bucket ID.
-          maxLength: 32
-          type: string
-          x-auditable: true
-        domain:
-          description: Domain name of the bucket's r2.dev domain.
-          type: string
-          x-auditable: true
-        enabled:
-          description: Whether this bucket is publicly accessible at the r2.dev domain.
-          type: boolean
-          x-auditable: true
-      required:
-      - bucketId
-      - domain
-      - enabled
-      type: object
+    r2_domain_name:
+      description: Name of the custom domain.
+      example: example-domain/custom-domain.com
+      type: string
+      x-auditable: true
     r2_bucket-lock-rule:
       properties:
         condition:
@@ -2480,114 +2319,279 @@ components:
       - condition
       - enabled
       type: object
-    r2_lifecycle-rule:
+    r2_edit_custom_domain_response:
+      example:
+        domain: example-domain.com
+        enabled: true
       properties:
-        abortMultipartUploadsTransition:
-          description: Transition to abort ongoing multipart uploads.
-          properties:
-            condition:
-              allOf:
-              - $ref: '#/components/schemas/r2_lifecycle-age-condition'
-          type: object
-        conditions:
-          description: Conditions that apply to all transitions of this rule.
-          properties:
-            prefix:
-              description: Transitions will only apply to objects/uploads in the bucket that start with the given prefix, an empty prefix can be provided to scope rule to all objects/uploads.
-              type: string
-              x-auditable: true
-          required:
-          - prefix
-          type: object
-        deleteObjectsTransition:
-          description: Transition to delete objects.
-          properties:
-            condition:
-              oneOf:
-              - $ref: '#/components/schemas/r2_lifecycle-age-condition'
-              - $ref: '#/components/schemas/r2_lifecycle-date-condition'
-          type: object
+        ciphers:
+          description: An allowlist of ciphers for TLS termination. These ciphers must be in the BoringSSL format.
+          items:
+            type: string
+          type: array
+          x-auditable: true
+        domain:
+          description: Domain name of the affected custom domain.
+          type: string
+          x-auditable: true
         enabled:
-          description: Whether or not this rule is in effect.
+          description: Whether this bucket is publicly accessible at the specified custom domain.
           type: boolean
           x-auditable: true
-        id:
-          description: Unique identifier for this rule.
-          example: Expire all objects older than 24 hours
+        minTLS:
+          description: Minimum TLS Version the custom domain will accept for incoming connections. If not set, defaults to 1.0.
+          enum:
+          - '1.0'
+          - '1.1'
+          - '1.2'
+          - '1.3'
           type: string
           x-auditable: true
-        storageClassTransitions:
-          description: Transitions to change the storage class of objects.
+      required:
+      - domain
+      type: object
+    r2_edit_custom_domain_request:
+      example:
+        enabled: true
+        minTLS: '1.2'
+      properties:
+        ciphers:
+          description: An allowlist of ciphers for TLS termination. These ciphers must be in the BoringSSL format.
+          items:
+            type: string
+          type: array
+          x-auditable: true
+        enabled:
+          description: Whether to enable public bucket access at the specified custom domain.
+          type: boolean
+          x-auditable: true
+        minTLS:
+          description: Minimum TLS Version the custom domain will accept for incoming connections. If not set, defaults to previous value.
+          enum:
+          - '1.0'
+          - '1.1'
+          - '1.2'
+          - '1.3'
+          type: string
+          x-auditable: true
+      type: object
+    r2_enable_sippy_gcs:
+      properties:
+        destination:
+          description: R2 bucket to copy objects to.
+          properties:
+            accessKeyId:
+              description: 'ID of a Cloudflare API token.
+
+                This is the value labelled "Access Key ID" when creating an API.
+
+                token from the [R2 dashboard](https://dash.cloudflare.com/?to=/:account/r2/api-tokens).
+
+
+                Sippy will use this token when writing objects to R2, so it is
+
+                best to scope this token to the bucket you''re enabling Sippy for.
+
+                '
+              type: string
+            provider:
+              enum:
+              - r2
+              type: string
+            secretAccessKey:
+              description: 'Value of a Cloudflare API token.
+
+                This is the value labelled "Secret Access Key" when creating an API.
+
+                token from the [R2 dashboard](https://dash.cloudflare.com/?to=/:account/r2/api-tokens).
+
+
+                Sippy will use this token when writing objects to R2, so it is
+
+                best to scope this token to the bucket you''re enabling Sippy for.
+
+                '
+              type: string
+              x-sensitive: true
+          type: object
+        source:
+          description: GCS bucket to copy objects from.
+          properties:
+            bucket:
+              description: Name of the GCS bucket.
+              type: string
+              x-auditable: true
+            clientEmail:
+              description: Client email of an IAM credential (ideally scoped to a single GCS bucket).
+              type: string
+            privateKey:
+              description: Private Key of an IAM credential (ideally scoped to a single GCS bucket).
+              type: string
+              x-sensitive: true
+            provider:
+              enum:
+              - gcs
+              type: string
+          type: object
+    r2_lock-rule-date-condition:
+      description: Condition to apply a lock rule to an object until a specific date.
+      properties:
+        date:
+          format: date-time
+          type: string
+          x-auditable: true
+        type:
+          enum:
+          - Date
+          type: string
+          x-auditable: true
+      required:
+      - type
+      - date
+      type: object
+    r2_jurisdiction:
+      default: default
+      description: Jurisdiction where objects in this bucket are guaranteed to be stored.
+      enum:
+      - default
+      - eu
+      - fedramp
+      type: string
+      x-auditable: true
+      x-stainless-param: jurisdiction
+    r2_queues-config:
+      properties:
+        queueId:
+          description: Queue ID.
+          example: 11111aa1-11aa-111a-a1a1-a1a111a11a11
+          type: string
+          x-auditable: true
+        queueName:
+          description: Name of the queue.
+          example: first-queue
+          type: string
+          x-auditable: true
+        rules:
           items:
             allOf:
-            - $ref: '#/components/schemas/r2_lifecycle-storage-transition'
+            - $ref: '#/components/schemas/r2_rule'
+            - properties:
+                createdAt:
+                  description: Timestamp when the rule was created.
+                  example: '2024-09-19T21:54:48.405Z'
+                  type: string
+                  x-auditable: true
+                description:
+                  description: A description that can be used to identify the event notification rule after creation.
+                  example: Notifications from source bucket to queue
+                  type: string
+                  x-auditable: true
+                ruleId:
+                  description: Rule ID.
+                  example: 11111aa1-11aa-111a-a1a1-a1a111a11a11
+                  type: string
+                  x-auditable: true
+              type: object
           type: array
-      required:
-      - id
-      - conditions
-      - enabled
       type: object
-    r2_errors:
-      items:
-        properties:
-          code:
-            minimum: 1000
-            type: integer
-          message:
-            type: string
-        required:
-        - code
-        - message
-        type: object
-        uniqueItems: true
-      type: array
-    r2_r2-action:
-      enum:
-      - PutObject
-      - CopyObject
-      - DeleteObject
-      - CompleteMultipartUpload
-      - LifecycleDeletion
-      type: string
-      x-auditable: true
-    r2_bucket_location:
-      description: Location of the bucket.
-      enum:
-      - apac
-      - eeur
-      - enam
-      - weur
-      - wnam
-      - oc
-      type: string
-      x-auditable: true
-      x-stainless-terraform-configurability: computed_optional
-    r2_lifecycle-storage-transition:
+    r2_temp_access_creds_request:
+      example:
+        bucket: example-bucket
+        objects:
+        - example-object
+        parentAccessKeyId: example-access-key-id
+        permission: object-read-write
+        prefixes:
+        - example-prefix/
+        ttlSeconds: 3600
       properties:
-        condition:
-          oneOf:
-          - $ref: '#/components/schemas/r2_lifecycle-age-condition'
-          - $ref: '#/components/schemas/r2_lifecycle-date-condition'
-        storageClass:
-          enum:
-          - InfrequentAccess
+        bucket:
+          description: Name of the R2 bucket.
           type: string
           x-auditable: true
-      required:
-      - condition
-      - storageClass
-      type: object
-    r2_bucket-config:
-      properties:
-        bucketName:
-          description: Name of the bucket.
-          type: string
-          x-auditable: true
-        queues:
-          description: List of queues associated with the bucket.
+        objects:
+          description: Optional object paths to scope the credentials to.
           items:
-            $ref: '#/components/schemas/r2_queues-config'
+            type: string
+            x-auditable: true
           type: array
+        parentAccessKeyId:
+          description: The parent access key id to use for signing.
+          type: string
+        permission:
+          description: Permissions allowed on the credentials.
+          enum:
+          - admin-read-write
+          - admin-read-only
+          - object-read-write
+          - object-read-only
+          type: string
+          x-auditable: true
+        prefixes:
+          description: Optional prefix paths to scope the credentials to.
+          items:
+            type: string
+            x-auditable: true
+          type: array
+        ttlSeconds:
+          default: 900
+          description: How long the credentials will live for in seconds.
+          maximum: 604800
+          type: number
+          x-auditable: true
+      required:
+      - bucket
+      - permission
+      - ttlSeconds
+      - parentAccessKeyId
+      type: object
+    r2_add_custom_domain_response:
+      example:
+        domain: example-domain.com
+        enabled: true
+        zoneId: 36ca64a6d92827b8a6b90be344bb1bfd
+      properties:
+        ciphers:
+          description: An allowlist of ciphers for TLS termination. These ciphers must be in the BoringSSL format.
+          items:
+            type: string
+          type: array
+          x-auditable: true
+        domain:
+          description: Domain name of the affected custom domain.
+          type: string
+          x-auditable: true
+        enabled:
+          description: Whether this bucket is publicly accessible at the specified custom domain.
+          type: boolean
+        minTLS:
+          description: Minimum TLS Version the custom domain will accept for incoming connections. If not set, defaults to 1.0.
+          enum:
+          - '1.0'
+          - '1.1'
+          - '1.2'
+          - '1.3'
+          type: string
+          x-auditable: true
+        zoneId:
+          description: Zone ID of the custom domain.
+          type: string
+          x-auditable: true
+      required:
+      - domain
+      - enabled
+      - zoneId
+      type: object
+    r2_remove_custom_domain_response:
+      example:
+        domain: example-domain/custom-domain.com
+      properties:
+        domain:
+          description: Name of the removed custom domain.
+          type: string
+          x-auditable: true
+      required:
+      - domain
       type: object
   securitySchemes:
     api_email:

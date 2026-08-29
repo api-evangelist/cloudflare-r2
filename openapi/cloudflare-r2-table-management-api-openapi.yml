@@ -1,6 +1,6 @@
-openapi: 3.0.3
+openapi: 3.2.0
 info:
-  title: Cloudflare R2 Cloudflare Buckets Table Management API
+  title: Cloudflare R2 Cloudflare Table Management API
   description: Cloudflare API endpoints for managing R2 object storage buckets, objects, CORS, lifecycle policies, custom domains, event notifications, data catalog, and temporary credentials.
   version: 4.0.0
   termsOfService: https://www.cloudflare.com/website-terms/
@@ -179,40 +179,70 @@ paths:
       - Workers R2 Data Catalog Read
 components:
   schemas:
-    r2-data-catalog_api-response-errors:
-      description: Contains errors if the API call was unsuccessful.
-      items:
-        properties:
-          code:
-            description: Specifies the error code.
-            type: integer
-          message:
-            description: Describes the error.
-            type: string
-        required:
-        - code
-        - message
-        type: object
-      type: array
+    r2-data-catalog_api-response-single:
+      properties:
+        errors:
+          $ref: '#/components/schemas/r2-data-catalog_api-response-errors'
+        messages:
+          $ref: '#/components/schemas/r2-data-catalog_api-response-messages'
+        success:
+          $ref: '#/components/schemas/r2-data-catalog_api-response-success'
+      required:
+      - success
+      - errors
+      - messages
+      type: object
     r2-data-catalog_api-response-success:
       description: Indicates whether the API call was successful.
       example: true
       type: boolean
-    r2-data-catalog_api-response-messages:
-      description: Contains informational messages.
-      items:
-        properties:
-          code:
-            description: Specifies the message code.
-            type: integer
-          message:
-            description: Contains the message text.
+    r2-data-catalog_table-list-response:
+      description: Contains the list of tables with optional pagination.
+      properties:
+        details:
+          description: 'Contains detailed metadata for each table when return_details is true.
+
+            Each object includes identifier, UUID, timestamps, and locations.
+
+            '
+          items:
+            $ref: '#/components/schemas/r2-data-catalog_table-details'
+          type:
+          - array
+          - 'null'
+        identifiers:
+          description: Lists tables in the namespace.
+          items:
+            $ref: '#/components/schemas/r2-data-catalog_table-identifier'
+          type: array
+        next_page_token:
+          description: 'Use this opaque token to fetch the next page of results.
+
+            A null or absent value indicates the last page.
+
+            '
+          example: MSYxNzU5NzU2MTI4NTU2Njk2JjAxOTliOWEzLTkxMmUtN2ZhMS05YzllLTg5MTAxMGQzYTg0MQ
+          type:
+          - string
+          - 'null'
+        table_uuids:
+          description: 'Contains UUIDs for each table when return_uuids is true.
+
+            The order corresponds to the identifiers array.
+
+            '
+          example:
+          - 0199b9a1-28a0-71e0-a73e-b0fc32c8468e
+          - 0199b9a1-3c74-7731-bf53-d8c67ead079d
+          items:
+            format: uuid
             type: string
-        required:
-        - code
-        - message
-        type: object
-      type: array
+          type:
+          - array
+          - 'null'
+      required:
+      - identifiers
+      type: object
     r2-data-catalog_namespace-identifier:
       description: 'Specifies the hierarchical namespace parts as an array of strings.
 
@@ -227,62 +257,6 @@ components:
       maxItems: 16
       minItems: 1
       type: array
-    r2-data-catalog_table-details:
-      description: Contains table with metadata.
-      properties:
-        created_at:
-          description: Indicates the creation timestamp in ISO 8601 format.
-          format: date-time
-          nullable: true
-          type: string
-        identifier:
-          $ref: '#/components/schemas/r2-data-catalog_table-identifier'
-        location:
-          description: Specifies the base S3 URI for table storage location.
-          nullable: true
-          type: string
-        metadata_location:
-          description: Contains the S3 URI to table metadata file. Null for staged tables.
-          nullable: true
-          type: string
-        table_uuid:
-          description: Contains the UUID that persists across renames.
-          format: uuid
-          type: string
-        updated_at:
-          description: Shows the last update timestamp in ISO 8601 format. Null if never updated.
-          format: date-time
-          nullable: true
-          type: string
-      required:
-      - identifier
-      - table_uuid
-      type: object
-    r2-data-catalog_account-id:
-      description: Use this to identify the account.
-      example: 0123456789abcdef0123456789abcdef
-      pattern: ^[a-fA-F0-9]{32}$
-      type: string
-    r2-data-catalog_api-response-single:
-      properties:
-        errors:
-          $ref: '#/components/schemas/r2-data-catalog_api-response-errors'
-        messages:
-          $ref: '#/components/schemas/r2-data-catalog_api-response-messages'
-        success:
-          $ref: '#/components/schemas/r2-data-catalog_api-response-success'
-      required:
-      - success
-      - errors
-      - messages
-      type: object
-    r2-data-catalog_bucket-name:
-      description: Specifies the R2 bucket name.
-      example: my-data-bucket
-      maxLength: 63
-      minLength: 3
-      pattern: ^[a-z0-9]([a-z0-9\-]*[a-z0-9])?$
-      type: string
     r2-data-catalog_api-response-common-failure:
       properties:
         errors:
@@ -304,6 +278,71 @@ components:
           - false
           type: boolean
       type: object
+    r2-data-catalog_api-response-errors:
+      description: Contains errors if the API call was unsuccessful.
+      items:
+        properties:
+          code:
+            description: Specifies the error code.
+            type: integer
+          message:
+            description: Describes the error.
+            type: string
+        required:
+        - code
+        - message
+        type: object
+      type: array
+    r2-data-catalog_table-details:
+      description: Contains table with metadata.
+      properties:
+        created_at:
+          description: Indicates the creation timestamp in ISO 8601 format.
+          format: date-time
+          type:
+          - string
+          - 'null'
+        identifier:
+          $ref: '#/components/schemas/r2-data-catalog_table-identifier'
+        location:
+          description: Specifies the base S3 URI for table storage location.
+          type:
+          - string
+          - 'null'
+        metadata_location:
+          description: Contains the S3 URI to table metadata file. Null for staged tables.
+          type:
+          - string
+          - 'null'
+        table_uuid:
+          description: Contains the UUID that persists across renames.
+          format: uuid
+          type: string
+        updated_at:
+          description: Shows the last update timestamp in ISO 8601 format. Null if never updated.
+          format: date-time
+          type:
+          - string
+          - 'null'
+      required:
+      - identifier
+      - table_uuid
+      type: object
+    r2-data-catalog_api-response-messages:
+      description: Contains informational messages.
+      items:
+        properties:
+          code:
+            description: Specifies the message code.
+            type: integer
+          message:
+            description: Contains the message text.
+            type: string
+        required:
+        - code
+        - message
+        type: object
+      type: array
     r2-data-catalog_table-identifier:
       description: Specifies a unique table identifier within a catalog.
       properties:
@@ -317,50 +356,18 @@ components:
       - namespace
       - name
       type: object
-    r2-data-catalog_table-list-response:
-      description: Contains the list of tables with optional pagination.
-      properties:
-        details:
-          description: 'Contains detailed metadata for each table when return_details is true.
-
-            Each object includes identifier, UUID, timestamps, and locations.
-
-            '
-          items:
-            $ref: '#/components/schemas/r2-data-catalog_table-details'
-          nullable: true
-          type: array
-        identifiers:
-          description: Lists tables in the namespace.
-          items:
-            $ref: '#/components/schemas/r2-data-catalog_table-identifier'
-          type: array
-        next_page_token:
-          description: 'Use this opaque token to fetch the next page of results.
-
-            A null or absent value indicates the last page.
-
-            '
-          example: MSYxNzU5NzU2MTI4NTU2Njk2JjAxOTliOWEzLTkxMmUtN2ZhMS05YzllLTg5MTAxMGQzYTg0MQ
-          nullable: true
-          type: string
-        table_uuids:
-          description: 'Contains UUIDs for each table when return_uuids is true.
-
-            The order corresponds to the identifiers array.
-
-            '
-          example:
-          - 0199b9a1-28a0-71e0-a73e-b0fc32c8468e
-          - 0199b9a1-3c74-7731-bf53-d8c67ead079d
-          items:
-            format: uuid
-            type: string
-          nullable: true
-          type: array
-      required:
-      - identifiers
-      type: object
+    r2-data-catalog_account-id:
+      description: Use this to identify the account.
+      example: 0123456789abcdef0123456789abcdef
+      pattern: ^[a-fA-F0-9]{32}$
+      type: string
+    r2-data-catalog_bucket-name:
+      description: Specifies the R2 bucket name.
+      example: my-data-bucket
+      maxLength: 63
+      minLength: 3
+      pattern: ^[a-z0-9]([a-z0-9\-]*[a-z0-9])?$
+      type: string
   securitySchemes:
     api_email:
       in: header

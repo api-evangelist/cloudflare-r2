@@ -1,6 +1,6 @@
-openapi: 3.0.3
+openapi: 3.2.0
 info:
-  title: Cloudflare R2 Cloudflare Buckets R2 Object API
+  title: Cloudflare R2 Cloudflare R2 Object API
   description: Cloudflare API endpoints for managing R2 object storage buckets, objects, CORS, lifecycle policies, custom domains, event notifications, data catalog, and temporary credentials.
   version: 4.0.0
   termsOfService: https://www.cloudflare.com/website-terms/
@@ -455,33 +455,20 @@ paths:
         - com.cloudflare.edge.r2.bucket.write
 components:
   schemas:
-    r2_r2_put_object_result:
-      description: Result of a successful object upload.
-      properties:
-        etag:
-          description: The entity tag for the uploaded object.
-          example: d41d8cd98f00b204e9800998ecf8427e
-          type: string
-        key:
-          description: The key (name) of the uploaded object.
-          example: path/to/my-object.txt
-          type: string
-        size:
-          description: The size of the uploaded object in bytes (as a string).
-          example: '1048576'
-          type: string
-        storage_class:
-          $ref: '#/components/schemas/r2_storage_class'
-        uploaded:
-          description: The date and time the object was uploaded.
-          example: '2024-01-15T10:30:00Z'
-          format: date-time
-          type: string
-        version:
-          description: The version UUID of the uploaded object.
-          example: 3fd5b4a8-1234-5678-abcd-ef0123456789
-          type: string
-      type: object
+    r2_errors:
+      items:
+        properties:
+          code:
+            minimum: 1000
+            type: integer
+          message:
+            type: string
+        required:
+        - code
+        - message
+        type: object
+        uniqueItems: true
+      type: array
     r2_bucket_name:
       description: Name of the bucket.
       example: example-bucket
@@ -520,41 +507,18 @@ components:
           example: 20
           type: integer
       type: object
-    r2_errors:
-      items:
-        properties:
-          code:
-            minimum: 1000
-            type: integer
-          message:
-            type: string
-        required:
-        - code
-        - message
-        type: object
-        uniqueItems: true
-      type: array
-    r2_account_identifier:
-      description: Account ID.
-      example: 023e105f4ecef8ad9ca31a8372d0c353
-      maxLength: 32
-      type: string
-    r2_v4_response_failure:
+    r2_v4_response:
       properties:
         errors:
           $ref: '#/components/schemas/r2_errors'
         messages:
           $ref: '#/components/schemas/r2_messages'
         result:
-          enum:
-          - null
-          nullable: true
           type: object
         success:
           description: Whether the API call was successful.
           enum:
-          - false
-          example: false
+          - true
           type: boolean
       required:
       - success
@@ -562,24 +526,6 @@ components:
       - messages
       - result
       type: object
-    r2_storage_class:
-      default: Standard
-      description: Storage class for newly uploaded objects, unless specified otherwise.
-      enum:
-      - Standard
-      - InfrequentAccess
-      type: string
-      x-auditable: true
-    r2_jurisdiction:
-      default: default
-      description: Jurisdiction where objects in this bucket are guaranteed to be stored.
-      enum:
-      - default
-      - eu
-      - fedramp
-      type: string
-      x-auditable: true
-      x-stainless-param: jurisdiction
     r2_r2_object_http_metadata:
       description: HTTP metadata associated with an R2 object.
       properties:
@@ -609,18 +555,27 @@ components:
           example: image/jpeg
           type: string
       type: object
-    r2_v4_response:
+    r2_messages:
+      items:
+        type: string
+      type: array
+    r2_v4_response_failure:
       properties:
         errors:
           $ref: '#/components/schemas/r2_errors'
         messages:
           $ref: '#/components/schemas/r2_messages'
         result:
-          type: object
+          enum:
+          - null
+          type:
+          - object
+          - 'null'
         success:
           description: Whether the API call was successful.
           enum:
-          - true
+          - false
+          example: false
           type: boolean
       required:
       - success
@@ -628,6 +583,56 @@ components:
       - messages
       - result
       type: object
+    r2_r2_delete_object_result:
+      description: Result of a successful object deletion.
+      properties:
+        key:
+          description: The key (name) of the deleted object.
+          example: path/to/my-object.txt
+          type: string
+      type: object
+    r2_r2_put_object_result:
+      description: Result of a successful object upload.
+      properties:
+        etag:
+          description: The entity tag for the uploaded object.
+          example: d41d8cd98f00b204e9800998ecf8427e
+          type: string
+        key:
+          description: The key (name) of the uploaded object.
+          example: path/to/my-object.txt
+          type: string
+        size:
+          description: The size of the uploaded object in bytes (as a string).
+          example: '1048576'
+          type: string
+        storage_class:
+          $ref: '#/components/schemas/r2_storage_class'
+        uploaded:
+          description: The date and time the object was uploaded.
+          example: '2024-01-15T10:30:00Z'
+          format: date-time
+          type: string
+        version:
+          description: The version UUID of the uploaded object.
+          example: 3fd5b4a8-1234-5678-abcd-ef0123456789
+          type: string
+      type: object
+    r2_jurisdiction:
+      default: default
+      description: Jurisdiction where objects in this bucket are guaranteed to be stored.
+      enum:
+      - default
+      - eu
+      - fedramp
+      type: string
+      x-auditable: true
+      x-stainless-param: jurisdiction
+    r2_account_identifier:
+      description: Account ID.
+      example: 023e105f4ecef8ad9ca31a8372d0c353
+      maxLength: 32
+      type: string
     r2_r2_delete_objects_by_prefix_result:
       description: 'Descriptor of an asynchronous prefix-delete job, returned when the bulk
 
@@ -682,18 +687,14 @@ components:
           - CANCELLED
           type: string
       type: object
-    r2_r2_delete_object_result:
-      description: Result of a successful object deletion.
-      properties:
-        key:
-          description: The key (name) of the deleted object.
-          example: path/to/my-object.txt
-          type: string
-      type: object
-    r2_messages:
-      items:
-        type: string
-      type: array
+    r2_storage_class:
+      default: Standard
+      description: Storage class for newly uploaded objects, unless specified otherwise.
+      enum:
+      - Standard
+      - InfrequentAccess
+      type: string
+      x-auditable: true
     r2_r2_object:
       description: Metadata for an R2 object.
       properties:

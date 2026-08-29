@@ -1,6 +1,6 @@
-openapi: 3.0.3
+openapi: 3.2.0
 info:
-  title: Cloudflare R2 Cloudflare Buckets R2 Account API
+  title: Cloudflare R2 Cloudflare R2 Account API
   description: Cloudflare API endpoints for managing R2 object storage buckets, objects, CORS, lifecycle policies, custom domains, event notifications, data catalog, and temporary credentials.
   version: 4.0.0
   termsOfService: https://www.cloudflare.com/website-terms/
@@ -49,42 +49,6 @@ paths:
       x-cfPermissionsRequired: null
 components:
   schemas:
-    r2_class_based_metrics:
-      description: Metrics based on what state they are in(uploaded or published).
-      properties:
-        published:
-          $ref: '#/components/schemas/r2_object_size_metrics'
-        uploaded:
-          $ref: '#/components/schemas/r2_object_size_metrics'
-      type: object
-    r2_v4_response_failure:
-      properties:
-        errors:
-          $ref: '#/components/schemas/r2_errors'
-        messages:
-          $ref: '#/components/schemas/r2_messages'
-        result:
-          enum:
-          - null
-          nullable: true
-          type: object
-        success:
-          description: Whether the API call was successful.
-          enum:
-          - false
-          example: false
-          type: boolean
-      required:
-      - success
-      - errors
-      - messages
-      - result
-      type: object
-    r2_account_identifier:
-      description: Account ID.
-      example: 023e105f4ecef8ad9ca31a8372d0c353
-      maxLength: 32
-      type: string
     r2_errors:
       items:
         properties:
@@ -99,6 +63,14 @@ components:
         type: object
         uniqueItems: true
       type: array
+    r2_account_level_metrics:
+      description: Metrics based on the class they belong to.
+      properties:
+        infrequentAccess:
+          $ref: '#/components/schemas/r2_class_based_metrics'
+        standard:
+          $ref: '#/components/schemas/r2_class_based_metrics'
+      type: object
     r2_v4_response:
       properties:
         errors:
@@ -111,6 +83,34 @@ components:
           description: Whether the API call was successful.
           enum:
           - true
+          type: boolean
+      required:
+      - success
+      - errors
+      - messages
+      - result
+      type: object
+    r2_messages:
+      items:
+        type: string
+      type: array
+    r2_v4_response_failure:
+      properties:
+        errors:
+          $ref: '#/components/schemas/r2_errors'
+        messages:
+          $ref: '#/components/schemas/r2_messages'
+        result:
+          enum:
+          - null
+          type:
+          - object
+          - 'null'
+        success:
+          description: Whether the API call was successful.
+          enum:
+          - false
+          example: false
           type: boolean
       required:
       - success
@@ -131,17 +131,18 @@ components:
           description: Amount of storage used by object data.
           type: number
       type: object
-    r2_messages:
-      items:
-        type: string
-      type: array
-    r2_account_level_metrics:
-      description: Metrics based on the class they belong to.
+    r2_account_identifier:
+      description: Account ID.
+      example: 023e105f4ecef8ad9ca31a8372d0c353
+      maxLength: 32
+      type: string
+    r2_class_based_metrics:
+      description: Metrics based on what state they are in(uploaded or published).
       properties:
-        infrequentAccess:
-          $ref: '#/components/schemas/r2_class_based_metrics'
-        standard:
-          $ref: '#/components/schemas/r2_class_based_metrics'
+        published:
+          $ref: '#/components/schemas/r2_object_size_metrics'
+        uploaded:
+          $ref: '#/components/schemas/r2_object_size_metrics'
       type: object
   securitySchemes:
     api_email:

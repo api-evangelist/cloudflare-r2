@@ -1,6 +1,6 @@
-openapi: 3.0.3
+openapi: 3.2.0
 info:
-  title: Cloudflare R2 Cloudflare Buckets Namespace Management API
+  title: Cloudflare R2 Cloudflare Namespace Management API
   description: Cloudflare API endpoints for managing R2 object storage buckets, objects, CORS, lifecycle policies, custom domains, event notifications, data catalog, and temporary credentials.
   version: 4.0.0
   termsOfService: https://www.cloudflare.com/website-terms/
@@ -177,40 +177,23 @@ paths:
       - Workers R2 Data Catalog Read
 components:
   schemas:
-    r2-data-catalog_api-response-errors:
-      description: Contains errors if the API call was unsuccessful.
-      items:
-        properties:
-          code:
-            description: Specifies the error code.
-            type: integer
-          message:
-            description: Describes the error.
-            type: string
-        required:
-        - code
-        - message
-        type: object
-      type: array
+    r2-data-catalog_api-response-single:
+      properties:
+        errors:
+          $ref: '#/components/schemas/r2-data-catalog_api-response-errors'
+        messages:
+          $ref: '#/components/schemas/r2-data-catalog_api-response-messages'
+        success:
+          $ref: '#/components/schemas/r2-data-catalog_api-response-success'
+      required:
+      - success
+      - errors
+      - messages
+      type: object
     r2-data-catalog_api-response-success:
       description: Indicates whether the API call was successful.
       example: true
       type: boolean
-    r2-data-catalog_api-response-messages:
-      description: Contains informational messages.
-      items:
-        properties:
-          code:
-            description: Specifies the message code.
-            type: integer
-          message:
-            description: Contains the message text.
-            type: string
-        required:
-        - code
-        - message
-        type: object
-      type: array
     r2-data-catalog_namespace-identifier:
       description: 'Specifies the hierarchical namespace parts as an array of strings.
 
@@ -225,31 +208,6 @@ components:
       maxItems: 16
       minItems: 1
       type: array
-    r2-data-catalog_bucket-name:
-      description: Specifies the R2 bucket name.
-      example: my-data-bucket
-      maxLength: 63
-      minLength: 3
-      pattern: ^[a-z0-9]([a-z0-9\-]*[a-z0-9])?$
-      type: string
-    r2-data-catalog_account-id:
-      description: Use this to identify the account.
-      example: 0123456789abcdef0123456789abcdef
-      pattern: ^[a-fA-F0-9]{32}$
-      type: string
-    r2-data-catalog_api-response-single:
-      properties:
-        errors:
-          $ref: '#/components/schemas/r2-data-catalog_api-response-errors'
-        messages:
-          $ref: '#/components/schemas/r2-data-catalog_api-response-messages'
-        success:
-          $ref: '#/components/schemas/r2-data-catalog_api-response-success'
-      required:
-      - success
-      - errors
-      - messages
-      type: object
     r2-data-catalog_api-response-common-failure:
       properties:
         errors:
@@ -271,6 +229,21 @@ components:
           - false
           type: boolean
       type: object
+    r2-data-catalog_api-response-errors:
+      description: Contains errors if the API call was unsuccessful.
+      items:
+        properties:
+          code:
+            description: Specifies the error code.
+            type: integer
+          message:
+            description: Describes the error.
+            type: string
+        required:
+        - code
+        - message
+        type: object
+      type: array
     r2-data-catalog_namespace-list-response:
       description: Contains the list of namespaces with optional pagination.
       properties:
@@ -282,8 +255,9 @@ components:
             '
           items:
             $ref: '#/components/schemas/r2-data-catalog_namespace-details'
-          nullable: true
-          type: array
+          type:
+          - array
+          - 'null'
         namespace_uuids:
           description: 'Contains UUIDs for each namespace when return_uuids is true.
 
@@ -296,8 +270,9 @@ components:
           items:
             format: uuid
             type: string
-          nullable: true
-          type: array
+          type:
+          - array
+          - 'null'
         namespaces:
           description: Lists namespaces in the catalog.
           items:
@@ -310,8 +285,9 @@ components:
 
             '
           example: MSYxNzU5NzU1NTc4NTA0MTk0JjAxOTliOTliLTJjODgtNzNiMy04ZGJiLTQyMWUwZThmMjc1Nw
-          nullable: true
-          type: string
+          type:
+          - string
+          - 'null'
       required:
       - namespaces
       type: object
@@ -321,8 +297,9 @@ components:
         created_at:
           description: Indicates the creation timestamp in ISO 8601 format.
           format: date-time
-          nullable: true
-          type: string
+          type:
+          - string
+          - 'null'
         namespace:
           $ref: '#/components/schemas/r2-data-catalog_namespace-identifier'
         namespace_uuid:
@@ -332,12 +309,40 @@ components:
         updated_at:
           description: Shows the last update timestamp in ISO 8601 format. Null if never updated.
           format: date-time
-          nullable: true
-          type: string
+          type:
+          - string
+          - 'null'
       required:
       - namespace
       - namespace_uuid
       type: object
+    r2-data-catalog_api-response-messages:
+      description: Contains informational messages.
+      items:
+        properties:
+          code:
+            description: Specifies the message code.
+            type: integer
+          message:
+            description: Contains the message text.
+            type: string
+        required:
+        - code
+        - message
+        type: object
+      type: array
+    r2-data-catalog_account-id:
+      description: Use this to identify the account.
+      example: 0123456789abcdef0123456789abcdef
+      pattern: ^[a-fA-F0-9]{32}$
+      type: string
+    r2-data-catalog_bucket-name:
+      description: Specifies the R2 bucket name.
+      example: my-data-bucket
+      maxLength: 63
+      minLength: 3
+      pattern: ^[a-z0-9]([a-z0-9\-]*[a-z0-9])?$
+      type: string
   securitySchemes:
     api_email:
       in: header

@@ -1,15 +1,23 @@
-openapi: 3.0.3
+openapi: 3.2.0
 info:
-  title: Cloudflare R2 Cloudflare Buckets Multipart Upload API
-  description: Cloudflare API endpoints for managing R2 object storage buckets, objects, CORS, lifecycle policies, custom domains, event notifications, data catalog, and temporary credentials.
-  version: 4.0.0
+  title: Cloudflare R2 S3-Compatible Multipart Upload API
+  description: 'An S3-compatible REST API for storing and retrieving objects in Cloudflare R2 buckets. Supports core S3 operations including bucket management, object CRUD, multipart uploads, CORS configuration, lifecycle policies, and server-side encryption. Compatible with AWS S3 SDKs across Python, JavaScript, Go, Java, PHP, Ruby, and Rust. Base URL format: https://<ACCOUNT_ID>.r2.cloudflarestorage.com
+
+    '
+  version: 1.0.0
   termsOfService: https://www.cloudflare.com/website-terms/
   contact:
-    name: Cloudflare Developer Docs
-    url: https://developers.cloudflare.com/r2/
+    name: Cloudflare R2 Documentation
+    url: https://developers.cloudflare.com/r2/api/s3/api/
 servers:
-- url: https://api.cloudflare.com/client/v4
-  description: Cloudflare API v4
+- url: https://{account_id}.r2.cloudflarestorage.com
+  description: Cloudflare R2 S3-compatible endpoint
+  variables:
+    account_id:
+      description: Your Cloudflare account ID
+      default: YOUR_ACCOUNT_ID
+security:
+- hmacAuth: []
 tags:
 - name: Multipart Upload
 paths:
@@ -294,17 +302,23 @@ paths:
                 $ref: '#/components/schemas/Error'
 components:
   schemas:
-    InitiateMultipartUploadResult:
+    Error:
       type: object
       properties:
-        Bucket:
+        Code:
           type: string
-        Key:
+          description: Error code
+        Message:
           type: string
-        UploadId:
+          description: Human-readable error message
+        Resource:
           type: string
+          description: The resource that caused the error
+        RequestId:
+          type: string
+          description: The request ID for troubleshooting
       xml:
-        name: InitiateMultipartUploadResult
+        name: Error
     ListPartsResult:
       type: object
       properties:
@@ -339,19 +353,17 @@ components:
                 format: int64
       xml:
         name: ListPartsResult
-    CompleteMultipartUploadResult:
+    InitiateMultipartUploadResult:
       type: object
       properties:
-        Location:
-          type: string
         Bucket:
           type: string
         Key:
           type: string
-        ETag:
+        UploadId:
           type: string
       xml:
-        name: CompleteMultipartUploadResult
+        name: InitiateMultipartUploadResult
     CompleteMultipartUpload:
       type: object
       properties:
@@ -369,23 +381,6 @@ components:
                 type: string
       xml:
         name: CompleteMultipartUpload
-    Error:
-      type: object
-      properties:
-        Code:
-          type: string
-          description: Error code
-        Message:
-          type: string
-          description: Human-readable error message
-        Resource:
-          type: string
-          description: The resource that caused the error
-        RequestId:
-          type: string
-          description: The request ID for troubleshooting
-      xml:
-        name: Error
     ListMultipartUploadsResult:
       type: object
       properties:
@@ -417,19 +412,27 @@ components:
                 format: date-time
       xml:
         name: ListMultipartUploadsResult
+    CompleteMultipartUploadResult:
+      type: object
+      properties:
+        Location:
+          type: string
+        Bucket:
+          type: string
+        Key:
+          type: string
+        ETag:
+          type: string
+      xml:
+        name: CompleteMultipartUploadResult
   securitySchemes:
-    api_email:
-      in: header
-      name: X-Auth-Email
+    hmacAuth:
       type: apiKey
-    api_key:
       in: header
-      name: X-Auth-Key
-      type: apiKey
-    api_token:
-      scheme: bearer
-      type: http
-    user_service_key:
-      in: header
-      name: X-Auth-User-Service-Key
-      type: apiKey
+      name: Authorization
+      description: 'AWS Signature Version 4 authentication. Use your R2 API token (Access Key ID and Secret Access Key) generated from the R2 dashboard. Compatible with all AWS S3 SDKs.
+
+        '
+externalDocs:
+  description: Cloudflare R2 S3 API Compatibility
+  url: https://developers.cloudflare.com/r2/api/s3/api/
