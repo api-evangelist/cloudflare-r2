@@ -40,7 +40,8 @@
     "cloudflare-r2-s3-compatible-api-openapi.yml: declared missing tag: CORS",
     "cloudflare-r2-s3-compatible-api-openapi.yml: declared missing tag: Lifecycle",
     "cloudflare-r2-s3-compatible-api-openapi.yml: declared missing tag: Multipart Upload",
-    "cloudflare-r2-s3-compatible-api-openapi.yml: declared missing tag: Objects"
+    "cloudflare-r2-s3-compatible-api-openapi.yml: declared missing tag: Objects",
+    "apis.yml register: already-registered"
   ],
   "skipped": [
     "cloudflare-r2-buckets-api-openapi.yml: previously refined output, superseded by openapi/_original/",

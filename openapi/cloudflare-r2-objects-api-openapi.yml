@@ -1,9 +1,7 @@
 openapi: 3.2.0
 info:
   title: Cloudflare R2 S3-Compatible Objects API
-  description: 'An S3-compatible REST API for storing and retrieving objects in Cloudflare R2 buckets. Supports core S3 operations including bucket management, object CRUD, multipart uploads, CORS configuration, lifecycle policies, and server-side encryption. Compatible with AWS S3 SDKs across Python, JavaScript, Go, Java, PHP, Ruby, and Rust. Base URL format: https://<ACCOUNT_ID>.r2.cloudflarestorage.com
-
-    '
+  description: 'An S3-compatible REST API for storing and retrieving objects in Cloudflare R2 buckets. Supports core S3 operations including bucket management, object CRUD, multipart uploads, CORS configuration, lifecycle policies, and server-side encryption. Compatible with AWS S3 SDKs across Python, JavaScript, Go, Java, PHP, Ruby, and Rust. Base URL format: https://.r2.cloudflarestorage.com'
   version: 1.0.0
   termsOfService: https://www.cloudflare.com/website-terms/
   contact:
@@ -409,23 +407,29 @@ paths:
                 $ref: '#/components/schemas/Error'
 components:
   schemas:
-    Error:
+    DeleteResult:
       type: object
       properties:
-        Code:
-          type: string
-          description: Error code
-        Message:
-          type: string
-          description: Human-readable error message
-        Resource:
-          type: string
-          description: The resource that caused the error
-        RequestId:
-          type: string
-          description: The request ID for troubleshooting
+        Deleted:
+          type: array
+          items:
+            type: object
+            properties:
+              Key:
+                type: string
+        Error:
+          type: array
+          items:
+            type: object
+            properties:
+              Key:
+                type: string
+              Code:
+                type: string
+              Message:
+                type: string
       xml:
-        name: Error
+        name: DeleteResult
     ListBucketResult:
       type: object
       properties:
@@ -479,29 +483,6 @@ components:
                 type: string
       xml:
         name: ListBucketResult
-    DeleteResult:
-      type: object
-      properties:
-        Deleted:
-          type: array
-          items:
-            type: object
-            properties:
-              Key:
-                type: string
-        Error:
-          type: array
-          items:
-            type: object
-            properties:
-              Key:
-                type: string
-              Code:
-                type: string
-              Message:
-                type: string
-      xml:
-        name: DeleteResult
     DeleteObjects:
       type: object
       properties:
@@ -520,6 +501,23 @@ components:
           type: boolean
       xml:
         name: Delete
+    Error:
+      type: object
+      properties:
+        Code:
+          type: string
+          description: Error code
+        Message:
+          type: string
+          description: Human-readable error message
+        Resource:
+          type: string
+          description: The resource that caused the error
+        RequestId:
+          type: string
+          description: The request ID for troubleshooting
+      xml:
+        name: Error
   securitySchemes:
     hmacAuth:
       type: apiKey

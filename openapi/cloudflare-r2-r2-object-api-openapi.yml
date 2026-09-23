@@ -15,7 +15,21 @@ tags:
 paths:
   /accounts/{account_id}/r2/buckets/{bucket_name}/objects:
     delete:
-      description: "Deletes multiple objects from an R2 bucket. Two modes are supported:\n\n1. **Delete by list** (default): Provide a JSON array of object keys in the request body.\n   All listed objects are deleted; per-key errors are reported in the response.\n2. **Delete by prefix**: Provide the `prefix` query parameter (and an empty/no body)\n   to schedule deletion of every object whose key begins with the given prefix.\n   This kicks off an asynchronous prefix-delete job and returns the job descriptor.\n\nFor most workloads, we recommend using R2's [S3-compatible API](https://developers.cloudflare.com/r2/api/s3/api/) or a [Worker with an R2 binding](https://developers.cloudflare.com/r2/api/workers/workers-api-reference/) instead.\n"
+      description: 'Deletes multiple objects from an R2 bucket. Two modes are supported:
+
+
+        1. **Delete by list** (default): Provide a JSON array of object keys in the request body.
+
+        All listed objects are deleted; per-key errors are reported in the response.
+
+        2. **Delete by prefix**: Provide the `prefix` query parameter (and an empty/no body)
+
+        to schedule deletion of every object whose key begins with the given prefix.
+
+        This kicks off an asynchronous prefix-delete job and returns the job descriptor.
+
+
+        For most workloads, we recommend using R2''s S3-compatible API or a Worker with an R2 binding instead.'
       operationId: r2-delete-objects
       parameters:
       - in: path
@@ -110,9 +124,7 @@ paths:
       description: 'Lists objects in an R2 bucket. Returns object metadata including key, size, etag, last modified date, HTTP metadata, and custom metadata.
 
 
-        For most workloads, we recommend using R2''s [S3-compatible API](https://developers.cloudflare.com/r2/api/s3/api/) or a [Worker with an R2 binding](https://developers.cloudflare.com/r2/api/workers/workers-api-reference/) instead.
-
-        '
+        For most workloads, we recommend using R2''s S3-compatible API or a Worker with an R2 binding instead.'
       operationId: r2-list-objects
       parameters:
       - in: path
@@ -204,9 +216,7 @@ paths:
       description: 'Deletes an object from an R2 bucket.
 
 
-        For most workloads, we recommend using R2''s [S3-compatible API](https://developers.cloudflare.com/r2/api/s3/api/) or a [Worker with an R2 binding](https://developers.cloudflare.com/r2/api/workers/workers-api-reference/) instead.
-
-        '
+        For most workloads, we recommend using R2''s S3-compatible API or a Worker with an R2 binding instead.'
       operationId: r2-delete-object
       parameters:
       - in: path
@@ -266,9 +276,7 @@ paths:
       description: 'Retrieves an object from an R2 bucket. Returns the object body along with metadata headers.
 
 
-        For most workloads, we recommend using R2''s [S3-compatible API](https://developers.cloudflare.com/r2/api/s3/api/) or a [Worker with an R2 binding](https://developers.cloudflare.com/r2/api/workers/workers-api-reference/) instead.
-
-        '
+        For most workloads, we recommend using R2''s S3-compatible API or a Worker with an R2 binding instead.'
       operationId: r2-get-object
       parameters:
       - in: path
@@ -371,9 +379,7 @@ paths:
       description: 'Uploads an object to an R2 bucket. The object body is provided as the request body. Returns metadata about the uploaded object.
 
 
-        The maximum upload size for this endpoint is 300 MB. For most workloads, we recommend using R2''s [S3-compatible API](https://developers.cloudflare.com/r2/api/s3/api/) or a [Worker with an R2 binding](https://developers.cloudflare.com/r2/api/workers/workers-api-reference/) instead.
-
-        '
+        The maximum upload size for this endpoint is 300 MB. For most workloads, we recommend using R2''s S3-compatible API or a Worker with an R2 binding instead.'
       operationId: r2-put-object
       parameters:
       - in: path
@@ -455,20 +461,6 @@ paths:
         - com.cloudflare.edge.r2.bucket.write
 components:
   schemas:
-    r2_errors:
-      items:
-        properties:
-          code:
-            minimum: 1000
-            type: integer
-          message:
-            type: string
-        required:
-        - code
-        - message
-        type: object
-        uniqueItems: true
-      type: array
     r2_bucket_name:
       description: Name of the bucket.
       example: example-bucket
@@ -477,162 +469,6 @@ components:
       pattern: ^[a-z0-9][a-z0-9-]*[a-z0-9]
       type: string
       x-auditable: true
-    r2_r2_list_objects_result_info:
-      description: Pagination information for list objects responses.
-      properties:
-        cursor:
-          description: Pagination cursor to use in the next List Objects call to retrieve the next page of results.
-          example: eyJrZXkiOiJwYXRoL3RvL215LW9iamVjdC50eHQifQ==
-          type: string
-        delimited:
-          description: 'Common prefixes found when a delimiter is specified. Each entry represents a group
-
-            of keys sharing a common prefix up to the delimiter. Equivalent to S3''s `CommonPrefixes`
-
-            in `ListObjectsV2`; the field name differs because of the existing R2 API wire format.
-
-            '
-          example:
-          - path/to/
-          - another/path/
-          items:
-            type: string
-          type: array
-        is_truncated:
-          description: Whether the result was truncated. If true, use the cursor to retrieve the next page.
-          example: true
-          type: boolean
-        per_page:
-          description: The maximum number of objects returned per page.
-          example: 20
-          type: integer
-      type: object
-    r2_v4_response:
-      properties:
-        errors:
-          $ref: '#/components/schemas/r2_errors'
-        messages:
-          $ref: '#/components/schemas/r2_messages'
-        result:
-          type: object
-        success:
-          description: Whether the API call was successful.
-          enum:
-          - true
-          type: boolean
-      required:
-      - success
-      - errors
-      - messages
-      - result
-      type: object
-    r2_r2_object_http_metadata:
-      description: HTTP metadata associated with an R2 object.
-      properties:
-        cacheControl:
-          description: Specifies caching behavior for the object.
-          example: max-age=3600
-          type: string
-        cacheExpiry:
-          description: The date and time at which the object's cache entry expires.
-          example: '2024-12-31T23:59:59Z'
-          format: date-time
-          type: string
-        contentDisposition:
-          description: Specifies presentational information for the object.
-          example: attachment; filename="example.jpg"
-          type: string
-        contentEncoding:
-          description: Specifies the content encoding applied to the object.
-          example: gzip
-          type: string
-        contentLanguage:
-          description: The language of the object content.
-          example: en-US
-          type: string
-        contentType:
-          description: The MIME type of the object.
-          example: image/jpeg
-          type: string
-      type: object
-    r2_messages:
-      items:
-        type: string
-      type: array
-    r2_v4_response_failure:
-      properties:
-        errors:
-          $ref: '#/components/schemas/r2_errors'
-        messages:
-          $ref: '#/components/schemas/r2_messages'
-        result:
-          enum:
-          - null
-          type:
-          - object
-          - 'null'
-        success:
-          description: Whether the API call was successful.
-          enum:
-          - false
-          example: false
-          type: boolean
-      required:
-      - success
-      - errors
-      - messages
-      - result
-      type: object
-    r2_r2_delete_object_result:
-      description: Result of a successful object deletion.
-      properties:
-        key:
-          description: The key (name) of the deleted object.
-          example: path/to/my-object.txt
-          type: string
-      type: object
-    r2_r2_put_object_result:
-      description: Result of a successful object upload.
-      properties:
-        etag:
-          description: The entity tag for the uploaded object.
-          example: d41d8cd98f00b204e9800998ecf8427e
-          type: string
-        key:
-          description: The key (name) of the uploaded object.
-          example: path/to/my-object.txt
-          type: string
-        size:
-          description: The size of the uploaded object in bytes (as a string).
-          example: '1048576'
-          type: string
-        storage_class:
-          $ref: '#/components/schemas/r2_storage_class'
-        uploaded:
-          description: The date and time the object was uploaded.
-          example: '2024-01-15T10:30:00Z'
-          format: date-time
-          type: string
-        version:
-          description: The version UUID of the uploaded object.
-          example: 3fd5b4a8-1234-5678-abcd-ef0123456789
-          type: string
-      type: object
-    r2_jurisdiction:
-      default: default
-      description: Jurisdiction where objects in this bucket are guaranteed to be stored.
-      enum:
-      - default
-      - eu
-      - fedramp
-      type: string
-      x-auditable: true
-      x-stainless-param: jurisdiction
-    r2_account_identifier:
-      description: Account ID.
-      example: 023e105f4ecef8ad9ca31a8372d0c353
-      maxLength: 32
-      type: string
     r2_r2_delete_objects_by_prefix_result:
       description: 'Descriptor of an asynchronous prefix-delete job, returned when the bulk
 
@@ -687,14 +523,41 @@ components:
           - CANCELLED
           type: string
       type: object
-    r2_storage_class:
-      default: Standard
-      description: Storage class for newly uploaded objects, unless specified otherwise.
-      enum:
-      - Standard
-      - InfrequentAccess
-      type: string
-      x-auditable: true
+    r2_r2_put_object_result:
+      description: Result of a successful object upload.
+      properties:
+        etag:
+          description: The entity tag for the uploaded object.
+          example: d41d8cd98f00b204e9800998ecf8427e
+          type: string
+        key:
+          description: The key (name) of the uploaded object.
+          example: path/to/my-object.txt
+          type: string
+        size:
+          description: The size of the uploaded object in bytes (as a string).
+          example: '1048576'
+          type: string
+        storage_class:
+          $ref: '#/components/schemas/r2_storage_class'
+        uploaded:
+          description: The date and time the object was uploaded.
+          example: '2024-01-15T10:30:00Z'
+          format: date-time
+          type: string
+        version:
+          description: The version UUID of the uploaded object.
+          example: 3fd5b4a8-1234-5678-abcd-ef0123456789
+          type: string
+      type: object
+    r2_r2_delete_object_result:
+      description: Result of a successful object deletion.
+      properties:
+        key:
+          description: The key (name) of the deleted object.
+          example: path/to/my-object.txt
+          type: string
+      type: object
     r2_r2_object:
       description: Metadata for an R2 object.
       properties:
@@ -736,6 +599,149 @@ components:
         storage_class:
           $ref: '#/components/schemas/r2_storage_class'
       type: object
+    r2_account_identifier:
+      description: Account ID.
+      example: 023e105f4ecef8ad9ca31a8372d0c353
+      maxLength: 32
+      type: string
+    r2_storage_class:
+      default: Standard
+      description: Storage class for newly uploaded objects, unless specified otherwise.
+      enum:
+      - Standard
+      - InfrequentAccess
+      type: string
+      x-auditable: true
+    r2_r2_list_objects_result_info:
+      description: Pagination information for list objects responses.
+      properties:
+        cursor:
+          description: Pagination cursor to use in the next List Objects call to retrieve the next page of results.
+          example: eyJrZXkiOiJwYXRoL3RvL215LW9iamVjdC50eHQifQ==
+          type: string
+        delimited:
+          description: 'Common prefixes found when a delimiter is specified. Each entry represents a group
+
+            of keys sharing a common prefix up to the delimiter. Equivalent to S3''s `CommonPrefixes`
+
+            in `ListObjectsV2`; the field name differs because of the existing R2 API wire format.
+
+            '
+          example:
+          - path/to/
+          - another/path/
+          items:
+            type: string
+          type: array
+        is_truncated:
+          description: Whether the result was truncated. If true, use the cursor to retrieve the next page.
+          example: true
+          type: boolean
+        per_page:
+          description: The maximum number of objects returned per page.
+          example: 20
+          type: integer
+      type: object
+    r2_v4_response_failure:
+      properties:
+        errors:
+          $ref: '#/components/schemas/r2_errors'
+        messages:
+          $ref: '#/components/schemas/r2_messages'
+        result:
+          enum:
+          - null
+          type:
+          - object
+          - 'null'
+        success:
+          description: Whether the API call was successful.
+          enum:
+          - false
+          example: false
+          type: boolean
+      required:
+      - success
+      - errors
+      - messages
+      - result
+      type: object
+    r2_r2_object_http_metadata:
+      description: HTTP metadata associated with an R2 object.
+      properties:
+        cacheControl:
+          description: Specifies caching behavior for the object.
+          example: max-age=3600
+          type: string
+        cacheExpiry:
+          description: The date and time at which the object's cache entry expires.
+          example: '2024-12-31T23:59:59Z'
+          format: date-time
+          type: string
+        contentDisposition:
+          description: Specifies presentational information for the object.
+          example: attachment; filename="example.jpg"
+          type: string
+        contentEncoding:
+          description: Specifies the content encoding applied to the object.
+          example: gzip
+          type: string
+        contentLanguage:
+          description: The language of the object content.
+          example: en-US
+          type: string
+        contentType:
+          description: The MIME type of the object.
+          example: image/jpeg
+          type: string
+      type: object
+    r2_jurisdiction:
+      default: default
+      description: Jurisdiction where objects in this bucket are guaranteed to be stored.
+      enum:
+      - default
+      - eu
+      - fedramp
+      type: string
+      x-auditable: true
+      x-stainless-param: jurisdiction
+    r2_v4_response:
+      properties:
+        errors:
+          $ref: '#/components/schemas/r2_errors'
+        messages:
+          $ref: '#/components/schemas/r2_messages'
+        result:
+          type: object
+        success:
+          description: Whether the API call was successful.
+          enum:
+          - true
+          type: boolean
+      required:
+      - success
+      - errors
+      - messages
+      - result
+      type: object
+    r2_errors:
+      items:
+        properties:
+          code:
+            minimum: 1000
+            type: integer
+          message:
+            type: string
+        required:
+        - code
+        - message
+        type: object
+        uniqueItems: true
+      type: array
+    r2_messages:
+      items:
+        type: string
+      type: array
   securitySchemes:
     api_email:
       in: header

@@ -1,9 +1,7 @@
 openapi: 3.2.0
 info:
   title: Cloudflare R2 S3-Compatible CORS API
-  description: 'An S3-compatible REST API for storing and retrieving objects in Cloudflare R2 buckets. Supports core S3 operations including bucket management, object CRUD, multipart uploads, CORS configuration, lifecycle policies, and server-side encryption. Compatible with AWS S3 SDKs across Python, JavaScript, Go, Java, PHP, Ruby, and Rust. Base URL format: https://<ACCOUNT_ID>.r2.cloudflarestorage.com
-
-    '
+  description: 'An S3-compatible REST API for storing and retrieving objects in Cloudflare R2 buckets. Supports core S3 operations including bucket management, object CRUD, multipart uploads, CORS configuration, lifecycle policies, and server-side encryption. Compatible with AWS S3 SDKs across Python, JavaScript, Go, Java, PHP, Ruby, and Rust. Base URL format: https://.r2.cloudflarestorage.com'
   version: 1.0.0
   termsOfService: https://www.cloudflare.com/website-terms/
   contact:
