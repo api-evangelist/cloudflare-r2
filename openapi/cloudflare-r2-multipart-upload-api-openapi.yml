@@ -300,78 +300,6 @@ paths:
                 $ref: '#/components/schemas/Error'
 components:
   schemas:
-    CompleteMultipartUploadResult:
-      type: object
-      properties:
-        Location:
-          type: string
-        Bucket:
-          type: string
-        Key:
-          type: string
-        ETag:
-          type: string
-      xml:
-        name: CompleteMultipartUploadResult
-    CompleteMultipartUpload:
-      type: object
-      properties:
-        Part:
-          type: array
-          items:
-            type: object
-            required:
-            - PartNumber
-            - ETag
-            properties:
-              PartNumber:
-                type: integer
-              ETag:
-                type: string
-      xml:
-        name: CompleteMultipartUpload
-    ListMultipartUploadsResult:
-      type: object
-      properties:
-        Bucket:
-          type: string
-        KeyMarker:
-          type: string
-        UploadIdMarker:
-          type: string
-        NextKeyMarker:
-          type: string
-        NextUploadIdMarker:
-          type: string
-        MaxUploads:
-          type: integer
-        IsTruncated:
-          type: boolean
-        Upload:
-          type: array
-          items:
-            type: object
-            properties:
-              Key:
-                type: string
-              UploadId:
-                type: string
-              Initiated:
-                type: string
-                format: date-time
-      xml:
-        name: ListMultipartUploadsResult
-    InitiateMultipartUploadResult:
-      type: object
-      properties:
-        Bucket:
-          type: string
-        Key:
-          type: string
-        UploadId:
-          type: string
-      xml:
-        name: InitiateMultipartUploadResult
     ListPartsResult:
       type: object
       properties:
@@ -423,6 +351,78 @@ components:
           description: The request ID for troubleshooting
       xml:
         name: Error
+    CompleteMultipartUploadResult:
+      type: object
+      properties:
+        Location:
+          type: string
+        Bucket:
+          type: string
+        Key:
+          type: string
+        ETag:
+          type: string
+      xml:
+        name: CompleteMultipartUploadResult
+    ListMultipartUploadsResult:
+      type: object
+      properties:
+        Bucket:
+          type: string
+        KeyMarker:
+          type: string
+        UploadIdMarker:
+          type: string
+        NextKeyMarker:
+          type: string
+        NextUploadIdMarker:
+          type: string
+        MaxUploads:
+          type: integer
+        IsTruncated:
+          type: boolean
+        Upload:
+          type: array
+          items:
+            type: object
+            properties:
+              Key:
+                type: string
+              UploadId:
+                type: string
+              Initiated:
+                type: string
+                format: date-time
+      xml:
+        name: ListMultipartUploadsResult
+    CompleteMultipartUpload:
+      type: object
+      properties:
+        Part:
+          type: array
+          items:
+            type: object
+            required:
+            - PartNumber
+            - ETag
+            properties:
+              PartNumber:
+                type: integer
+              ETag:
+                type: string
+      xml:
+        name: CompleteMultipartUpload
+    InitiateMultipartUploadResult:
+      type: object
+      properties:
+        Bucket:
+          type: string
+        Key:
+          type: string
+        UploadId:
+          type: string
+      xml:
+        name: InitiateMultipartUploadResult
   securitySchemes:
     hmacAuth:
       type: apiKey

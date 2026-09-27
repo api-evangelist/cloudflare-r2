@@ -42,6 +42,7 @@ tags:
   - Buckets
   - Developer Platform
   - Cloudflare
+  - Storage
 tags_raw:
   - Object Storage
   - Cloud Storage
@@ -50,6 +51,7 @@ tags_raw:
   - Buckets
   - Developer Platform
   - Cloudflare
+  - Storage
 
 apis:
 - aid: cloudflare-r2:cloudflare-r2-buckets-api

@@ -49,27 +49,6 @@ paths:
       x-cfPermissionsRequired: null
 components:
   schemas:
-    r2_class_based_metrics:
-      description: Metrics based on what state they are in(uploaded or published).
-      properties:
-        published:
-          $ref: '#/components/schemas/r2_object_size_metrics'
-        uploaded:
-          $ref: '#/components/schemas/r2_object_size_metrics'
-      type: object
-    r2_account_identifier:
-      description: Account ID.
-      example: 023e105f4ecef8ad9ca31a8372d0c353
-      maxLength: 32
-      type: string
-    r2_account_level_metrics:
-      description: Metrics based on the class they belong to.
-      properties:
-        infrequentAccess:
-          $ref: '#/components/schemas/r2_class_based_metrics'
-        standard:
-          $ref: '#/components/schemas/r2_class_based_metrics'
-      type: object
     r2_v4_response_failure:
       properties:
         errors:
@@ -94,6 +73,24 @@ components:
       - messages
       - result
       type: object
+    r2_messages:
+      items:
+        type: string
+      type: array
+    r2_errors:
+      items:
+        properties:
+          code:
+            minimum: 1000
+            type: integer
+          message:
+            type: string
+        required:
+        - code
+        - message
+        type: object
+        uniqueItems: true
+      type: array
     r2_object_size_metrics:
       description: Metrics on number of objects/amount of storage used.
       properties:
@@ -126,24 +123,27 @@ components:
       - messages
       - result
       type: object
-    r2_errors:
-      items:
-        properties:
-          code:
-            minimum: 1000
-            type: integer
-          message:
-            type: string
-        required:
-        - code
-        - message
-        type: object
-        uniqueItems: true
-      type: array
-    r2_messages:
-      items:
-        type: string
-      type: array
+    r2_account_level_metrics:
+      description: Metrics based on the class they belong to.
+      properties:
+        infrequentAccess:
+          $ref: '#/components/schemas/r2_class_based_metrics'
+        standard:
+          $ref: '#/components/schemas/r2_class_based_metrics'
+      type: object
+    r2_account_identifier:
+      description: Account ID.
+      example: 023e105f4ecef8ad9ca31a8372d0c353
+      maxLength: 32
+      type: string
+    r2_class_based_metrics:
+      description: Metrics based on what state they are in(uploaded or published).
+      properties:
+        published:
+          $ref: '#/components/schemas/r2_object_size_metrics'
+        uploaded:
+          $ref: '#/components/schemas/r2_object_size_metrics'
+      type: object
   securitySchemes:
     api_email:
       in: header
