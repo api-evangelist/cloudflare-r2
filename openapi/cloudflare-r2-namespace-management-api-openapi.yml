@@ -188,10 +188,6 @@ components:
       - errors
       - messages
       type: object
-    r2-data-catalog_api-response-success:
-      description: Indicates whether the API call was successful.
-      example: true
-      type: boolean
     r2-data-catalog_namespace-identifier:
       description: 'Specifies the hierarchical namespace parts as an array of strings.
 
@@ -221,11 +217,53 @@ components:
         - message
         type: object
       type: array
-    r2-data-catalog_account-id:
-      description: Use this to identify the account.
-      example: 0123456789abcdef0123456789abcdef
-      pattern: ^[a-fA-F0-9]{32}$
+    r2-data-catalog_api-response-common-failure:
+      properties:
+        errors:
+          items:
+            properties:
+              code:
+                type: integer
+              message:
+                type: string
+            type: object
+          minItems: 1
+          type: array
+        messages:
+          items:
+            type: object
+          type: array
+        success:
+          enum:
+          - false
+          type: boolean
+      type: object
+    r2-data-catalog_api-response-success:
+      description: Indicates whether the API call was successful.
+      example: true
+      type: boolean
+    r2-data-catalog_bucket-name:
+      description: Specifies the R2 bucket name.
+      example: my-data-bucket
+      maxLength: 63
+      minLength: 3
+      pattern: ^[a-z0-9]([a-z0-9\-]*[a-z0-9])?$
       type: string
+    r2-data-catalog_api-response-errors:
+      description: Contains errors if the API call was unsuccessful.
+      items:
+        properties:
+          code:
+            description: Specifies the error code.
+            type: integer
+          message:
+            description: Describes the error.
+            type: string
+        required:
+        - code
+        - message
+        type: object
+      type: array
     r2-data-catalog_namespace-details:
       description: Contains namespace with metadata details.
       properties:
@@ -251,42 +289,11 @@ components:
       - namespace
       - namespace_uuid
       type: object
-    r2-data-catalog_api-response-errors:
-      description: Contains errors if the API call was unsuccessful.
-      items:
-        properties:
-          code:
-            description: Specifies the error code.
-            type: integer
-          message:
-            description: Describes the error.
-            type: string
-        required:
-        - code
-        - message
-        type: object
-      type: array
-    r2-data-catalog_api-response-common-failure:
-      properties:
-        errors:
-          items:
-            properties:
-              code:
-                type: integer
-              message:
-                type: string
-            type: object
-          minItems: 1
-          type: array
-        messages:
-          items:
-            type: object
-          type: array
-        success:
-          enum:
-          - false
-          type: boolean
-      type: object
+    r2-data-catalog_account-id:
+      description: Use this to identify the account.
+      example: 0123456789abcdef0123456789abcdef
+      pattern: ^[a-fA-F0-9]{32}$
+      type: string
     r2-data-catalog_namespace-list-response:
       description: Contains the list of namespaces with optional pagination.
       properties:
@@ -334,13 +341,6 @@ components:
       required:
       - namespaces
       type: object
-    r2-data-catalog_bucket-name:
-      description: Specifies the R2 bucket name.
-      example: my-data-bucket
-      maxLength: 63
-      minLength: 3
-      pattern: ^[a-z0-9]([a-z0-9\-]*[a-z0-9])?$
-      type: string
   securitySchemes:
     api_email:
       in: header

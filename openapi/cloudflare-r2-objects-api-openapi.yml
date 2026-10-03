@@ -407,47 +407,6 @@ paths:
                 $ref: '#/components/schemas/Error'
 components:
   schemas:
-    DeleteResult:
-      type: object
-      properties:
-        Deleted:
-          type: array
-          items:
-            type: object
-            properties:
-              Key:
-                type: string
-        Error:
-          type: array
-          items:
-            type: object
-            properties:
-              Key:
-                type: string
-              Code:
-                type: string
-              Message:
-                type: string
-      xml:
-        name: DeleteResult
-    DeleteObjects:
-      type: object
-      properties:
-        Object:
-          type: array
-          items:
-            type: object
-            required:
-            - Key
-            properties:
-              Key:
-                type: string
-              VersionId:
-                type: string
-        Quiet:
-          type: boolean
-      xml:
-        name: Delete
     Error:
       type: object
       properties:
@@ -518,6 +477,47 @@ components:
                 type: string
       xml:
         name: ListBucketResult
+    DeleteResult:
+      type: object
+      properties:
+        Deleted:
+          type: array
+          items:
+            type: object
+            properties:
+              Key:
+                type: string
+        Error:
+          type: array
+          items:
+            type: object
+            properties:
+              Key:
+                type: string
+              Code:
+                type: string
+              Message:
+                type: string
+      xml:
+        name: DeleteResult
+    DeleteObjects:
+      type: object
+      properties:
+        Object:
+          type: array
+          items:
+            type: object
+            required:
+            - Key
+            properties:
+              Key:
+                type: string
+              VersionId:
+                type: string
+        Quiet:
+          type: boolean
+      xml:
+        name: Delete
   securitySchemes:
     hmacAuth:
       type: apiKey

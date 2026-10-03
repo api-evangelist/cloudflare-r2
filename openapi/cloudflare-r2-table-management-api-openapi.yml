@@ -190,10 +190,6 @@ components:
       - errors
       - messages
       type: object
-    r2-data-catalog_api-response-success:
-      description: Indicates whether the API call was successful.
-      example: true
-      type: boolean
     r2-data-catalog_namespace-identifier:
       description: 'Specifies the hierarchical namespace parts as an array of strings.
 
@@ -223,11 +219,106 @@ components:
         - message
         type: object
       type: array
+    r2-data-catalog_api-response-common-failure:
+      properties:
+        errors:
+          items:
+            properties:
+              code:
+                type: integer
+              message:
+                type: string
+            type: object
+          minItems: 1
+          type: array
+        messages:
+          items:
+            type: object
+          type: array
+        success:
+          enum:
+          - false
+          type: boolean
+      type: object
+    r2-data-catalog_api-response-success:
+      description: Indicates whether the API call was successful.
+      example: true
+      type: boolean
+    r2-data-catalog_bucket-name:
+      description: Specifies the R2 bucket name.
+      example: my-data-bucket
+      maxLength: 63
+      minLength: 3
+      pattern: ^[a-z0-9]([a-z0-9\-]*[a-z0-9])?$
+      type: string
+    r2-data-catalog_table-identifier:
+      description: Specifies a unique table identifier within a catalog.
+      properties:
+        name:
+          description: Specifies the table name.
+          example: events
+          type: string
+        namespace:
+          $ref: '#/components/schemas/r2-data-catalog_namespace-identifier'
+      required:
+      - namespace
+      - name
+      type: object
+    r2-data-catalog_api-response-errors:
+      description: Contains errors if the API call was unsuccessful.
+      items:
+        properties:
+          code:
+            description: Specifies the error code.
+            type: integer
+          message:
+            description: Describes the error.
+            type: string
+        required:
+        - code
+        - message
+        type: object
+      type: array
     r2-data-catalog_account-id:
       description: Use this to identify the account.
       example: 0123456789abcdef0123456789abcdef
       pattern: ^[a-fA-F0-9]{32}$
       type: string
+    r2-data-catalog_table-details:
+      description: Contains table with metadata.
+      properties:
+        created_at:
+          description: Indicates the creation timestamp in ISO 8601 format.
+          format: date-time
+          type:
+          - string
+          - 'null'
+        identifier:
+          $ref: '#/components/schemas/r2-data-catalog_table-identifier'
+        location:
+          description: Specifies the base S3 URI for table storage location.
+          type:
+          - string
+          - 'null'
+        metadata_location:
+          description: Contains the S3 URI to table metadata file. Null for staged tables.
+          type:
+          - string
+          - 'null'
+        table_uuid:
+          description: Contains the UUID that persists across renames.
+          format: uuid
+          type: string
+        updated_at:
+          description: Shows the last update timestamp in ISO 8601 format. Null if never updated.
+          format: date-time
+          type:
+          - string
+          - 'null'
+      required:
+      - identifier
+      - table_uuid
+      type: object
     r2-data-catalog_table-list-response:
       description: Contains the list of tables with optional pagination.
       properties:
@@ -275,97 +366,6 @@ components:
       required:
       - identifiers
       type: object
-    r2-data-catalog_table-identifier:
-      description: Specifies a unique table identifier within a catalog.
-      properties:
-        name:
-          description: Specifies the table name.
-          example: events
-          type: string
-        namespace:
-          $ref: '#/components/schemas/r2-data-catalog_namespace-identifier'
-      required:
-      - namespace
-      - name
-      type: object
-    r2-data-catalog_api-response-errors:
-      description: Contains errors if the API call was unsuccessful.
-      items:
-        properties:
-          code:
-            description: Specifies the error code.
-            type: integer
-          message:
-            description: Describes the error.
-            type: string
-        required:
-        - code
-        - message
-        type: object
-      type: array
-    r2-data-catalog_api-response-common-failure:
-      properties:
-        errors:
-          items:
-            properties:
-              code:
-                type: integer
-              message:
-                type: string
-            type: object
-          minItems: 1
-          type: array
-        messages:
-          items:
-            type: object
-          type: array
-        success:
-          enum:
-          - false
-          type: boolean
-      type: object
-    r2-data-catalog_table-details:
-      description: Contains table with metadata.
-      properties:
-        created_at:
-          description: Indicates the creation timestamp in ISO 8601 format.
-          format: date-time
-          type:
-          - string
-          - 'null'
-        identifier:
-          $ref: '#/components/schemas/r2-data-catalog_table-identifier'
-        location:
-          description: Specifies the base S3 URI for table storage location.
-          type:
-          - string
-          - 'null'
-        metadata_location:
-          description: Contains the S3 URI to table metadata file. Null for staged tables.
-          type:
-          - string
-          - 'null'
-        table_uuid:
-          description: Contains the UUID that persists across renames.
-          format: uuid
-          type: string
-        updated_at:
-          description: Shows the last update timestamp in ISO 8601 format. Null if never updated.
-          format: date-time
-          type:
-          - string
-          - 'null'
-      required:
-      - identifier
-      - table_uuid
-      type: object
-    r2-data-catalog_bucket-name:
-      description: Specifies the R2 bucket name.
-      example: my-data-bucket
-      maxLength: 63
-      minLength: 3
-      pattern: ^[a-z0-9]([a-z0-9\-]*[a-z0-9])?$
-      type: string
   securitySchemes:
     api_email:
       in: header
