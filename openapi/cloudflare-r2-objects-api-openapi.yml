@@ -407,6 +407,24 @@ paths:
                 $ref: '#/components/schemas/Error'
 components:
   schemas:
+    DeleteObjects:
+      type: object
+      properties:
+        Object:
+          type: array
+          items:
+            type: object
+            required:
+            - Key
+            properties:
+              Key:
+                type: string
+              VersionId:
+                type: string
+        Quiet:
+          type: boolean
+      xml:
+        name: Delete
     Error:
       type: object
       properties:
@@ -500,24 +518,6 @@ components:
                 type: string
       xml:
         name: DeleteResult
-    DeleteObjects:
-      type: object
-      properties:
-        Object:
-          type: array
-          items:
-            type: object
-            required:
-            - Key
-            properties:
-              Key:
-                type: string
-              VersionId:
-                type: string
-        Quiet:
-          type: boolean
-      xml:
-        name: Delete
   securitySchemes:
     hmacAuth:
       type: apiKey

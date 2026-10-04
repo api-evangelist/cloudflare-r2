@@ -300,23 +300,78 @@ paths:
                 $ref: '#/components/schemas/Error'
 components:
   schemas:
-    Error:
+    InitiateMultipartUploadResult:
       type: object
       properties:
-        Code:
+        Bucket:
           type: string
-          description: Error code
-        Message:
+        Key:
           type: string
-          description: Human-readable error message
-        Resource:
+        UploadId:
           type: string
-          description: The resource that caused the error
-        RequestId:
-          type: string
-          description: The request ID for troubleshooting
       xml:
-        name: Error
+        name: InitiateMultipartUploadResult
+    ListMultipartUploadsResult:
+      type: object
+      properties:
+        Bucket:
+          type: string
+        KeyMarker:
+          type: string
+        UploadIdMarker:
+          type: string
+        NextKeyMarker:
+          type: string
+        NextUploadIdMarker:
+          type: string
+        MaxUploads:
+          type: integer
+        IsTruncated:
+          type: boolean
+        Upload:
+          type: array
+          items:
+            type: object
+            properties:
+              Key:
+                type: string
+              UploadId:
+                type: string
+              Initiated:
+                type: string
+                format: date-time
+      xml:
+        name: ListMultipartUploadsResult
+    CompleteMultipartUploadResult:
+      type: object
+      properties:
+        Location:
+          type: string
+        Bucket:
+          type: string
+        Key:
+          type: string
+        ETag:
+          type: string
+      xml:
+        name: CompleteMultipartUploadResult
+    CompleteMultipartUpload:
+      type: object
+      properties:
+        Part:
+          type: array
+          items:
+            type: object
+            required:
+            - PartNumber
+            - ETag
+            properties:
+              PartNumber:
+                type: integer
+              ETag:
+                type: string
+      xml:
+        name: CompleteMultipartUpload
     ListPartsResult:
       type: object
       properties:
@@ -351,78 +406,23 @@ components:
                 format: int64
       xml:
         name: ListPartsResult
-    CompleteMultipartUpload:
+    Error:
       type: object
       properties:
-        Part:
-          type: array
-          items:
-            type: object
-            required:
-            - PartNumber
-            - ETag
-            properties:
-              PartNumber:
-                type: integer
-              ETag:
-                type: string
+        Code:
+          type: string
+          description: Error code
+        Message:
+          type: string
+          description: Human-readable error message
+        Resource:
+          type: string
+          description: The resource that caused the error
+        RequestId:
+          type: string
+          description: The request ID for troubleshooting
       xml:
-        name: CompleteMultipartUpload
-    InitiateMultipartUploadResult:
-      type: object
-      properties:
-        Bucket:
-          type: string
-        Key:
-          type: string
-        UploadId:
-          type: string
-      xml:
-        name: InitiateMultipartUploadResult
-    CompleteMultipartUploadResult:
-      type: object
-      properties:
-        Location:
-          type: string
-        Bucket:
-          type: string
-        Key:
-          type: string
-        ETag:
-          type: string
-      xml:
-        name: CompleteMultipartUploadResult
-    ListMultipartUploadsResult:
-      type: object
-      properties:
-        Bucket:
-          type: string
-        KeyMarker:
-          type: string
-        UploadIdMarker:
-          type: string
-        NextKeyMarker:
-          type: string
-        NextUploadIdMarker:
-          type: string
-        MaxUploads:
-          type: integer
-        IsTruncated:
-          type: boolean
-        Upload:
-          type: array
-          items:
-            type: object
-            properties:
-              Key:
-                type: string
-              UploadId:
-                type: string
-              Initiated:
-                type: string
-                format: date-time
-      xml:
-        name: ListMultipartUploadsResult
+        name: Error
   securitySchemes:
     hmacAuth:
       type: apiKey
