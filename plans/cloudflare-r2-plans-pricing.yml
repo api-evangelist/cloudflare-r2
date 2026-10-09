@@ -1,3 +1,8 @@
+# Provenance stamped 2026-10-07 (roadmap#943): written by an API Evangelist sweep (dated 2026-06-13 by the file itself), not
+# harvested from the provider. `method: generated` so the economics campaign may replace it with a
+# dated, verbatim transcription; every figure below is unverified until it does.
+method: generated
+generated: '2026-06-13'
 specificationVersion: '0.1'
 id: cloudflare-r2-plans-pricing
 name: Cloudflare R2 Plans and Pricing
@@ -94,3 +99,29 @@ notes:
   - Class A operations include writes, deletes of object lists, and bucket configuration mutations
   - Class B operations include reads, lists, and metadata retrievals
   - Buckets per account limited to 1,000,000
+x-canonical:
+  generated: '2026-10-08'
+  vocabulary: all/0-working/economics/plans-canonical.yml
+  models:
+  - free
+  - subscription
+  units: []
+  plans:
+  - name: Free Tier
+    access: other
+    model: free
+    model_how: derived
+    units: []
+    periods: []
+  - name: Standard Storage (Pay-as-you-go)
+    access: other
+    model: subscription
+    model_how: derived
+    units: []
+    periods: []
+  - name: Infrequent Access Storage (Pay-as-you-go)
+    access: other
+    model: subscription
+    model_how: derived
+    units: []
+    periods: []
