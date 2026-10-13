@@ -11,7 +11,8 @@ edges:
   evidence: https://developers.cloudflare.com/r2/api/s3/api/index.md
   evidence_kind: own-docs
   evidence_file: https://github.com/api-evangelist/cloudflare-r2/blob/main/evidence/compatibility/cloudflare-r2-aws-s3-1.md
-  quote: 'title: S3 API compatibility'
+  quote: '{"@context":"https://schema.org","@type":"TechArticle","@id":"https://developers.cloudflare.com/r2/api/s3/api/#page","headline":"S3
+    API compatibility","description":"Review which S3 API operations and features R2 supports, including impleme'
   supported_operations:
   - AbortMultipartUpload
   - CompleteMultipartUpload
