@@ -257,6 +257,9 @@ apis:
   - type: Documentation
     url: https://developers.cloudflare.com/r2/api/
 common:
+  - type: ParentCompany
+    url: https://www.cloudflare.com/
+    name: Cloudflare (cloudflare)
   - type: CapabilityMap
     url: capabilities/cloudflare-r2-capability-edges.yml
     name: Cloudflare R2 Business Capability Map
@@ -305,3 +308,5 @@ common:
 maintainers:
   - FN: Kin Lane
     email: kin@apievangelist.com
+x-parent: cloudflare
+x-relationship: product
