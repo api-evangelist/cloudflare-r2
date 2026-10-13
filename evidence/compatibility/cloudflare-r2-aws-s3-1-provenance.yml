@@ -1,0 +1,12 @@
+fetched: '2026-10-13'
+method: fetched
+source: https://developers.cloudflare.com/r2/api/s3/api/index.md
+page: https://developers.cloudflare.com/r2/api/s3/api/index.md
+file: cloudflare-r2-aws-s3-1.md
+bytes: 30008
+sha256: ba7f84b14f0276af0e3368add755a2a04d3b24257c9ea5484b87e406fde4f53f
+anchor: amazon-web-services
+shape: aws-s3
+classification: declares-compatibility
+quote: 'title: S3 API compatibility'
+note: text extracted from the provider's own page (tags stripped), saved for evidence

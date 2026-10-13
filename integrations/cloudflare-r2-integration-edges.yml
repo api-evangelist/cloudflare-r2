@@ -1,0 +1,71 @@
+edges:
+- partner_name: Amazon Web Services
+  partner: amazon-web-services
+  partner_match: shape-anchor
+  channel: provider-built
+  relationship: compatible
+  direction: provider-built
+  shape: aws-s3
+  type: docs
+  degree: declared-subset
+  evidence: https://developers.cloudflare.com/r2/api/s3/api/index.md
+  evidence_kind: own-docs
+  evidence_file: https://github.com/api-evangelist/cloudflare-r2/blob/main/evidence/compatibility/cloudflare-r2-aws-s3-1.md
+  quote: 'title: S3 API compatibility'
+  supported_operations:
+  - AbortMultipartUpload
+  - CompleteMultipartUpload
+  - CopyObject
+  - CreateBucket
+  - CreateMultipartUpload
+  - DeleteBucket
+  - DeleteBucketCors
+  - DeleteObject
+  - DeleteObjects
+  - GetBucketCors
+  - GetBucketEncryption
+  - GetBucketLifecycleConfiguration
+  - GetBucketLocation
+  - GetObject
+  - HeadBucket
+  - ListBuckets
+  - ListMultipartUploads
+  - ListObjects
+  - ListObjectsV2
+  - ListParts
+  - PutBucketCors
+  - PutBucketLifecycleConfiguration
+  - PutObject
+  - UploadPart
+  - UploadPartCopy
+  unsupported_operations:
+  - DeleteObjectTagging
+  - GetBucketAcl
+  - GetBucketLogging
+  - GetBucketNotificationConfiguration
+  - GetBucketPolicy
+  - GetBucketReplication
+  - GetBucketTagging
+  - GetBucketVersioning
+  - GetBucketWebsite
+  - GetObjectLockConfiguration
+  - GetObjectTagging
+  - GetPublicAccessBlock
+  - HeadObject
+  - PutBucketAcl
+  - PutBucketEncryption
+  - PutBucketLogging
+  - PutBucketNotificationConfiguration
+  - PutBucketPolicy
+  - PutBucketReplication
+  - PutBucketTagging
+  - PutBucketVersioning
+  - PutBucketWebsite
+  - PutObjectLockConfiguration
+  - PutObjectTagging
+  - PutPublicAccessBlock
+  supported_share: 0.373
+  detected_by: sweep-shape-compat.py
+  first_seen: '2026-10-13'
+generated: '2026-10-13'
+method: searched
