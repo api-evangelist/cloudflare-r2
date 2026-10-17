@@ -300,61 +300,23 @@ paths:
                 $ref: '#/components/schemas/Error'
 components:
   schemas:
-    InitiateMultipartUploadResult:
+    Error:
       type: object
       properties:
-        Bucket:
+        Code:
           type: string
-        Key:
+          description: Error code
+        Message:
           type: string
-        UploadId:
+          description: Human-readable error message
+        Resource:
           type: string
+          description: The resource that caused the error
+        RequestId:
+          type: string
+          description: The request ID for troubleshooting
       xml:
-        name: InitiateMultipartUploadResult
-    ListMultipartUploadsResult:
-      type: object
-      properties:
-        Bucket:
-          type: string
-        KeyMarker:
-          type: string
-        UploadIdMarker:
-          type: string
-        NextKeyMarker:
-          type: string
-        NextUploadIdMarker:
-          type: string
-        MaxUploads:
-          type: integer
-        IsTruncated:
-          type: boolean
-        Upload:
-          type: array
-          items:
-            type: object
-            properties:
-              Key:
-                type: string
-              UploadId:
-                type: string
-              Initiated:
-                type: string
-                format: date-time
-      xml:
-        name: ListMultipartUploadsResult
-    CompleteMultipartUploadResult:
-      type: object
-      properties:
-        Location:
-          type: string
-        Bucket:
-          type: string
-        Key:
-          type: string
-        ETag:
-          type: string
-      xml:
-        name: CompleteMultipartUploadResult
+        name: Error
     CompleteMultipartUpload:
       type: object
       properties:
@@ -406,23 +368,61 @@ components:
                 format: int64
       xml:
         name: ListPartsResult
-    Error:
+    CompleteMultipartUploadResult:
       type: object
       properties:
-        Code:
+        Location:
           type: string
-          description: Error code
-        Message:
+        Bucket:
           type: string
-          description: Human-readable error message
-        Resource:
+        Key:
           type: string
-          description: The resource that caused the error
-        RequestId:
+        ETag:
           type: string
-          description: The request ID for troubleshooting
       xml:
-        name: Error
+        name: CompleteMultipartUploadResult
+    InitiateMultipartUploadResult:
+      type: object
+      properties:
+        Bucket:
+          type: string
+        Key:
+          type: string
+        UploadId:
+          type: string
+      xml:
+        name: InitiateMultipartUploadResult
+    ListMultipartUploadsResult:
+      type: object
+      properties:
+        Bucket:
+          type: string
+        KeyMarker:
+          type: string
+        UploadIdMarker:
+          type: string
+        NextKeyMarker:
+          type: string
+        NextUploadIdMarker:
+          type: string
+        MaxUploads:
+          type: integer
+        IsTruncated:
+          type: boolean
+        Upload:
+          type: array
+          items:
+            type: object
+            properties:
+              Key:
+                type: string
+              UploadId:
+                type: string
+              Initiated:
+                type: string
+                format: date-time
+      xml:
+        name: ListMultipartUploadsResult
   securitySchemes:
     hmacAuth:
       type: apiKey

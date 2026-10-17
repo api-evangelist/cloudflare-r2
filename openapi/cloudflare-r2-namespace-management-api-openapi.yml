@@ -175,36 +175,6 @@ paths:
       - Workers R2 Data Catalog Read
 components:
   schemas:
-    r2-data-catalog_api-response-messages:
-      description: Contains informational messages.
-      items:
-        properties:
-          code:
-            description: Specifies the message code.
-            type: integer
-          message:
-            description: Contains the message text.
-            type: string
-        required:
-        - code
-        - message
-        type: object
-      type: array
-    r2-data-catalog_api-response-errors:
-      description: Contains errors if the API call was unsuccessful.
-      items:
-        properties:
-          code:
-            description: Specifies the error code.
-            type: integer
-          message:
-            description: Describes the error.
-            type: string
-        required:
-        - code
-        - message
-        type: object
-      type: array
     r2-data-catalog_api-response-success:
       description: Indicates whether the API call was successful.
       example: true
@@ -252,6 +222,21 @@ components:
       example: 0123456789abcdef0123456789abcdef
       pattern: ^[a-fA-F0-9]{32}$
       type: string
+    r2-data-catalog_api-response-errors:
+      description: Contains errors if the API call was unsuccessful.
+      items:
+        properties:
+          code:
+            description: Specifies the error code.
+            type: integer
+          message:
+            description: Describes the error.
+            type: string
+        required:
+        - code
+        - message
+        type: object
+      type: array
     r2-data-catalog_namespace-list-response:
       description: Contains the list of namespaces with optional pagination.
       properties:
@@ -313,6 +298,28 @@ components:
       maxItems: 16
       minItems: 1
       type: array
+    r2-data-catalog_api-response-messages:
+      description: Contains informational messages.
+      items:
+        properties:
+          code:
+            description: Specifies the message code.
+            type: integer
+          message:
+            description: Contains the message text.
+            type: string
+        required:
+        - code
+        - message
+        type: object
+      type: array
+    r2-data-catalog_bucket-name:
+      description: Specifies the R2 bucket name.
+      example: my-data-bucket
+      maxLength: 63
+      minLength: 3
+      pattern: ^[a-z0-9]([a-z0-9\-]*[a-z0-9])?$
+      type: string
     r2-data-catalog_api-response-common-failure:
       properties:
         errors:
@@ -334,13 +341,6 @@ components:
           - false
           type: boolean
       type: object
-    r2-data-catalog_bucket-name:
-      description: Specifies the R2 bucket name.
-      example: my-data-bucket
-      maxLength: 63
-      minLength: 3
-      pattern: ^[a-z0-9]([a-z0-9\-]*[a-z0-9])?$
-      type: string
   securitySchemes:
     api_email:
       in: header
